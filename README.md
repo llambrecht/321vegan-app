@@ -27,6 +27,11 @@
 
 <p align="center"><em>The app is currently only available in French.</em></p>
 
+<p align="center">
+  📬 Need help using the app or anything else?<br>
+  Join our <a href="https://discord.com/invite/NV67QXS2JF" target="_blank">Discord server</a>, send a message on Instagram, or an email at <strong>contact@321vegan.fr</strong>.
+</p>
+
 ---
 
 ## 🌱 About 321 Vegan
