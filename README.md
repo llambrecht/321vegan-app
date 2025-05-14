@@ -61,6 +61,20 @@ Many thanks to them for their valuable work on classifying food additives!
 
 ---
 
+### License Clarification
+
+This project is released under the [GNU AGPLv3 License](https://www.gnu.org/licenses/agpl-3.0.html).  
+It covers the client-side Flutter code only.
+
+#### External Services
+
+This application uses third-party services such as [Firebase](https://firebase.google.com) (Firestore, Analytics, etc.).  
+These services are external and proprietary; their server-side code is not included in this repository and is not covered by the AGPLv3 license.
+
+Only the code developed by the 321 Vegan team and included in this repository is subject to AGPLv3 terms.
+
+---
+
 © 2024 Louis Lambrecht. Released under the [AGPL-3.0 License](https://github.com/llambrecht/321vegan-app/blob/main/LICENSE).
 
 [contributors-shield]: https://img.shields.io/github/contributors/llambrecht/321vegan-app.svg?style=for-the-badge
