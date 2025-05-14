@@ -1,3 +1,5 @@
+[![Contributors][contributors-shield]][contributors-url] [![Forks][forks-shield]][forks-url] [![Stars][stars-shield]][stars-url] [![Issues][issues-shield]][issues-url]
+
 <div align="center">
   <img src="https://github.com/llambrecht/321vegan-app/blob/main/images/app_icon.png" alt="321 Vegan Logo" width="120" />
 
@@ -11,12 +13,6 @@
     <img src="https://img.shields.io/badge/More%20Links-Linktree-43E660?logo=Linktree&logoColor=white&style=for-the-badge" alt="Linktree Badge"/>
   </a>
 </div>
-
-<br>
-
-[![Contributors][contributors-shield]][contributors-url] [![Forks][forks-shield]][forks-url] [![Stars][stars-shield]][stars-url] [![Issues][issues-shield]][issues-url]
-
----
 
 <h2 align="center">📱 Get the App</h2>
 
