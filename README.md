@@ -18,6 +18,21 @@
 
 ---
 
+<h2 align="center">📱 Get the App</h2>
+
+<p align="center">
+  <a href="https://play.google.com/store/apps/details?id=com.app321vegan.veganapp" target="_blank">
+    <img src="https://img.shields.io/badge/Google_Play-4.7★-3DDC84?logo=google-play&logoColor=white&style=for-the-badge" alt="Download on Google Play"/>
+  </a>
+  <a href="https://apps.apple.com/fr/app/321-vegan/id6736880006" target="_blank">
+    <img src="https://img.shields.io/badge/App_Store-5.0★-0D96F6?logo=apple&logoColor=white&style=for-the-badge" alt="Download on the App Store"/>
+  </a>
+</p>
+
+<p align="center"><em>The app is currently only available in French.</em></p>
+
+---
+
 ## 🌱 About 321 Vegan
 
 **321 Vegan** is a free and open-source Flutter app that helps users scan product barcodes and check whether a product is vegan-friendly.
