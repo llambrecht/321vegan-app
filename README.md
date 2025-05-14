@@ -47,6 +47,24 @@ The goal is to support conscious, plant-based lifestyles by making information a
 
 This page is in construction
 
+---
+
+### Attributions
+
+#### Data
+
+Some of the data used in this application is based on [Open Food Facts](https://world.openfoodfacts.org), available under the [Open Database License (ODbL)](https://opendatacommons.org/licenses/odbl/1-0/).  
+The database has been modified and enriched by the **321 Vegan** team to better fit the needs of the application.
+
+More information: [https://world.openfoodfacts.org/](https://world.openfoodfacts.org/)
+
+#### Additives (E-Numbers)
+
+The analysis of additives is largely based on the open-source project [isitvegan/isitvegan-web](https://github.com/isitvegan/isitvegan-web).  
+Many thanks to them for their valuable work on classifying food additives!
+
+---
+
 © 2024 Louis Lambrecht. Released under the [AGPL-3.0 License](https://github.com/llambrecht/321vegan-app/blob/main/LICENSE).
 
 [contributors-shield]: https://img.shields.io/github/contributors/llambrecht/321vegan-app.svg?style=for-the-badge
