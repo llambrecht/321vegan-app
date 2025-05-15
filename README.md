@@ -29,7 +29,7 @@
 
 <p align="center">
   📬 Need help using the app or anything else?<br>
-  Join our <a href="https://discord.com/invite/NV67QXS2JF" target="_blank">Discord server</a>, send a message on Instagram, or an email at <strong>contact@321vegan.fr</strong>.
+  Join our <a href="https://discord.com/invite/NV67QXS2JF" target="_blank">Discord server</a>, send a message on Instagram, or an email at <strong>contact@321vegan.fr</strong>
 </p>
 
 ---
@@ -91,6 +91,6 @@ Only the code developed by the 321 Vegan team and included in this repository is
 [issues-shield]: https://img.shields.io/github/issues/llambrecht/321vegan-app.svg?style=for-the-badge
 [issues-url]: https://github.com/llambrecht/321vegan-app/issues
 [license-shield]: https://img.shields.io/github/license/llambrecht/321vegan-app.svg?style=for-the-badge
-[license-url]: https://github.com/llambrecht/321vegan-app/blob/main/LICENSE
+[license-url]: https://github.com/llambrecht/321vegan-app/blob/main/LICENSE.md
 [linkedin-shield]: https://img.shields.io/badge/LinkedIn-Connect-blue?logo=linkedin&style=for-the-badge
 [linkedin-url]: https://www.linkedin.com/in/your-name/
