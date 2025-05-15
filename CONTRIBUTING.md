@@ -2,7 +2,7 @@
 
 ## Many thanks to you all!
 
-> First of all, thank you for considering contributing to 321Vegan. It's people like you who make 321Vegan such a great tool.
+> First of all, thank you for considering contributing to 321Vegan and helping make veganism easy for everyone. It's people like you who make 321Vegan such a great tool.
 > No contribution is too small—whether it's fixing a typo, improving documentation, reporting bugs, or submitting a feature, every bit counts.
 > We’re here to help, we all started somewhere, so don’t hesitate to ask questions, seek guidance, or learn along the way. Your perspective matters, and your contribution is valued.
 
@@ -223,12 +223,13 @@ Make sure you have the following installed:
    Our team uses Visual Studio Code, so if you decide to go with that too, it'll be easier for us to help you out. If you prefer a different editor, that’s totally fine — we’ll still do our best to support you!
 
 5. **You're up and running! 🎉**
+   If you are stuck at any step in the process, don't hesitate to contact us
 
 ---
 
-### ❓ Troubleshooting Tips
+### 🪲 Troubleshooting Tips
 
-- **Flutter doctor is your friend:**
+- **Use Flutter Doctor**
 
   Run this command to check if everything is set up correctly:
 
@@ -238,7 +239,7 @@ Make sure you have the following installed:
 
 - If you see missing dependencies, follow the instructions provided by `flutter doctor` to fix them.
 
-- If you run into issues, don't hesitate to open a GitHub issue or ask for help in the discussions tab.
+- If you run into issues, don't hesitate to ask for help
 
 **IMPORTANT**: By submitting a patch, you agree to license your work under the same licence as that used by the project.
 
@@ -248,7 +249,9 @@ The main project team can be found in the [Team](https://github.com/llambrecht/3
 
 # Support this project!
 
-This project is run by volunteers. You can support this project by making a donation at [Buy me a tofu](http://buy-me-a-tofu). Your help is invaluable, thank you from the bottom of our heart 💚!
+This project is run by volunteers. You can support this project by making a donation:
+🫛 [Buy me a tofu](https://buymeacoffee.com/321vegan)
+Your help is invaluable, thank you from the bottom of our heart 💚!
 
 # Code of conduct
 
