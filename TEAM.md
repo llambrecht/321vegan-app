@@ -1,6 +1,3 @@
-# 🌱 Team
+🌱 Team
 
-|                                             <a href="https://github.com/llambrecht" target="_blank">**llambrecht**</a>                                              |
-| :-----------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| [![FVCproductions](https://avatars.githubusercontent.com/u/10818457?v=4?s=460&u=4e0f7c3724d1bfe73e34ae08ef683dab0fe1c12d&v=4?s=200)](https://github.com/llambrecht) |
-|                                         <a href="https://github.com/llambrecht" target="_blank">`Founder & Maintainer`</a>                                          |
+<table> <tr> <td align="center"> <a href="https://github.com/llambrecht" target="_blank"> <img src="https://avatars.githubusercontent.com/u/10818457?v=4" width="100px" style="border-radius: 50%;" alt="llambrecht"/> <br /> <strong>llambrecht</strong> </a> <br /> <span><code>Founder & Maintainer</code></span> </td> <td align="center"> <a href="https://github.com/ISAsxm" target="_blank"> <img src="https://avatars.githubusercontent.com/u/47738803?v=4" width="100px" style="border-radius: 50%;" alt="ISAsxm"/> <br /> <strong>ISAsxm</strong> </a> <br /> <span><code>Contributor</code></span> </td> </tr> </table>
