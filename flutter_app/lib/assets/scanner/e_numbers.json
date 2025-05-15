@@ -1,0 +1,6722 @@
+{
+  "_original_source": {
+    "name": "Is It Vegan ?",
+    "url": "https://github.com/isitvegan/isitvegan-web",
+    "license": "MIT",
+    "note": "Datas has been modified from its original version."
+  },
+  "items": [
+    {
+      "alternative_names": [
+        "FD&C Blue No.1",
+        "Acid blue 9",
+        "D&C Blue No. 4",
+        "Atracid Blue FG",
+        "Acilan Turquoise Blue AE",
+        "Aizen Brilliant Blue FCF",
+        "Alzen Food Blue No. 1",
+        "Erioglaucine",
+        "Eriosky blue",
+        "Patent Blue AR",
+        "Xylene Blue VSG",
+        "C.I. 42090",
+        "CI Food Blue 2",
+        "Basacid Blue 755",
+        "Sulfacid Brilliant Blue 5 J",
+        "Neolan Blue E-A",
+        "Brilliant Blue FD",
+        "Brilliant Blue Lake",
+        "Blue #1 Lake",
+        "Bucacid Azure Blue"
+      ],
+      "description": "",
+      "e_number": "E133",
+      "name": "Brilliant blue FCF",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E133"
+        }
+      ],
+      "name_fr": "Bleu brillant FCF"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E140",
+      "name": "Chlorophylls and Chlorophyllins",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Chlorophyll"
+        }
+      ],
+      "name_fr": "Chlorophylles et chlorophyllines"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E141",
+      "name": "Copper complexes of chlorophylls and chlorophyllins",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E_number"
+        }
+      ],
+      "name_fr": "Complexes de cuivre de chlorophylles et de chlorophyllines"
+    },
+    {
+      "alternative_names": [
+        "Food green S",
+        "FD&C green 4",
+        "acid green 50",
+        "lissamine green B",
+        "wool green S",
+        "C.I. 44090"
+      ],
+      "description": "",
+      "e_number": "E142",
+      "name": "Green S",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E142"
+        }
+      ],
+      "name_fr": "Vert S"
+    },
+    {
+      "alternative_names": [
+        "Food green 3",
+        "FD&C Green No. 3",
+        "Green 1724",
+        "Solid Green FCF",
+        "C.I. 42053"
+      ],
+      "description": "",
+      "e_number": "E143",
+      "name": "Fast Green FCF",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E143"
+        }
+      ],
+      "name_fr": "Vert rapide FCF"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "description_fr": "Caramel ordinaire, obtenu par chauffage contrôlé de sucres alimentaires (comme le glucose, le saccharose)",
+      "e_number": "E150a",
+      "name": "Plain caramel",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E150a"
+        }
+      ],
+      "name_fr": "Caramel nature"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "description_fr": "Produit par chauffage de sucres en présence de sulfites",
+      "e_number": "E150b",
+      "name": "Caustic sulfite caramel",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E150b"
+        }
+      ],
+      "name_fr": "Caramel au sulfite caustique"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "description_fr": "Produit par chauffage de sucres avec des composés ammoniacaux",
+      "e_number": "E150c",
+      "name": "Ammonia caramel",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E150c"
+        }
+      ],
+      "name_fr": "Caramel à l'ammoniaque"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "description_fr": "Produit par chauffage de sucres avec des sulfites et des composés ammoniacaux",
+      "e_number": "E150d",
+      "name": "Sulfite ammonia caramel",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E150d"
+        }
+      ],
+      "name_fr": "Caramel au sulfite d'ammoniaque"
+    },
+    {
+      "alternative_names": [
+        "C.I. Food Black 1",
+        "1743 Black",
+        "Black PN",
+        "Blue Black BN",
+        "Brilliant Acid Black",
+        "C.I. 28440",
+        "Certicol Black PNW",
+        "Cilefa Black B",
+        "Edicol Supra Black BN",
+        "Hexacol Black PN",
+        "L Black 8000",
+        "Melan Black",
+        "Xylene Black F"
+      ],
+      "description": "",
+      "e_number": "E151",
+      "name": "Black PN, Brilliant Black BN",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E151"
+        }
+      ],
+      "name_fr": "Noir PN, Noir Brillant BN"
+    },
+    {
+      "alternative_names": ["Food Black 2", "C.I. 27755"],
+      "description": "",
+      "e_number": "E152",
+      "name": "Carbon black",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E152"
+        }
+      ],
+      "name_fr": "Noir de carbone"
+    },
+    {
+      "alternative_names": [
+        "Kipper Brown",
+        "Chocolate Brown FK",
+        "C.I. Food Brown 1"
+      ],
+      "description": "",
+      "e_number": "E154",
+      "name": "Brown FK",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E154"
+        }
+      ],
+      "name_fr": "FK marron"
+    },
+    {
+      "alternative_names": ["Chocolate Brown HT", "Food Brown 3"],
+      "description": "",
+      "e_number": "E155",
+      "name": "Brown HT",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E155"
+        }
+      ],
+      "name_fr": "Brun HT"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "description_fr": "Pigment orange naturel provenant de carottes, potirons ou synthétisé.",
+      "e_number": "E160a",
+      "name": "Alpha-carotene, Beta-carotene, Gamma-carotene",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E160a"
+        }
+      ],
+      "name_fr": "Alpha-carotène, bêta-carotène, gamma-carotène"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E160b",
+      "name": "Annatto, bixin, norbixin",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E160b"
+        }
+      ],
+      "name_fr": "Rocou, bixine, norbixine"
+    },
+    {
+      "alternative_names": ["Paprika extract", "Paprika color"],
+      "description": "",
+      "e_number": "E160c",
+      "name": "Paprika oleoresin",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E160c"
+        }
+      ],
+      "name_fr": "Oléorésine de paprika"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E160d",
+      "name": "Lycopene",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E160d"
+        }
+      ],
+      "name_fr": "Lycopène"
+    },
+    {
+      "alternative_names": [
+        "trans-beta-apo-8'-carotenal",
+        "C.I. Food Orange 6"
+      ],
+      "description": "",
+      "e_number": "E160e",
+      "name": "Beta-apo-8'-carotenal",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E160e"
+        }
+      ],
+      "name_fr": "Bêta-apo-8'-caroténal"
+    },
+    {
+      "alternative_names": [
+        "Ethyl ester of beta-apo-8'-carotenic acid",
+        "Ethyl 8'-apo-beta,psi-carotenoate"
+      ],
+      "description": "",
+      "e_number": "E160f",
+      "name": "Ethyl ester of beta-apo-8'-carotenic acid",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E160f"
+        }
+      ],
+      "name_fr": "Ester éthylique de l'acide bêta-apo-8'-carotène"
+    },
+    {
+      "alternative_names": [
+        "5,8-Epoxy-5,8-dihydro-γ-carotene-3,3'-diol",
+        "all-trans-Flavoxanthin"
+      ],
+      "description": "",
+      "e_number": "E161a",
+      "name": "Flavoxanthin",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E161a"
+        }
+      ],
+      "name_fr": "Flavoxanthine"
+    },
+    {
+      "alternative_names": ["Luteine", "trans-Lutein", "Xanthophyll"],
+      "description": "",
+      "e_number": "E161b",
+      "name": "Lutein",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E161b"
+        }
+      ],
+      "name_fr": "Lutéine"
+    },
+    {
+      "alternative_names": [
+        "Cryptoxanthol",
+        "Caricaxanthin",
+        "(R)-all-trans-β-Caroten-3-ol",
+        "Hydroxy-β-carotene",
+        "kryptoxanthin"
+      ],
+      "description": "",
+      "e_number": "E161c",
+      "name": "Cryptoxanthin",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E161c"
+        }
+      ],
+      "name_fr": "Cryptoxanthine"
+    },
+    {
+      "alternative_names": ["Natural yellow 27"],
+      "description": "",
+      "e_number": "E161d",
+      "name": "Rubixanthin",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E161d"
+        }
+      ],
+      "name_fr": "Rubixanthine"
+    },
+    {
+      "alternative_names": ["Zeaxanthin diepoxide", "all-trans-Violaxanthin"],
+      "description": "",
+      "e_number": "E161e",
+      "name": "Violaxanthin",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E161e"
+        }
+      ],
+      "name_fr": "Violaxanthine"
+    },
+    {
+      "alternative_names": ["4',5'-Didehydro-retro-β-carotene-3,3'-dione"],
+      "description": "",
+      "e_number": "E161f",
+      "name": "Rhodoxanthin",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E161f"
+        }
+      ],
+      "name_fr": "Rhodoxanthine"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E162",
+      "name": "Beetroot Red, Betanin",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E162"
+        }
+      ],
+      "name_fr": "Betterave rouge, Bétanine"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E163",
+      "name": "Anthocyanins",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E163"
+        }
+      ],
+      "name_fr": "Anthocyanes"
+    },
+    {
+      "alternative_names": [
+        "Aragonite",
+        "calcite",
+        "chalk",
+        "lime",
+        "limestone",
+        "marble",
+        "oystershell",
+        "pearl"
+      ],
+      "description": "",
+      "e_number": "E170",
+      "name": "Calcium carbonate, Chalk",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Calcium_carbonate"
+        }
+      ],
+      "name_fr": "Carbonate de calcium, craie"
+    },
+    {
+      "alternative_names": ["Titania", "Rutile", "Anatase", "Brookite"],
+      "description": "",
+      "e_number": "E171",
+      "name": "Titanium dioxide",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E171"
+        }
+      ],
+      "name_fr": "Dioxyde de titane"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E172",
+      "name": "Iron oxides and iron hydroxides",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E172"
+        }
+      ],
+      "name_fr": "Oxydes de fer et hydroxydes de fer"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E173",
+      "name": "Aluminium",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E173"
+        }
+      ],
+      "name_fr": "Aluminium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E174",
+      "name": "Silver",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E174"
+        }
+      ],
+      "name_fr": "Argent"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E175",
+      "name": "Gold",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E175_(E_number)"
+        }
+      ],
+      "name_fr": "Or"
+    },
+    {
+      "alternative_names": [
+        "Pigment Rubine",
+        "Carmine 6B",
+        "Brilliant Carmine 6B",
+        "Permanent Rubin L6B",
+        "Litholrubine",
+        "Latolrubine",
+        "C.I. Pigment Red 57",
+        "C.I. Pigment Red 57:1",
+        "D&C Red No. 7",
+        "C.I. 15850:1"
+      ],
+      "description": "",
+      "e_number": "E180",
+      "name": "Pigment Rubine, Lithol Rubine BK",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E180"
+        }
+      ],
+      "name_fr": "Pigment Rubin, Lithol Rubin BK"
+    },
+    {
+      "alternative_names": [
+        "Acidum tannicum",
+        "Gallotannic acid",
+        "Digallic acid",
+        "Gallotannin",
+        "Tannimum",
+        "Quercitannin",
+        "Oak bark tannin",
+        "Quercotannic acid",
+        "Querci-tannic acid",
+        "Querco-tannic acid"
+      ],
+      "description": "",
+      "e_number": "E181",
+      "name": "Tannin",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Tannic_acid"
+        }
+      ],
+      "name_fr": "Tanin"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "description_fr": "D'origine végétale (venant du Sorbier des oiseaux - arbre à baies rouge des régions tempérées) ou synthétique",
+      "e_number": "E200",
+      "name": "Sorbic acid",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Sorbic_acid"
+        }
+      ],
+      "name_fr": "Acide sorbique"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E201",
+      "name": "Sodium sorbate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Sodium_sorbate"
+        }
+      ],
+      "name_fr": "Sorbate de sodium"
+    },
+    {
+      "alternative_names": ["Sorbistat-K", "Sorbistat potassium"],
+      "description": "",
+      "e_number": "E202",
+      "name": "Potassium sorbate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E202"
+        }
+      ],
+      "name_fr": "Sorbate de potassium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E203",
+      "name": "Calcium sorbate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E203"
+        }
+      ],
+      "name_fr": "Sorbate de calcium"
+    },
+    {
+      "alternative_names": [
+        "Carboxybenzene",
+        "Dracylic acid",
+        "Phenylmethanoic acid",
+        "Phenylcarboxylic acid",
+        "Benzoyl alcohol",
+        "Benzoylic acid",
+        "Carboxylbenzene",
+        "Hydrogenphenic acid",
+        "Phenoic acid"
+      ],
+      "description": "",
+      "e_number": "E210",
+      "name": "Benzoic acid",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E210"
+        }
+      ],
+      "name_fr": "Acide benzoïque"
+    },
+    {
+      "alternative_names": ["benzoate of soda"],
+      "description": "",
+      "e_number": "E211",
+      "name": "Sodium benzoate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E211"
+        }
+      ],
+      "name_fr": "Benzoate de sodium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E212",
+      "name": "Potassium benzoate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E212"
+        }
+      ],
+      "name_fr": "Benzoate de potassium"
+    },
+    {
+      "alternative_names": ["Benzoic acid, calcium salt"],
+      "description": "",
+      "e_number": "E213",
+      "name": "Calcium benzoate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E213"
+        }
+      ],
+      "name_fr": "Benzoate de calcium"
+    },
+    {
+      "alternative_names": [
+        "Ethyl paraben",
+        "Ethyl parahydroxybenzoate",
+        "Ethyl para-hydroxybenzoate",
+        "Ethyl p-hydroxybenzoate",
+        "4-Hydroxybenzoic acid ethyl ester"
+      ],
+      "description": "",
+      "e_number": "E214",
+      "name": "Ethylparaben",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E214"
+        }
+      ],
+      "name_fr": "Éthylparabène"
+    },
+    {
+      "alternative_names": [
+        "Ethyl paraben",
+        "Ethyl parahydroxybenzoate",
+        "Ethyl para-hydroxybenzoate",
+        "Ethyl p-hydroxybenzoate",
+        "4-Hydroxybenzoic acid ethyl ester"
+      ],
+      "description": "",
+      "e_number": "E215",
+      "name": "Sodium ethyl para-hydroxybenzoate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E215"
+        }
+      ],
+      "name_fr": "Parahydroxybenzoate d'éthyle sodique"
+    },
+    {
+      "alternative_names": [
+        "Propyl paraben",
+        "Propyl p-hydroxybenzoate",
+        "Propyl parahydroxybenzoate",
+        "Nipasol"
+      ],
+      "description": "",
+      "e_number": "E216",
+      "name": "Propylparaben",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E216"
+        }
+      ],
+      "name_fr": "Propylparaben"
+    },
+    {
+      "alternative_names": [
+        "Propyl paraben",
+        "Propyl p-hydroxybenzoate",
+        "Propyl parahydroxybenzoate",
+        "Nipasol"
+      ],
+      "description": "",
+      "e_number": "E217",
+      "name": "Sodium propyl para-hydroxybenzoate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Sodium_propyl_para-hydroxybenzoate"
+        }
+      ],
+      "name_fr": "Parahydroxybenzoate de propyle sodique"
+    },
+    {
+      "alternative_names": [
+        "Methyl paraben",
+        "Methyl p-hydroxybenzoate",
+        "Methyl parahydroxybenzoate",
+        "Nipagin M",
+        "Tegosept",
+        "Mycocten"
+      ],
+      "description": "",
+      "e_number": "E218",
+      "name": "Methylparaben",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E218"
+        }
+      ],
+      "name_fr": "Méthylparabène"
+    },
+    {
+      "alternative_names": [
+        "Sodium methyl p-hydroxybenzoate",
+        "Methylparaben sodium salt"
+      ],
+      "description": "",
+      "e_number": "E219",
+      "name": "Sodium methyl para-hydroxybenzoate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E219"
+        }
+      ],
+      "name_fr": "Parahydroxybenzoate de méthyle sodique"
+    },
+    {
+      "alternative_names": ["Sulfurous anhydride", "Sulfur(IV) oxide"],
+      "description": "",
+      "e_number": "E220",
+      "name": "Sulfur dioxide",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Sulfur_dioxide"
+        }
+      ],
+      "name_fr": "Dioxyde de soufre"
+    },
+    {
+      "alternative_names": ["Hypo clear (photography)"],
+      "description": "",
+      "e_number": "E221",
+      "name": "Sodium sulfite",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E221"
+        }
+      ],
+      "name_fr": "Sulfite de sodium"
+    },
+    {
+      "alternative_names": ["sodium bisulphite"],
+      "description": "",
+      "e_number": "E222",
+      "name": "Sodium bisulfite",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E222"
+        }
+      ],
+      "name_fr": "Bisulfite de sodium"
+    },
+    {
+      "alternative_names": ["Sodium pyrosulfite", "Sodium disulfite"],
+      "description": "",
+      "e_number": "E223",
+      "name": "Sodium metabisulfite",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E223"
+        }
+      ],
+      "name_fr": "Métabisulfite de sodium"
+    },
+    {
+      "alternative_names": [
+        "Potassium pyrosulfite",
+        "Dipotassium disulfite",
+        "Potassium metabisulphite",
+        "Dipotassium disulphite"
+      ],
+      "description": "",
+      "e_number": "E224",
+      "name": "Potassium metabisulfite",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E224"
+        }
+      ],
+      "name_fr": "Métabisulfite de potassium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E225",
+      "name": "Potassium sulfite",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E225"
+        }
+      ],
+      "name_fr": "Sulfite de potassium"
+    },
+    {
+      "alternative_names": ["Sulfurous acid, calcium salt (1:1)"],
+      "description": "",
+      "e_number": "E226",
+      "name": "Calcium sulfite",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E226"
+        }
+      ],
+      "name_fr": "Sulfite de calcium"
+    },
+    {
+      "alternative_names": ["Calcium bisulphite"],
+      "description": "",
+      "e_number": "E227",
+      "name": "Calcium hydrogen sulfite",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E227"
+        }
+      ],
+      "name_fr": "Hydrogénosulfite de calcium"
+    },
+    {
+      "alternative_names": [
+        "Potassium bisulfite",
+        "potassium bisulphite",
+        "monopotassium salt",
+        "monopotassium sulfite",
+        "potassium hydrosulfite"
+      ],
+      "description": "",
+      "e_number": "E228",
+      "name": "Potassium hydrogen sulfite",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E228"
+        }
+      ],
+      "name_fr": "Hydrogénosulfite de potassium"
+    },
+    {
+      "alternative_names": ["Biphenyl", "Phenylbenzene", "Dibenzene", "Xenene"],
+      "description": "",
+      "e_number": "E230",
+      "name": "Biphenyl, diphenyl",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E230"
+        }
+      ],
+      "name_fr": "Biphényle, diphényle"
+    },
+    {
+      "alternative_names": [
+        "2-Phenylphenol",
+        "2-Biphenylol",
+        "o-Phenylphenol",
+        "Biphenylol",
+        "2-Hydroxybiphenyl",
+        "Orthophenyl phenol",
+        "o-Xenol",
+        "Orthoxenol"
+      ],
+      "description": "",
+      "e_number": "E231",
+      "name": "Orthophenyl phenol",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/2-Phenylphenol"
+        }
+      ],
+      "name_fr": "Phénol orthophénylique"
+    },
+    {
+      "alternative_names": [
+        "(1,1′-Biphenyl)-2-ol, sodium salt",
+        "2-Hydroxydiphenyl sodium",
+        "o-Phenylphenol sodium",
+        "o-Phenylphenol, sodium",
+        "Sodium o-phenylphenol",
+        "Sodium 2-phenylphenolate",
+        "Sodium o-phenylphenate"
+      ],
+      "description": "",
+      "e_number": "E232",
+      "name": "Sodium orthophenyl phenol",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E232"
+        }
+      ],
+      "name_fr": "Phénol orthophénylique sodique"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E233",
+      "name": "Thiabendazole",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Thiabendazole"
+        }
+      ],
+      "name_fr": "Thiabendazole"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E234",
+      "name": "Nisin",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Nisin"
+        }
+      ],
+      "name_fr": "Nisine"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E235",
+      "name": "Natamycin, Pimaracin",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E235"
+        }
+      ],
+      "name_fr": "Natamycine, Pimaracine"
+    },
+    {
+      "alternative_names": [
+        "Isocarbonous acid",
+        "Carbonous acid",
+        "Formylic acid",
+        "Methylic acid",
+        "Hydrogencarboxylic acid",
+        "Hydroxy(oxo)methane",
+        "Metacarbonoic acid",
+        "Oxocarbinic acid",
+        "Oxomethanol",
+        "Hydroxymethylene oxide"
+      ],
+      "description": "",
+      "e_number": "E236",
+      "name": "Formic acid",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E236"
+        }
+      ],
+      "name_fr": "Acide formique"
+    },
+    {
+      "alternative_names": ["formic acid, sodium salt"],
+      "description": "",
+      "e_number": "E237",
+      "name": "Sodium formate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E237"
+        }
+      ],
+      "name_fr": "Formiate de sodium"
+    },
+    {
+      "alternative_names": ["Formic acid calcium salt", "calcoform"],
+      "description": "",
+      "e_number": "E238",
+      "name": "Calcium formate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E238"
+        }
+      ],
+      "name_fr": "Formiate de calcium"
+    },
+    {
+      "alternative_names": [
+        "Hexamine",
+        "Methenamine",
+        "Urotropine",
+        "Formin",
+        "Aminoform",
+        "HMTA"
+      ],
+      "description": "",
+      "e_number": "E239",
+      "name": "Hexamine",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E239"
+        }
+      ],
+      "name_fr": "Hexamine"
+    },
+    {
+      "alternative_names": [
+        "Methyl aldehyde",
+        "Methylene glycol (diol forms in aqueous solution)",
+        "Methylene oxide",
+        "Formalin (aqueous solution)",
+        "Formol",
+        "Carbonyl hydride",
+        "Methanone",
+        "Oxomethane"
+      ],
+      "description": "",
+      "e_number": "E240",
+      "name": "Formaldehyde",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E240"
+        }
+      ],
+      "name_fr": "Formaldéhyde"
+    },
+    {
+      "alternative_names": ["DMDC", "Dimethyl pyrocarbonate", "Velcorin"],
+      "description": "",
+      "e_number": "E242",
+      "name": "Dimethyl dicarbonate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E242"
+        }
+      ],
+      "name_fr": "Dicarbonate de diméthyle"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E249",
+      "name": "Potassium nitrite",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E249"
+        }
+      ],
+      "name_fr": "Nitrite de potassium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E250",
+      "name": "Sodium nitrite",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Sodium_nitrite"
+        }
+      ],
+      "name_fr": "Nitrite de sodium"
+    },
+    {
+      "alternative_names": ["Peru saltpeter", "Soda niter", "cubic niter"],
+      "description": "",
+      "e_number": "E251",
+      "name": "Sodium nitrate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E251"
+        }
+      ],
+      "name_fr": "Nitrate de sodium"
+    },
+    {
+      "alternative_names": [
+        "Vinegar (when dilute)",
+        "Hydrogen acetate",
+        "Methanecarboxylic acid"
+      ],
+      "description": "",
+      "e_number": "E260",
+      "name": "Acetic acid",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Acetic_acid"
+        }
+      ],
+      "name_fr": "Acide acétique"
+    },
+    {
+      "alternative_names": ["Potassium ethanoate"],
+      "description": "",
+      "e_number": "E261",
+      "name": "Potassium acetate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Potassium_acetate"
+        }
+      ],
+      "name_fr": "Acétate de potassium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E262",
+      "name": "Sodium acetates",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Sodium_acetate"
+        }
+      ],
+      "name_fr": "Acétates de sodium"
+    },
+    {
+      "alternative_names": ["Acetate of lime", "Calcium ethanoate"],
+      "description": "",
+      "e_number": "E263",
+      "name": "Calcium acetate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Calcium_acetate"
+        }
+      ],
+      "name_fr": "Acétate de calcium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E264",
+      "name": "Ammonium acetate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Ammonium_acetate"
+        }
+      ],
+      "name_fr": "Acétate d'ammonium"
+    },
+    {
+      "alternative_names": [
+        "Carboxyethane",
+        "Ethanecarboxylic acid",
+        "Ethylformic acid",
+        "Metacetonic acid",
+        "Methylacetic acid",
+        "C3:0 (Lipid numbers)"
+      ],
+      "description": "",
+      "e_number": "E280",
+      "name": "Propionic acid",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E280"
+        }
+      ],
+      "name_fr": "Acide propionique"
+    },
+    {
+      "alternative_names": ["Sodium propionate", "Napropion"],
+      "description": "",
+      "e_number": "E281",
+      "name": "Sodium propionate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E281"
+        }
+      ],
+      "name_fr": "Propionate de sodium"
+    },
+    {
+      "alternative_names": [
+        "Calcium propionate",
+        "Calcium dipropionate",
+        "Mycoban"
+      ],
+      "description": "",
+      "e_number": "E282",
+      "name": "Calcium propionate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E282"
+        }
+      ],
+      "name_fr": "Propionate de calcium"
+    },
+    {
+      "alternative_names": ["Potassium propionate"],
+      "description": "",
+      "e_number": "E283",
+      "name": "Potassium propionate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E283"
+        }
+      ],
+      "name_fr": "Propionate de potassium"
+    },
+    {
+      "alternative_names": [
+        "Orthoboric acid",
+        "Boracic acid",
+        "Sassolite",
+        "Borofax",
+        "Trihydroxyborane",
+        "Boranetriol",
+        "Hydrogen borate",
+        "Acidum boricum"
+      ],
+      "description": "",
+      "e_number": "E284",
+      "name": "Boric acid",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E284"
+        }
+      ],
+      "name_fr": "Acide borique"
+    },
+    {
+      "alternative_names": [
+        "Borax decahydrate",
+        "Sodium borate decahydrate",
+        "Sodium tetraborate decahydrate",
+        "Sodium tetrahydroxy tetraborate hexahydrate"
+      ],
+      "description": "",
+      "e_number": "E285",
+      "name": "Sodium tetraborate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E285"
+        }
+      ],
+      "name_fr": "Tétraborate de sodium"
+    },
+    {
+      "alternative_names": [
+        "Carbonic acid gas",
+        "Carbonic anhydride",
+        "Carbonic dioxide",
+        "Carbonic oxide",
+        "Carbon(IV) oxide",
+        "Methanedione",
+        "R-744 (refrigerant)",
+        "R744 (refrigerant alternative spelling)",
+        "Dry ice (solid phase)"
+      ],
+      "description": "",
+      "e_number": "E290",
+      "name": "Carbon dioxide",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E290"
+        }
+      ],
+      "name_fr": "Dioxyde de carbone"
+    },
+    {
+      "alternative_names": [
+        "Hydroxybutanedioic acid",
+        "2-Hydroxysuccinic acid",
+        "(L/D)-Malic acid",
+        "(±)-Malic acid",
+        "(S/R)-Hydroxybutanedioic acid"
+      ],
+      "description": "",
+      "e_number": "E296",
+      "name": "Malic acid",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E296"
+        }
+      ],
+      "name_fr": "Acide malique"
+    },
+    {
+      "alternative_names": [
+        "Fumaric acid",
+        "trans-1,2-Ethylenedicarboxylic acid",
+        "2-Butenedioic acid",
+        "trans-Butenedioic acid",
+        "Allomaleic acid",
+        "Boletic acid",
+        "Donitic acid",
+        "Lichenic acid"
+      ],
+      "description": "",
+      "e_number": "E297",
+      "name": "Fumaric acid",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E297"
+        }
+      ],
+      "name_fr": "Acide fumarique"
+    },
+    {
+      "alternative_names": ["Vitamin C"],
+      "description": "",
+      "description_fr": "Antioxydant produit par fermentation de glucose à l’aide de bactéries",
+      "e_number": "E300",
+      "name": "Ascorbic acid",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Ascorbic_acid"
+        }
+      ],
+      "name_fr": "Acide ascorbique"
+    },
+    {
+      "alternative_names": ["Sodascorbate", "Monosodium ascorbate"],
+      "description": "",
+      "e_number": "E301",
+      "name": "Sodium ascorbate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E301"
+        }
+      ],
+      "name_fr": "Ascorbate de sodium"
+    },
+    {
+      "alternative_names": [
+        "Calcium diascorbate",
+        "Calcium L-ascorbate",
+        "Hemicalcium ascorbate",
+        "Calci-C",
+        "E 302"
+      ],
+      "description": "",
+      "e_number": "E302",
+      "name": "Calcium ascorbate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E302"
+        }
+      ],
+      "name_fr": "Ascorbate de calcium"
+    },
+    {
+      "alternative_names": ["Monopotassium ascorbate", "Potassium L-ascorbate"],
+      "description": "",
+      "e_number": "E303",
+      "name": "Potassium ascorbate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E303"
+        }
+      ],
+      "name_fr": "Ascorbate de potassium"
+    },
+    {
+      "alternative_names": ["Ascorbyl palmitate"],
+      "description": "",
+      "e_number": "E304",
+      "name": "Fatty acid esters of ascorbic acid",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E304"
+        }
+      ],
+      "name_fr": "Esters d'acides gras de l'acide ascorbique"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "description_fr": "Correspond à la vitamine E d'origine naturelle. Produit à partir de sirops d'amidon",
+      "e_number": "E306",
+      "name": "Tocopherols",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E306"
+        }
+      ],
+      "name_fr": "Tocophérols"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E307",
+      "name": "Alpha-Tocopherol",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E307"
+        }
+      ],
+      "name_fr": "Alpha-tocophérol"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E308",
+      "name": "Gamma-Tocopherol",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E308"
+        }
+      ],
+      "name_fr": "Gamma-tocophérol"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E309",
+      "name": "Delta-Tocopherol",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E309"
+        }
+      ],
+      "name_fr": "Delta-tocophérol"
+    },
+    {
+      "alternative_names": ["Gallic acid", "propyl ester", "n-Propyl gallate"],
+      "description": "",
+      "e_number": "E310",
+      "name": "Propyl gallate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Propyl_gallate"
+        }
+      ],
+      "name_fr": "Gallate de propyle"
+    },
+    {
+      "alternative_names": [
+        "Progallin O",
+        "n-Ocyl gallate",
+        "Stabilizer GA-8",
+        "Gallic acid octyl ester"
+      ],
+      "description": "",
+      "e_number": "E311",
+      "name": "Octyl gallate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Octyl_gallate"
+        }
+      ],
+      "name_fr": "Gallate d'octyle"
+    },
+    {
+      "alternative_names": ["Lauryl gallate"],
+      "description": "",
+      "e_number": "E312",
+      "name": "Dodecyl gallate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Dodecyl_gallate"
+        }
+      ],
+      "name_fr": "Gallate de dodécyle"
+    },
+    {
+      "alternative_names": [
+        "-Araboascorbic acid",
+        "Erythorbate",
+        "Isoascorbic acid."
+      ],
+      "description": "",
+      "e_number": "E315",
+      "name": "Erythorbic acid",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E315"
+        }
+      ],
+      "name_fr": "Acide érythorbique"
+    },
+    {
+      "alternative_names": [
+        "D-isoascorbate",
+        "Erbit N",
+        "Eribate N",
+        "isoascorbate C sodium",
+        "Isona",
+        "sodium isoascorbate",
+        "sodium D-isoascorbate"
+      ],
+      "description": "",
+      "e_number": "E316",
+      "name": "Sodium erythorbate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E316"
+        }
+      ],
+      "name_fr": "Érythorbate de sodium"
+    },
+    {
+      "alternative_names": [
+        "-Araboascorbic acid",
+        "Erythorbate",
+        "Isoascorbic acid."
+      ],
+      "description": "",
+      "e_number": "E317",
+      "name": "Erythorbin acid[citation needed]",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E317"
+        }
+      ],
+      "name_fr": "Acide érythorbine[citation nécessaire]"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E318",
+      "name": "Sodium erythorbin[citation needed]",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E318"
+        }
+      ],
+      "name_fr": "Érythorbine sodique[citation nécessaire]"
+    },
+    {
+      "alternative_names": ["TBHQ(i)"],
+      "description": "",
+      "e_number": "E319",
+      "name": "tert-Butylhydroquinone",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E319"
+        }
+      ],
+      "name_fr": "tert-butylhydroquinone"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E320",
+      "name": "Butylated hydroxyanisole",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E320"
+        }
+      ],
+      "name_fr": "Hydroxyanisole butylé"
+    },
+    {
+      "alternative_names": [
+        "2,6-Di-tert-butyl-p-cresol",
+        "2,6-DI-tert-butyl-4-methylphenol",
+        "3,5-Di-tert-butyl-4-hydroxytoluene",
+        "DBPC",
+        "BHT",
+        "AO-29",
+        "Avox BHT",
+        "Additin RC 7110",
+        "Dibutylated hydroxytoluene",
+        "4-Methyl-2,6-di-tert-butyl phenol",
+        "3,5-(Dimethylethyl)-4-hydroxytoluene"
+      ],
+      "description": "",
+      "e_number": "E321",
+      "name": "Butylated hydroxytoluene",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E321"
+        }
+      ],
+      "name_fr": "Hydroxytoluène butylé"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E329",
+      "name": "Magnesium lactate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E329"
+        }
+      ],
+      "name_fr": "Lactate de magnésium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "description_fr": "Acidifiant produit par fermentation de sous-produit de l'industrie agroalimentaire riche en sucres.",
+      "e_number": "E330",
+      "name": "Citric acid",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E330"
+        }
+      ],
+      "name_fr": "Acide citrique"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E331",
+      "name": "Sodium citrates",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Sodium_citrate"
+        }
+      ],
+      "name_fr": "Citrates de sodium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E332",
+      "name": "Potassium citrates",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E332"
+        }
+      ],
+      "name_fr": "Citrates de potassium"
+    },
+    {
+      "alternative_names": ["tricalcium dicitrate"],
+      "description": "",
+      "e_number": "E333",
+      "name": "Calcium citrates",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E333"
+        }
+      ],
+      "name_fr": "Citrates de calcium"
+    },
+    {
+      "alternative_names": [
+        "Tartaric acid",
+        "Threaric acid",
+        "Racemic acid",
+        "Uvic acid",
+        "Paratartaric acid",
+        "Winestone"
+      ],
+      "description": "",
+      "e_number": "E334",
+      "name": "Tartaric acid",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E334"
+        }
+      ],
+      "name_fr": "Acide tartrique"
+    },
+    {
+      "alternative_names": [
+        "Sal tartar",
+        "Disodium tartrate",
+        "Bisodium tartrate",
+        "Sodium l-(+)-tartrate"
+      ],
+      "description": "",
+      "e_number": "E335",
+      "name": "Sodium tartrates",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E335"
+        }
+      ],
+      "name_fr": "Tartrates de sodium"
+    },
+    {
+      "alternative_names": ["Dipotassium tartrate", "Argol"],
+      "description": "",
+      "e_number": "E336",
+      "name": "Potassium tartrates",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E336"
+        }
+      ],
+      "name_fr": "Tartrates de potassium"
+    },
+    {
+      "alternative_names": ["Seignette's salt", "Rochelle salt"],
+      "description": "",
+      "e_number": "E337",
+      "name": "Sodium potassium tartrate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E337"
+        }
+      ],
+      "name_fr": "Tartrate de sodium et de potassium"
+    },
+    {
+      "alternative_names": ["Orthophosphoric acid"],
+      "description": "",
+      "e_number": "E338",
+      "name": "Phosphoric acid",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E338"
+        }
+      ],
+      "name_fr": "Acide phosphorique"
+    },
+    {
+      "alternative_names": [
+        "Sodium phosphate",
+        "Sodium phosphate tribasic",
+        "Trisodium orthophosphate"
+      ],
+      "description": "",
+      "e_number": "E339",
+      "name": "Sodium phosphates",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E339"
+        }
+      ],
+      "name_fr": "Phosphates de sodium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E340",
+      "name": "Potassium phosphates",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E340"
+        }
+      ],
+      "name_fr": "Phosphates de potassium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E341",
+      "name": "Calcium phosphates",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E341"
+        }
+      ],
+      "name_fr": "Phosphates de calcium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E343",
+      "name": "Magnesium phosphates",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E343"
+        }
+      ],
+      "name_fr": "Phosphates de magnésium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E350",
+      "name": "Sodium malates",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E350_(food_additive)"
+        }
+      ],
+      "name_fr": "Malates de sodium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E351",
+      "name": "Potassium malate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E351"
+        }
+      ],
+      "name_fr": "Malate de potassium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E352",
+      "name": "Calcium malates",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E352"
+        }
+      ],
+      "name_fr": "Malates de calcium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E353",
+      "name": "Metatartaric acid",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Metatartaric_acid"
+        }
+      ],
+      "name_fr": "Acide métatartrique"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E354",
+      "name": "Calcium tartrate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E354"
+        }
+      ],
+      "name_fr": "Tartrate de calcium"
+    },
+    {
+      "alternative_names": ["Adipic acid", "Hexane-1,6-dioic acid"],
+      "description": "",
+      "e_number": "E355",
+      "name": "Adipic acid",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Adipic_acid"
+        }
+      ],
+      "name_fr": "Acide adipique"
+    },
+    {
+      "alternative_names": ["Disodium adipate"],
+      "description": "",
+      "e_number": "E356",
+      "name": "Sodium adipate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E356"
+        }
+      ],
+      "name_fr": "Adipate de sodium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E357",
+      "name": "Potassium adipate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E357"
+        }
+      ],
+      "name_fr": "Adipate de potassium"
+    },
+    {
+      "alternative_names": ["Succinic acid", "1,4-Butanedioic acid"],
+      "description": "",
+      "e_number": "E363",
+      "name": "Succinic acid",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E363"
+        }
+      ],
+      "name_fr": "Acide succinique"
+    },
+    {
+      "alternative_names": ["Disodium fumarate"],
+      "description": "",
+      "e_number": "E365",
+      "name": "Monosodium fumarate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Sodium_fumarate"
+        }
+      ],
+      "name_fr": "Fumarate monosodique"
+    },
+    {
+      "alternative_names": [
+        "potassium fumarate",
+        "Dipotassium fumarate",
+        "Fumaric acid",
+        "EINECS 223-979-8",
+        "4151-35-3",
+        "7704-72-5"
+      ],
+      "description": "",
+      "e_number": "E366",
+      "name": "Potassium fumarate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E366"
+        }
+      ],
+      "name_fr": "Fumarate de potassium"
+    },
+    {
+      "alternative_names": [
+        "Fumaric acid",
+        "trans-1,2-Ethylenedicarboxylic acid",
+        "2-Butenedioic acid",
+        "trans-Butenedioic acid",
+        "Allomaleic acid",
+        "Boletic acid",
+        "Donitic acid",
+        "Lichenic acid"
+      ],
+      "description": "",
+      "e_number": "E367",
+      "name": "Calcium fumarate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E367"
+        }
+      ],
+      "name_fr": "Fumarate de calcium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E370",
+      "name": "1,4-Heptonolactone",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E_number"
+        }
+      ],
+      "name_fr": "1,4-Heptonolactone"
+    },
+    {
+      "alternative_names": [
+        "Nicotinic acid (INN)",
+        "Bionic",
+        "Vitamin B3",
+        "Vitamin PP"
+      ],
+      "description": "",
+      "e_number": "E375",
+      "name": "Niacin",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Niacin_(substance)"
+        }
+      ],
+      "name_fr": "Niacine"
+    },
+    {
+      "alternative_names": ["Ammonium citrate"],
+      "description": "",
+      "e_number": "E380",
+      "name": "Triammonium citrate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Triammonium_citrate"
+        }
+      ],
+      "name_fr": "Citrate de triammonium"
+    },
+    {
+      "alternative_names": [
+        "Ferric ammonium citrate",
+        "Iron ammonium citrate",
+        "FerriSeltz"
+      ],
+      "description": "",
+      "e_number": "E381",
+      "name": "Ammonium ferric citrate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E381"
+        }
+      ],
+      "name_fr": "Citrate ferrique d'ammonium"
+    },
+    {
+      "alternative_names": [
+        "EthyleneDiamineTetraAcetic acid",
+        "Diaminoethane-tetraacetic acid",
+        "Edetic acid (conjugate base edetate) (INN, USAN)",
+        "Versene"
+      ],
+      "description": "",
+      "e_number": "E385",
+      "name": "Calcium disodium ethylene diamine tetraacetate,",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E385"
+        }
+      ],
+      "name_fr": "Éthylène diamine tétraacétate de calcium disodique,"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "e392",
+      "name": "Rosemary extract",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://fr.wikipedia.org/wiki/Extrait_de_romarin"
+        }
+      ],
+      "name_fr": "Extrait de Romarin"
+    },
+    {
+      "alternative_names": ["Alginic acid"],
+      "description": "",
+      "e_number": "E400",
+      "name": "Alginic acid",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Alginic_acid"
+        }
+      ],
+      "name_fr": "Acide alginique"
+    },
+    {
+      "alternative_names": ["Alginic acid"],
+      "description": "",
+      "e_number": "E401",
+      "name": "Sodium alginate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E401"
+        }
+      ],
+      "name_fr": "Alginate de sodium"
+    },
+    {
+      "alternative_names": ["Alginic acid"],
+      "description": "",
+      "e_number": "E402",
+      "name": "Potassium alginate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E402"
+        }
+      ],
+      "name_fr": "Alginate de potassium"
+    },
+    {
+      "alternative_names": ["Alginic acid"],
+      "description": "",
+      "e_number": "E403",
+      "name": "Ammonium alginate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E403"
+        }
+      ],
+      "name_fr": "Alginate d'ammonium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E404",
+      "name": "Calcium alginate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E404"
+        }
+      ],
+      "name_fr": "Alginate de calcium"
+    },
+    {
+      "alternative_names": ["Hydroxypropyl alginate,"],
+      "description": "",
+      "e_number": "E405",
+      "name": "Propane-1,2-diol alginate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E405"
+        }
+      ],
+      "name_fr": "Alginate de propane-1,2-diol"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E406",
+      "name": "Agar",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E406"
+        }
+      ],
+      "name_fr": "Gélose"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "description_fr": "Gélifiants extraits par ébullition d’algues rouges",
+      "e_number": "E407",
+      "name": "Carrageenan",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E407"
+        }
+      ],
+      "name_fr": "Carraghénane"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E407a",
+      "name": "Processed eucheuma seaweed",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E407a"
+        }
+      ],
+      "name_fr": "Algues eucheuma transformées"
+    },
+    {
+      "alternative_names": ["Carob gum", "Carob bean gum", "Carobin"],
+      "description": "",
+      "e_number": "E410",
+      "name": "Locust bean gum",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Locust_bean_gum"
+        }
+      ],
+      "name_fr": "Gomme de caroube"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "description_fr": "Épaississant obtenu par broyage des graines du haricot guar",
+      "e_number": "E412",
+      "name": "Guar gum",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Guar_gum"
+        }
+      ],
+      "name_fr": "Gomme de guar"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E413",
+      "name": "Tragacanth",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E413"
+        }
+      ],
+      "name_fr": "Adragante"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E414",
+      "name": "Acacia gum",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E414"
+        }
+      ],
+      "name_fr": "Gomme d'acacia"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E415",
+      "name": "Xanthan gum",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E415"
+        }
+      ],
+      "name_fr": "Gomme xanthane"
+    },
+    {
+      "alternative_names": [
+        "Sterculia gum",
+        "Gum Sterculia",
+        "Indian gum tragacanth"
+      ],
+      "description": "",
+      "e_number": "E416",
+      "name": "Karaya gum",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E416"
+        }
+      ],
+      "name_fr": "Gomme Karaya"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E417",
+      "name": "Tara gum",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E417"
+        }
+      ],
+      "name_fr": "Gomme Tara"
+    },
+    {
+      "alternative_names": ["Gum gellan"],
+      "description": "",
+      "e_number": "E418",
+      "name": "Gellan gum",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E418"
+        }
+      ],
+      "name_fr": "Gomme gellane"
+    },
+    {
+      "alternative_names": ["D-Sorbitol", "Sorbogem", "Sorbo"],
+      "description": "",
+      "description_fr": "Édulcorant produit par hydrogénation du glucose (généralement issu de maïs ou blé)",
+      "e_number": "E420",
+      "name": "Sorbitol",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E420"
+        }
+      ],
+      "name_fr": "Sorbitol"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E421",
+      "name": "Mannitol",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E421"
+        }
+      ],
+      "name_fr": "Mannitol"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E425",
+      "name": "Konjac",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E425"
+        }
+      ],
+      "name_fr": "Konjac"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "description_fr": "Gélifiants naturels extraits des pelures et pépins de pommes ou agrumes.",
+      "e_number": "E440",
+      "name": "Pectins",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E440"
+        }
+      ],
+      "name_fr": "Pectines"
+    },
+    {
+      "alternative_names": ["AI3-25354"],
+      "description": "",
+      "e_number": "E444",
+      "name": "Sucrose acetate isobutyrate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Sucrose_acetate_isobutyrate"
+        }
+      ],
+      "name_fr": "Acétate isobutyrate de saccharose"
+    },
+    {
+      "alternative_names": [
+        "Glycerol ester of rosin",
+        "Glyceryl abietate",
+        "Ester gum"
+      ],
+      "description": "",
+      "e_number": "E445",
+      "name": "Glycerol esters of wood rosins",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E445"
+        }
+      ],
+      "name_fr": "Esters glycériques de résines de bois"
+    },
+    {
+      "alternative_names": ["Pyrophosphate", "Phosphonatophosphate"],
+      "description": "",
+      "e_number": "E450",
+      "name": "Diphosphates",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E450_(food_additive)"
+        }
+      ],
+      "name_fr": "Diphosphates"
+    },
+    {
+      "alternative_names": ["sodium tripolyphosphate", "polygon", "STPP"],
+      "description": "",
+      "e_number": "E451",
+      "name": "Triphosphates",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E451"
+        }
+      ],
+      "name_fr": "Triphosphates"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E452",
+      "name": "Polyphosphates",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E452"
+        }
+      ],
+      "name_fr": "Polyphosphates"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E459",
+      "name": "Beta-cyclodextrin",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E459"
+        }
+      ],
+      "name_fr": "Bêta-cyclodextrine"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E460",
+      "name": "Cellulose",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E460"
+        }
+      ],
+      "name_fr": "Cellulose"
+    },
+    {
+      "alternative_names": [
+        "Cellulose, methyl ether",
+        "methylated cellulose",
+        "methylcellulose"
+      ],
+      "description": "",
+      "e_number": "E461",
+      "name": "Methyl cellulose",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E461"
+        }
+      ],
+      "name_fr": "Méthylcellulose"
+    },
+    {
+      "alternative_names": [
+        "Cellulose, ethyl ether",
+        "ethylated cellulose",
+        "ethylcellulose"
+      ],
+      "description": "",
+      "e_number": "E462",
+      "name": "Ethyl cellulose",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E462"
+        }
+      ],
+      "name_fr": "Éthylcellulose"
+    },
+    {
+      "alternative_names": ["oxypropylated cellulose", "hyprolose"],
+      "description": "",
+      "e_number": "E463",
+      "name": "Hydroxypropyl cellulose",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E463"
+        }
+      ],
+      "name_fr": "Hydroxypropylcellulose"
+    },
+    {
+      "alternative_names": ["HPMC"],
+      "description": "",
+      "e_number": "E464",
+      "name": "Hypromellose",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Hypromellose"
+        }
+      ],
+      "name_fr": "Hypromellose"
+    },
+    {
+      "alternative_names": ["Methyl ethyl cellulose", "INS No. 465"],
+      "description": "",
+      "e_number": "E465",
+      "name": "Ethyl methyl cellulose",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E465"
+        }
+      ],
+      "name_fr": "Éthylméthylcellulose"
+    },
+    {
+      "alternative_names": ["Carboxymethylcellulose", "carmellose"],
+      "description": "",
+      "e_number": "E466",
+      "name": "Carboxymethyl cellulose, Sodium carboxymethyl cellulose",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E466"
+        }
+      ],
+      "name_fr": "Carboxyméthylcellulose, Carboxyméthylcellulose sodique"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E468",
+      "name": "Crosslinked sodium carboxymethyl cellulose",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E468"
+        }
+      ],
+      "name_fr": "Carboxyméthylcellulose de sodium réticulée"
+    },
+    {
+      "alternative_names": ["Carboxymethylcellulose", "carmellose"],
+      "description": "",
+      "e_number": "E469",
+      "name": "Enzymically hydrolysed carboxymethylcellulose",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E469"
+        }
+      ],
+      "name_fr": "Carboxyméthylcellulose hydrolysée par voie enzymatique"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "description_fr": "Régulateur d'acidité également employé comme antiagglomérant, agent levant, stabilisant ou épaississant. Produit principalement à partir de carbonate de sodium naturel et synthétique",
+      "e_number": "E500",
+      "name": "Sodium carbonates",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Sodium"
+        }
+      ],
+      "name_fr": "Carbonates de sodium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E501",
+      "name": "Potassium carbonates",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Potassium"
+        }
+      ],
+      "name_fr": "Carbonates de potassium"
+    },
+    {
+      "alternative_names": [
+        "baker's ammonia",
+        "sal volatile",
+        "salt of hartshorn"
+      ],
+      "description": "",
+      "e_number": "E503",
+      "name": "Ammonium carbonates",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E503"
+        }
+      ],
+      "name_fr": "Carbonates d'ammonium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E504",
+      "name": "Magnesium carbonates",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E504"
+        }
+      ],
+      "name_fr": "Carbonates de magnésium"
+    },
+    {
+      "alternative_names": [
+        "Muriatic acid",
+        "Spirits of salt",
+        "Hydronium chloride",
+        "Chlorhydric acid"
+      ],
+      "description": "",
+      "e_number": "E507",
+      "name": "Hydrochloric acid",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E507"
+        }
+      ],
+      "name_fr": "Acide chlorhydrique"
+    },
+    {
+      "alternative_names": ["Sylvite", "Muriate of potash"],
+      "description": "",
+      "e_number": "E508",
+      "name": "Potassium chloride",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E508"
+        }
+      ],
+      "name_fr": "Chlorure de potassium"
+    },
+    {
+      "alternative_names": [
+        "Neutral calcium chloride",
+        "calcium(II) chloride",
+        "calcium dichloride (1:2)"
+      ],
+      "description": "",
+      "e_number": "E509",
+      "name": "Calcium chloride",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E509"
+        }
+      ],
+      "name_fr": "Chlorure de calcium"
+    },
+    {
+      "alternative_names": [
+        "Sal ammoniac",
+        "Salmiac",
+        "Nushadir salt",
+        "Sal armagnac",
+        "Ammonium Muriate",
+        "Amchlor",
+        "Salt armoniack",
+        "Salmiak"
+      ],
+      "description": "",
+      "e_number": "E510",
+      "name": "Ammonium chloride, ammonia solution",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Ammonium_chloride"
+        }
+      ],
+      "name_fr": "Chlorure d'ammonium, solution d'ammoniaque"
+    },
+    {
+      "alternative_names": ["Magnesium dichloride"],
+      "description": "",
+      "e_number": "E511",
+      "name": "Magnesium chloride",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E511"
+        }
+      ],
+      "name_fr": "Chlorure de magnésium"
+    },
+    {
+      "alternative_names": [
+        "Stannous chloride",
+        "Tin salt",
+        "Tin protochloride"
+      ],
+      "description": "",
+      "e_number": "E512",
+      "name": "Stannous chloride",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E512"
+        }
+      ],
+      "name_fr": "Chlorure stanneux"
+    },
+    {
+      "alternative_names": ["Oil of vitriol", "Hydrogen sulfate"],
+      "description": "",
+      "e_number": "E513",
+      "name": "Sulfuric acid",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E513"
+        }
+      ],
+      "name_fr": "Acide sulfurique"
+    },
+    {
+      "alternative_names": [
+        "Ammonium sulphate",
+        "Ammonium sulfate (2:1)",
+        "Diammonium sulfate",
+        "Sulfuric acid diammonium salt",
+        "Mascagnite",
+        "Actamaster",
+        "Dolamin"
+      ],
+      "description": "",
+      "e_number": "E517",
+      "name": "Ammonium sulfate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E517"
+        }
+      ],
+      "name_fr": "Sulfate d'ammonium"
+    },
+    {
+      "alternative_names": [
+        "Epsom salt (Magnesium sulfate heptahydrate)",
+        "English salt",
+        "Bitter salts",
+        "Bath salt"
+      ],
+      "description": "",
+      "e_number": "E518",
+      "name": "Magnesium sulfate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E518"
+        }
+      ],
+      "name_fr": "Sulfate de magnésium"
+    },
+    {
+      "alternative_names": [
+        "Cupric sulphate",
+        "Blue vitriol (pentahydrate)",
+        "Bluestone (pentahydrate)",
+        "Bonattite (trihydrate mineral)",
+        "Boothite (heptahydrate mineral)",
+        "Chalcanthite (pentahydrate mineral)",
+        "Chalcocyanite (mineral)"
+      ],
+      "description": "",
+      "e_number": "E519",
+      "name": "Copper",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E519"
+        }
+      ],
+      "name_fr": "Cuivre"
+    },
+    {
+      "alternative_names": [
+        "Aluminum sulfate",
+        "Aluminium sulphate",
+        "Cake alum",
+        "Filter alum",
+        "Papermaker's alum",
+        "Alunogenite",
+        "aluminium salt (3:2)"
+      ],
+      "description": "",
+      "e_number": "E520",
+      "name": "Aluminium sulfate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E520"
+        }
+      ],
+      "name_fr": "Sulfate d'aluminium"
+    },
+    {
+      "alternative_names": ["Sodium alum", "Soda alum"],
+      "description": "",
+      "e_number": "E521",
+      "name": "Aluminium sodium sulfate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E521"
+        }
+      ],
+      "name_fr": "Sulfate d'aluminium et de sodium"
+    },
+    {
+      "alternative_names": [
+        "Potassium alum sulfate",
+        "Potash alum",
+        "Alum-(K)"
+      ],
+      "description": "",
+      "e_number": "E522",
+      "name": "Aluminium potassium sulfate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E522"
+        }
+      ],
+      "name_fr": "Sulfate d'aluminium et de potassium"
+    },
+    {
+      "alternative_names": ["Ammonium alum sulfate", "Tschermigite"],
+      "description": "",
+      "e_number": "E523",
+      "name": "Aluminium ammonium sulfate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E523"
+        }
+      ],
+      "name_fr": "Sulfate d'aluminium et d'ammonium"
+    },
+    {
+      "alternative_names": [
+        "Ascarite",
+        "Caustic soda",
+        "Lye",
+        "Soda lye",
+        "Sodium hydrate",
+        "White caustic"
+      ],
+      "description": "",
+      "e_number": "E524",
+      "name": "Sodium hydroxide",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E524"
+        }
+      ],
+      "name_fr": "Hydroxyde de sodium"
+    },
+    {
+      "alternative_names": [
+        "Caustic potash",
+        "Lye",
+        "Potash lye",
+        "Potassia",
+        "Potassium hydrate",
+        "KOH"
+      ],
+      "description": "",
+      "e_number": "E525",
+      "name": "Potassium hydroxide",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E525"
+        }
+      ],
+      "name_fr": "Hydroxyde de potassium"
+    },
+    {
+      "alternative_names": [
+        "Slaked lime",
+        "Milk of lime",
+        "Calcium(II) hydroxide",
+        "Pickling lime",
+        "Hydrated lime",
+        "Portlandite",
+        "Calcium hydrate",
+        "Calcium dihydroxide"
+      ],
+      "description": "",
+      "e_number": "E526",
+      "name": "Calcium hydroxide",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E526"
+        }
+      ],
+      "name_fr": "Hydroxyde de calcium"
+    },
+    {
+      "alternative_names": ["Ammonia water"],
+      "description": "",
+      "e_number": "E527",
+      "name": "Ammonium hydroxide",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E527"
+        }
+      ],
+      "name_fr": "Hydroxyde d'ammonium"
+    },
+    {
+      "alternative_names": ["Magnesium dihydroxide", "Milk of Magnesia"],
+      "description": "",
+      "e_number": "E528",
+      "name": "Magnesium hydroxide",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E528"
+        }
+      ],
+      "name_fr": "Hydroxyde de magnésium"
+    },
+    {
+      "alternative_names": [
+        "Lime",
+        "Quicklime",
+        "Burnt lime",
+        "Unslaked lime",
+        "Free lime (building)",
+        "Caustic lime",
+        "Pebble lime",
+        "Calcia",
+        "Oxide of calcium"
+      ],
+      "description": "",
+      "e_number": "E529",
+      "name": "Calcium oxide",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E529"
+        }
+      ],
+      "name_fr": "Oxyde de calcium"
+    },
+    {
+      "alternative_names": ["Magnesia", "Periclase"],
+      "description": "",
+      "e_number": "E530",
+      "name": "Magnesium oxide",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E530"
+        }
+      ],
+      "name_fr": "Oxyde de magnésium"
+    },
+    {
+      "alternative_names": [
+        "Yellow prussiate of soda (YPS)",
+        "Tetrasodium hexacyanoferrate",
+        "Gelbnatron",
+        "Ferrocyannatrium",
+        "sodium hexacyanoferrate(II)",
+        "Yellow blood salt"
+      ],
+      "description": "",
+      "e_number": "E535",
+      "name": "Sodium ferrocyanide",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E535"
+        }
+      ],
+      "name_fr": "Ferrocyanure de sodium"
+    },
+    {
+      "alternative_names": [
+        "(Yellow) Prussiate of Potash",
+        "Potassium hexacyanoferrate (II) trihydrate",
+        "Tetrapotassium ferrocyanide trihydrate",
+        "Ferrate hexacyano tetrapotassium trihydrate"
+      ],
+      "description": "",
+      "e_number": "E536",
+      "name": "Potassium ferrocyanide",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E536"
+        }
+      ],
+      "name_fr": "Ferrocyanure de potassium"
+    },
+    {
+      "alternative_names": ["Dicalcium hexakis(cyano-κC)ferrate(4-)"],
+      "description": "",
+      "e_number": "E538",
+      "name": "Calcium ferrocyanide",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E538"
+        }
+      ],
+      "name_fr": "Ferrocyanure de calcium"
+    },
+    {
+      "alternative_names": [
+        "Diphosphoric acid, calcium salt (1:2)",
+        "Dicalcium diphosphate",
+        "Dicalcium pyrophosphate"
+      ],
+      "description": "",
+      "e_number": "E540",
+      "name": "Dicalcium diphosphate[citation needed]",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Dicalcium_diphosphate"
+        }
+      ],
+      "name_fr": "Diphosphate dicalcique[citation nécessaire]"
+    },
+    {
+      "alternative_names": ["aluminium sodium salt"],
+      "description": "",
+      "e_number": "E541",
+      "name": "Sodium aluminium phosphate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E541"
+        }
+      ],
+      "name_fr": "Phosphate d'aluminium et de sodium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E543",
+      "name": "Calcium sodium polyphosphate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E_number"
+        }
+      ],
+      "name_fr": "Polyphosphate de calcium et de sodium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E544",
+      "name": "Calcium polyphosphate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E_number"
+        }
+      ],
+      "name_fr": "Polyphosphate de calcium"
+    },
+    {
+      "alternative_names": ["Exolit AP 422", "FR CROS 484", "CS FR APP 231"],
+      "description": "",
+      "e_number": "E545",
+      "name": "Ammonium polyphosphate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E545"
+        }
+      ],
+      "name_fr": "Polyphosphate d'ammonium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E550",
+      "name": "Sodium Silicates",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E550"
+        }
+      ],
+      "name_fr": "Silicates de sodium"
+    },
+    {
+      "alternative_names": [
+        "Quartz",
+        "Silica",
+        "Silicic oxide",
+        "Silicon(IV) oxide",
+        "Crystalline silica",
+        "Pure Silica",
+        "Silicea",
+        "Silica sand"
+      ],
+      "description": "",
+      "e_number": "E551",
+      "name": "Silicon dioxide",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E551"
+        }
+      ],
+      "name_fr": "Dioxyde de silicium"
+    },
+    {
+      "alternative_names": [
+        "Belite",
+        "Calcium monosilicate",
+        "Calcium hydrosilicate",
+        "Calcium metasilicate",
+        "Calcium orthosilicate",
+        "Micro-cell",
+        "Silene",
+        "Silicic acid calcium salt"
+      ],
+      "description": "",
+      "e_number": "E552",
+      "name": "Calcium silicate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E552"
+        }
+      ],
+      "name_fr": "Silicate de calcium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E553b",
+      "name": "Talc",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E553b"
+        }
+      ],
+      "name_fr": "Talc"
+    },
+    {
+      "alternative_names": ["Aluminosilicic acid", "aluminum sodium silicate"],
+      "description": "",
+      "e_number": "E554",
+      "name": "Sodium aluminosilicate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E554"
+        }
+      ],
+      "name_fr": "Aluminosilicate de sodium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E555",
+      "name": "Potassium aluminium silicate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E555"
+        }
+      ],
+      "name_fr": "Silicate d'aluminium et de potassium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E556",
+      "name": "Calcium aluminosilicate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E556"
+        }
+      ],
+      "name_fr": "Aluminosilicate de calcium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E558",
+      "name": "Bentonite",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E558"
+        }
+      ],
+      "name_fr": "Bentonite"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E559",
+      "name": "Aluminium silicate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E559"
+        }
+      ],
+      "name_fr": "Silicate d'aluminium"
+    },
+    {
+      "alternative_names": ["Dextronic acid"],
+      "description": "",
+      "e_number": "E574",
+      "name": "Gluconic acid",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E574"
+        }
+      ],
+      "name_fr": "Acide gluconique"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E575",
+      "name": "Glucono delta-lactone",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E575"
+        }
+      ],
+      "name_fr": "Glucono-delta-lactone"
+    },
+    {
+      "alternative_names": ["Dextronic acid"],
+      "description": "",
+      "e_number": "E576",
+      "name": "Sodium gluconate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Gluconic_acid"
+        }
+      ],
+      "name_fr": "Gluconate de sodium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E577",
+      "name": "Potassium gluconate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E577"
+        }
+      ],
+      "name_fr": "Gluconate de potassium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E578",
+      "name": "Calcium gluconate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E578"
+        }
+      ],
+      "name_fr": "Gluconate de calcium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E579",
+      "name": "Ferrous gluconate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E579"
+        }
+      ],
+      "name_fr": "Gluconate ferreux"
+    },
+    {
+      "alternative_names": ["2-Aminoglutaric acid"],
+      "description": "",
+      "e_number": "E620",
+      "name": "Glutamic acid",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E620"
+        }
+      ],
+      "name_fr": "Acide glutamique"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "description_fr": "Exhausteur de goût produit par fermentation de mélasse, amidon ou betterave avec des bactéries",
+      "e_number": "E621",
+      "name": "Monosodium glutamate",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Monosodium_glutamate"
+        }
+      ],
+      "name_fr": "Glutamate monosodique"
+    },
+    {
+      "alternative_names": [
+        "Potassium glutamate",
+        "Glutamic acid potassium salt"
+      ],
+      "description": "",
+      "e_number": "E622",
+      "name": "Monopotassium glutamate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E622"
+        }
+      ],
+      "name_fr": "Glutamate monopotassique"
+    },
+    {
+      "alternative_names": [
+        "Calcium biglutamate",
+        "L-Glutamic acid calcium salt"
+      ],
+      "description": "",
+      "e_number": "E623",
+      "name": "Calcium diglutamate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E623"
+        }
+      ],
+      "name_fr": "Diglutamate de calcium"
+    },
+    {
+      "alternative_names": ["Ammonium glutamate"],
+      "description": "",
+      "e_number": "E624",
+      "name": "Monoammonium glutamate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E624"
+        }
+      ],
+      "name_fr": "Glutamate monoammonique"
+    },
+    {
+      "alternative_names": [
+        "Magnesium glutamate",
+        "Glutamic acid hemimagnesium salt"
+      ],
+      "description": "",
+      "e_number": "E625",
+      "name": "Magnesium diglutamate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E625"
+        }
+      ],
+      "name_fr": "Diglutamate de magnésium"
+    },
+    {
+      "alternative_names": ["5′-Guanidylic acid"],
+      "description": "",
+      "e_number": "E626",
+      "name": "Guanylic acid",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E626"
+        }
+      ],
+      "name_fr": "Acide guanylique"
+    },
+    {
+      "alternative_names": [
+        "5′-Guanosine monophosphate dipotassium salt",
+        "5′-Guanylic acid dipotassium salt"
+      ],
+      "description": "",
+      "e_number": "E628",
+      "name": "Dipotassium guanylate",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E628"
+        }
+      ],
+      "name_fr": "Guanylate dipotassique"
+    },
+    {
+      "alternative_names": ["5′-Guanylic acid calcium salt"],
+      "description": "",
+      "e_number": "E629",
+      "name": "Calcium guanylate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E629"
+        }
+      ],
+      "name_fr": "Guanylate de calcium"
+    },
+    {
+      "alternative_names": ["IMP", "Hypoxanthine ribotide"],
+      "description": "",
+      "e_number": "E630",
+      "name": "Inosinic acid",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E630"
+        }
+      ],
+      "name_fr": "Acide inosinique"
+    },
+    {
+      "alternative_names": [
+        "Sodium 5′-inosinate",
+        "Disodium inosin 5′-monophosphate",
+        "Inosine 5′-(disodium phosphate)",
+        "Sodium inosinate"
+      ],
+      "description": "",
+      "e_number": "E632",
+      "name": "Dipotassium inosinate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Dipotassium_inosinate"
+        }
+      ],
+      "name_fr": "Inosinate dipotassique"
+    },
+    {
+      "alternative_names": ["Calcium inosine-5′-monophosphate"],
+      "description": "",
+      "description_fr": "Exhausteurs de goût. Peut être extrait de viandes/poissons ou produit par fermentation de sucres.",
+      "e_number": "E633",
+      "name": "Calcium inosinate",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Calcium_inosinate"
+        }
+      ],
+      "name_fr": "Inosinate de calcium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E634",
+      "name": "Calcium 5'-ribonucleotides",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E634"
+        }
+      ],
+      "name_fr": "5'-ribonucléotides calciques"
+    },
+    {
+      "alternative_names": ["Larixinic acid", "Palatone", "Veltol"],
+      "description": "",
+      "e_number": "E636",
+      "name": "Maltol",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Maltol"
+        }
+      ],
+      "name_fr": "Maltol"
+    },
+    {
+      "alternative_names": [
+        "2-Ethyl-3-hydroxy-4-pyranone",
+        "2-Ethyl pyromeconic acid",
+        "2-Ethyl-3-hydroxy-4-pyrone"
+      ],
+      "description": "",
+      "e_number": "E637",
+      "name": "Ethyl maltol",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Ethyl_maltol"
+        }
+      ],
+      "name_fr": "Éthyl maltol"
+    },
+    {
+      "alternative_names": ["PDMS", "dimethicone", "dimethylpolysiloxane"],
+      "description": "",
+      "e_number": "E900",
+      "name": "Dimethyl polysiloxane",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Polydimethylsiloxane"
+        }
+      ],
+      "name_fr": "Diméthylpolysiloxane"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E902",
+      "name": "Candelilla wax",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E902"
+        }
+      ],
+      "name_fr": "Cire de candelilla"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E903",
+      "name": "Carnauba wax",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E903"
+        }
+      ],
+      "name_fr": "Cire de carnauba"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E905",
+      "name": "Paraffins",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E905"
+        }
+      ],
+      "name_fr": "Paraffines"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E905a",
+      "name": "Mineral oil",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E905a"
+        }
+      ],
+      "name_fr": "Huile minérale"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E905b",
+      "name": "Petrolatum",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E905b"
+        }
+      ],
+      "name_fr": "Vaseline"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E905c",
+      "name": "Petroleum wax",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E905c"
+        }
+      ],
+      "name_fr": "Cire de pétrole"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E906",
+      "name": "Gum benzoic",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E906"
+        }
+      ],
+      "name_fr": "Gomme benzoïque"
+    },
+    {
+      "alternative_names": [
+        "Hydrogenated poly-1-decenes",
+        "Hydrogenated poly-alpha-olefin",
+        "Crystalline wax"
+      ],
+      "description": "",
+      "e_number": "E907",
+      "name": "Crystalline wax",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E907"
+        }
+      ],
+      "name_fr": "Cire cristalline"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E908",
+      "name": "Rice bran wax",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E908"
+        }
+      ],
+      "name_fr": "Cire de son de riz"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E912",
+      "name": "Montanic acid esters, Montan acid esters",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E912"
+        }
+      ],
+      "name_fr": "Esters d'acide montanique, Esters d'acide montanique"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E914",
+      "name": "Oxidized polyethylene wax, oxidized polyethylene",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E914"
+        }
+      ],
+      "name_fr": "Cire de polyéthylène oxydée, polyéthylène oxydé"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E915",
+      "name": "Esters of colophony",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E915"
+        }
+      ],
+      "name_fr": "Esters de colophane"
+    },
+    {
+      "alternative_names": [
+        "potassium peroxydisulfate",
+        "Anthion",
+        "potassium perdisulfate"
+      ],
+      "description": "",
+      "e_number": "E922",
+      "name": "Potassium persulfate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E922"
+        }
+      ],
+      "name_fr": "Persulfate de potassium"
+    },
+    {
+      "alternative_names": ["Ammonium peroxydisulfate"],
+      "description": "",
+      "e_number": "E923",
+      "name": "Ammonium persulfate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E923"
+        }
+      ],
+      "name_fr": "Persulfate d'ammonium"
+    },
+    {
+      "alternative_names": [
+        "Potassium bromate(V)",
+        "Bromic acid, potassium salt"
+      ],
+      "description": "",
+      "e_number": "E924",
+      "name": "Potassium bromate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E924"
+        }
+      ],
+      "name_fr": "Bromate de potassium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E925",
+      "name": "Chlorine",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E925"
+        }
+      ],
+      "name_fr": "Chlore"
+    },
+    {
+      "alternative_names": ["Chlorine(IV) oxide"],
+      "description": "",
+      "e_number": "E926",
+      "name": "Chlorine dioxide",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E926"
+        }
+      ],
+      "name_fr": "Dioxyde de chlore"
+    },
+    {
+      "alternative_names": [
+        "Azodicarboxamide",
+        "Azobisformamide",
+        "C,C'-Azodi(formamide)",
+        "Diazenedicarboxamide"
+      ],
+      "description": "",
+      "e_number": "E927a",
+      "name": "Azodicarbonamide",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E927a"
+        }
+      ],
+      "name_fr": "Azodicarbonamide"
+    },
+    {
+      "alternative_names": [
+        "Carbamide",
+        "Carbonyldiamide",
+        "Carbonyldiamine",
+        "Diaminomethanal",
+        "Diaminomethanone"
+      ],
+      "description": "",
+      "e_number": "E927b",
+      "name": "Carbamide",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E927b"
+        }
+      ],
+      "name_fr": "Carbamide"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E928",
+      "name": "Benzoyl peroxide",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E928"
+        }
+      ],
+      "name_fr": "Peroxyde de benzoyle"
+    },
+    {
+      "alternative_names": ["Calcium dioxide"],
+      "description": "",
+      "e_number": "E930",
+      "name": "Calcium peroxide",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E930"
+        }
+      ],
+      "name_fr": "Peroxyde de calcium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E938",
+      "name": "Argon",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E938"
+        }
+      ],
+      "name_fr": "Argon"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E939",
+      "name": "Helium",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E939"
+        }
+      ],
+      "name_fr": "Hélium"
+    },
+    {
+      "alternative_names": [
+        "Dichlorodifluoromethane",
+        "Carbon dichloride difluoride",
+        "Dichloro-difluoro-methane",
+        "Difluorodichloromethane",
+        "Freon 12",
+        "R-12",
+        "CFC-12",
+        "P-12",
+        "Propellant 12",
+        "Halon 122",
+        "Arcton 6",
+        "Arcton 12",
+        "Fluorocarbon 12",
+        "Genetron 12",
+        "Refrigerant 12"
+      ],
+      "description": "",
+      "e_number": "E940",
+      "name": "Dichlorodifluoromethane",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E940"
+        }
+      ],
+      "name_fr": "Dichlorodifluorométhane"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E941",
+      "name": "Nitrogen",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E941"
+        }
+      ],
+      "name_fr": "Azote"
+    },
+    {
+      "alternative_names": [
+        "Laughing gas",
+        "sweet air",
+        "nitrous",
+        "nos",
+        "protoxide of nitrogen",
+        "hyponitrous oxide",
+        "dinitrogen oxide",
+        "dinitrogen monoxide"
+      ],
+      "description": "",
+      "e_number": "E942",
+      "name": "Nitrous oxide",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E942"
+        }
+      ],
+      "name_fr": "Protoxyde d'azote"
+    },
+    {
+      "alternative_names": ["Butyl hydride", "Quartane", "R600"],
+      "description": "",
+      "e_number": "E943a",
+      "name": "Butane",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E943a"
+        }
+      ],
+      "name_fr": "Butane"
+    },
+    {
+      "alternative_names": ["Isobutane", "R600a"],
+      "description": "",
+      "e_number": "E943b",
+      "name": "Isobutane",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E943b"
+        }
+      ],
+      "name_fr": "Isobutane"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E944",
+      "name": "Propane",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E944"
+        }
+      ],
+      "name_fr": "Propane"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E948",
+      "name": "Oxygen",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E948"
+        }
+      ],
+      "name_fr": "Oxygène"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E949",
+      "name": "Hydrogen",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E949"
+        }
+      ],
+      "name_fr": "Hydrogène"
+    },
+    {
+      "alternative_names": ["Acesulfame K", "Ace K"],
+      "description": "",
+      "e_number": "E950",
+      "name": "Acesulfame potassium",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Acesulfame_potassium"
+        }
+      ],
+      "name_fr": "Acésulfame de potassium"
+    },
+    {
+      "alternative_names": ["N-(L-α-Aspartyl)-L-phenylalanine,1-methyl ester"],
+      "description": "",
+      "description_fr": "Édulcorant artificiel utilisé dans les boissons light, desserts sans sucre. Origine synthétique",
+      "e_number": "E951",
+      "name": "Aspartame",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E951"
+        }
+      ],
+      "name_fr": "Aspartame"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E952",
+      "name": "Cyclamic acid and its sodium and calcium salts, also known as Cyclamate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E952"
+        }
+      ],
+      "name_fr": "Acide cyclamique et ses sels de sodium et de calcium, également appelés cyclamates"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E953",
+      "name": "Isomalt, Isomaltitol",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E953"
+        }
+      ],
+      "name_fr": "Isomalt, Isomaltitol"
+    },
+    {
+      "alternative_names": ["ortho-benzoic sulfimide", "ortho sulphobenzamide"],
+      "description": "",
+      "e_number": "E954",
+      "name": "Saccharin and its sodium, potassium and calcium salts",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E954"
+        }
+      ],
+      "name_fr": "Saccharine et ses sels de sodium, de potassium et de calcium"
+    },
+    {
+      "alternative_names": [
+        "1′,4,6′-Trichlorogalactosucrose",
+        "Trichlorosucrose",
+        "4,1′,6′-Trichloro-4,1′,6′-trideoxygalactosucrose",
+        "TGS",
+        "Splenda"
+      ],
+      "description": "",
+      "e_number": "E955",
+      "name": "Sucralose",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E955"
+        }
+      ],
+      "name_fr": "Sucralose"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E957",
+      "name": "Thaumatin",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E957"
+        }
+      ],
+      "name_fr": "Thaumatine"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E959",
+      "name": "Neohesperidine dihydrochalcone",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E959"
+        }
+      ],
+      "name_fr": "Dihydrochalcone de néohespéridine"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E965",
+      "name": "Maltitol",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E965"
+        }
+      ],
+      "name_fr": "Maltitol"
+    },
+    {
+      "alternative_names": [
+        "(2R,3R,4S)-Pentane-1,2,3,4,5-pentaol (not recommended)",
+        "(2R,3R,4S)-1,2,3,4,5-Pentahydroxypentane",
+        "Xylite"
+      ],
+      "description": "",
+      "e_number": "E967",
+      "name": "Xylitol",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E967"
+        }
+      ],
+      "name_fr": "Xylitol"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E999",
+      "name": "Quillaia extract",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E999"
+        }
+      ],
+      "name_fr": "Extrait de Quillaia"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E1103",
+      "name": "Invertase",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E1103"
+        }
+      ],
+      "name_fr": "Invertase"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "description_fr": "Extrait d'œuf de poule",
+      "e_number": "E1105",
+      "name": "Lysozyme",
+      "state": "carniste",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E1105"
+        }
+      ],
+      "name_fr": "Lysozyme"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E1200",
+      "name": "Polydextrose",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E1200"
+        }
+      ],
+      "name_fr": "Polydextrose"
+    },
+    {
+      "alternative_names": [
+        "PVP",
+        "Povidone",
+        "PVPP",
+        "Crospovidone",
+        "Polyvidone",
+        "PNVP",
+        "Kollidon",
+        "Poly-N-vinylpyrrolidine"
+      ],
+      "description": "",
+      "e_number": "E1201",
+      "name": "Polyvinylpyrrolidone",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E1201"
+        }
+      ],
+      "name_fr": "Polyvinylpyrrolidone"
+    },
+    {
+      "alternative_names": [
+        "Polyvinyl polypyrrolidone",
+        "crospovidone",
+        "crospolividone",
+        "Kollidon CL"
+      ],
+      "description": "",
+      "e_number": "E1202",
+      "name": "Polyvinylpolypyrrolidone",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E1202"
+        }
+      ],
+      "name_fr": "Polyvinylpolypyrrolidone"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E1400",
+      "name": "Dextrin",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E1400"
+        }
+      ],
+      "name_fr": "Dextrine"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E1401",
+      "name": "Modified starch",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E1401"
+        }
+      ],
+      "name_fr": "Amidon modifié"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E1402",
+      "name": "Alkaline modified starch",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E_number"
+        }
+      ],
+      "name_fr": "Amidon alcalin modifié"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E1403",
+      "name": "Bleached starch",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E_number"
+        }
+      ],
+      "name_fr": "Amidon blanchi"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E1404",
+      "name": "Oxidized starch",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E_number"
+        }
+      ],
+      "name_fr": "Amidon oxydé"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E1410",
+      "name": "Monostarch phosphate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E1410"
+        }
+      ],
+      "name_fr": "Phosphate de monoamidon"
+    },
+    {
+      "alternative_names": [
+        "Phosphate cross-linked starch",
+        "Starch, hydrogen phosphate"
+      ],
+      "description": "",
+      "e_number": "E1412",
+      "name": "Distarch phosphate esterified with sodium trimetasphosphate; esterified with phosphorus oxychloride",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E1412"
+        }
+      ],
+      "name_fr": "Phosphate de diamidon estérifié avec du trimétasphosphate de sodium; estérifié avec de l'oxychlorure de phosphore"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E1413",
+      "name": "Phosphated distarch phosphate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E1413"
+        }
+      ],
+      "name_fr": "Phosphate de diamidon phosphaté"
+    },
+    {
+      "alternative_names": ["Starch, hydrogen phosphate acetate"],
+      "description": "",
+      "e_number": "E1414",
+      "name": "Acetylated distarch phosphate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E1414"
+        }
+      ],
+      "name_fr": "Phosphate de diamidon acétylé"
+    },
+    {
+      "alternative_names": ["Starch acetate"],
+      "description": "",
+      "e_number": "E1420",
+      "name": "Starch acetate esterified with acetic anhydride",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E1420"
+        }
+      ],
+      "name_fr": "Acétate d'amidon estérifié avec de l'anhydride acétique"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E1421",
+      "name": "Starch acetate esterified with vinyl acetate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Stabilizer_(food)"
+        }
+      ],
+      "name_fr": "Acétate d'amidon estérifié avec de l'acétate de vinyle"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E1422",
+      "name": "Acetylated distarch adipate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E1422"
+        }
+      ],
+      "name_fr": "Adipate de diamidon acétylé"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E1430",
+      "name": "Distarch glycerine",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E_number"
+        }
+      ],
+      "name_fr": "Glycérine de diamidon"
+    },
+    {
+      "alternative_names": [
+        "Hydroxyl propyl starch",
+        "2-Hydroxypropyl starch",
+        "Hydroxylpropyl starch"
+      ],
+      "description": "",
+      "e_number": "E1440",
+      "name": "Hydroxy propyl starch",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E1440"
+        }
+      ],
+      "name_fr": "Amidon hydroxypropylique"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E1441",
+      "name": "Hydroxy propyl distarch glycerine",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E_number"
+        }
+      ],
+      "name_fr": "Glycérine hydroxypropylique de diamidon"
+    },
+    {
+      "alternative_names": [
+        "Hydroxypropyl di-starch phosphate",
+        "Hydroxypropylated distarch phosphate"
+      ],
+      "description": "",
+      "e_number": "E1442",
+      "name": "Hydroxy propyl distarch phosphate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E1442"
+        }
+      ],
+      "name_fr": "Phosphate de diamidon hydroxypropylique"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E1450",
+      "name": "Starch sodium octenyl succinate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E1450"
+        }
+      ],
+      "name_fr": "Octényl succinate d'amidon sodique"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E1451",
+      "name": "Acetylated oxidised starch",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E_number"
+        }
+      ],
+      "name_fr": "Amidon oxydé acétylé"
+    },
+    {
+      "alternative_names": [
+        "Ethyl citrate",
+        "Citric acid ethyl ester",
+        "Triethyl citrate"
+      ],
+      "description": "",
+      "e_number": "E1505",
+      "name": "Triethyl citrate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E1505"
+        }
+      ],
+      "name_fr": "Citrate de triéthyle"
+    },
+    {
+      "alternative_names": [
+        "Absolute alcohol",
+        "Alcohol",
+        "Cologne spirit",
+        "Drinking alcohol",
+        "Ethylic alcohol",
+        "EtOH",
+        "Ethyl alcohol",
+        "Ethyl hydroxide",
+        "Ethylene hydrate",
+        "Ethylol",
+        "Grain alcohol",
+        "Hydroxyethane",
+        "Methylcarbinol"
+      ],
+      "description": "",
+      "e_number": "E1510",
+      "name": "Ethanol",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E1510"
+        }
+      ],
+      "name_fr": "Éthanol"
+    },
+    {
+      "alternative_names": [
+        "Glycerol triacetate",
+        "glycerin triacetate",
+        "1,2,3-triacetylglycerol",
+        "1,2,3-triacetoxypropane"
+      ],
+      "description": "",
+      "e_number": "E1518",
+      "name": "Glyceryl triacetate or triacetin",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E1518"
+        }
+      ],
+      "name_fr": "Triacétate de glycéryle ou triacétine"
+    },
+    {
+      "alternative_names": [
+        "Propylene glycol",
+        "α-Propylene glycol",
+        "1,2-Propanediol",
+        "1,2-Dihydroxypropane",
+        "Methyl ethyl glycol",
+        "Methylethylene glycol"
+      ],
+      "description": "",
+      "e_number": "E1520",
+      "name": "Propylene glycol",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E1520"
+        }
+      ],
+      "name_fr": "Propylène glycol"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "description_fr": "Gélifiant obtenu par hydrolyse du collagène contenu dans la peau, les os ou les cartilages d’animaux (porc, bœuf)",
+      "e_number": "E441",
+      "name": "Gelatine",
+      "state": "carniste",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E441"
+        }
+      ],
+      "name_fr": "Gélatine"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E542",
+      "name": "Bone phosphate",
+      "state": "carniste",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E_number"
+        }
+      ],
+      "name_fr": "Phosphate osseux"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "description_fr": "Agent d’enrobage ou de glaçage, obtenu par la fonte et filtration des alvéoles d’abeilles",
+      "e_number": "E901",
+      "name": "Beeswax, white and yellow",
+      "state": "carniste",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E901"
+        }
+      ],
+      "name_fr": "Cire d'abeille, blanche et jaune"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "description_fr": "Sécrété par un insecte (le Laccifer lacca), récolté sur les arbres tropicaux.",
+      "e_number": "E904",
+      "name": "Shellac",
+      "state": "carniste",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E904"
+        }
+      ],
+      "name_fr": "Gomme laque"
+    },
+    {
+      "alternative_names": ["2-Amino-3-sulfhydrylpropanoic acid"],
+      "description": "",
+      "e_number": "E910",
+      "name": "Wax esters",
+      "state": "carniste",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E910"
+        }
+      ],
+      "name_fr": "Esters de cire"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "description_fr": "Additif produit à partir de laine de mouton",
+      "e_number": "E913",
+      "name": "Lanolin, sheep wool grease",
+      "state": "carniste",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E913"
+        }
+      ],
+      "name_fr": "Lanoline"
+    },
+    {
+      "alternative_names": ["2-Amino-3-sulfhydrylpropanoic acid"],
+      "description": "",
+      "description_fr": "Dérivés de la cystéine (acides aminés), parfois utilisés dans le pain pour améliorer la texture. Peut être extrait de poils ou plumes animales, bien que souvent produits aujourd’hui par fermentation.\nIl semble qu'en France, la l-cystéine soit très majoritairement d'origine végétale",
+      "e_number": "E920",
+      "name": "L-cysteine",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E920"
+        }
+      ],
+      "name_fr": "L-cystéine"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "description_fr": "Dérivés de la cystéine (acides aminés), parfois utilisés dans le pain pour améliorer la texture. Peut être extrait de poils ou plumes animales, bien que souvent produits aujourd’hui par fermentation.\nIl semble qu'en France, la l-cystine soit très majoritairement d'origine végétale",
+      "e_number": "E921",
+      "name": "L-cystine",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E921"
+        }
+      ],
+      "name_fr": "L-cystine"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E966",
+      "name": "Lactitol",
+      "state": "carniste",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E966"
+        }
+      ],
+      "name_fr": "Lactitol"
+    },
+    {
+      "alternative_names": [
+        "Acetylene black",
+        "Channel black",
+        "Furnace black",
+        "Lamp black",
+        "Thermal black",
+        "C.I. Pigment Black 6"
+      ],
+      "description": "",
+      "e_number": "E153",
+      "name": "Vegetable carbon",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E153"
+        }
+      ],
+      "name_fr": "Charbon végétal"
+    },
+    {
+      "alternative_names": [
+        "Cantaxanthin",
+        "Cantaxanthine",
+        "Canthaxanthine",
+        "Lucantin red (BASF)",
+        "Lucantin Red CWD (BASF)",
+        "Carophyll Red (DSM)",
+        "Roxanthin Red 10 (Adisseo)",
+        "L-Orange 7g",
+        "C.I. Food Orange 8"
+      ],
+      "description": "",
+      "e_number": "E161g",
+      "name": "Canthaxanthin",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E161g"
+        }
+      ],
+      "name_fr": "Canthaxanthine"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E161h",
+      "name": "Zeaxanthin",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E161h"
+        }
+      ],
+      "name_fr": "Zéaxanthine"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E161i",
+      "name": "Citranaxanthin",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E161i"
+        }
+      ],
+      "name_fr": "Citranaxanthine"
+    },
+    {
+      "alternative_names": [
+        "β-Carotene-4,4'-dione, 3,3'-dihydroxy-, all-trans-",
+        "(3S,3'S)-Astaxanthin",
+        "(3S,3'S)-Astaxanthin",
+        "(3S,3'S)-all-trans-Astaxanthin",
+        "(S,S)-Astaxanthin; Astaxanthin, all-trans-",
+        "all-trans-Astaxanthin",
+        "trans-Astaxanthin",
+        "Ovoester"
+      ],
+      "description": "",
+      "e_number": "E161j",
+      "name": "Astaxanthin",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E161j"
+        }
+      ],
+      "name_fr": "Astaxanthine"
+    },
+    {
+      "alternative_names": ["Saltpeter", "Saltpetre", "Nitrate of potash"],
+      "description": "",
+      "e_number": "E252",
+      "name": "Potassium nitrate",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E252"
+        }
+      ],
+      "name_fr": "Nitrate de potassium"
+    },
+    {
+      "alternative_names": ["Lactic acid", "Milk acid"],
+      "description": "",
+      "e_number": "E270",
+      "name": "Lactic acid",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E270"
+        }
+      ],
+      "name_fr": "Acide lactique"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "description_fr": "Émulsifiants extraits principalement du soja ou du tournesol par pression à froid, mais aussi parfois du jaune d’œuf. Utilisés dans chocolat, margarines, gâteaux, ...\nA priori s'il est extrait d'oeuf, ça devrait être précisé sur l'emballage.",
+      "e_number": "E322",
+      "name": "Lecithin",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E322"
+        }
+      ],
+      "name_fr": "Lécithine"
+    },
+    {
+      "alternative_names": ["Sodium DL-lactate", "Lactic acid sodium salt"],
+      "description": "",
+      "e_number": "E325",
+      "name": "Sodium lactate",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E325"
+        }
+      ],
+      "name_fr": "Lactate de sodium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E326",
+      "name": "Potassium lactate",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E326"
+        }
+      ],
+      "name_fr": "Lactate de potassium"
+    },
+    {
+      "alternative_names": [
+        "calcium lactate 5-hydrate",
+        "calcium lactate",
+        "2-hydroxypropanoic acid",
+        "calcium salt pentahydrate"
+      ],
+      "description": "",
+      "e_number": "E327",
+      "name": "Calcium lactate",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E327"
+        }
+      ],
+      "name_fr": "Lactate de calcium"
+    },
+    {
+      "alternative_names": [
+        "Glycerin",
+        "Glycerine",
+        "1,2,3-Trioxypropane",
+        "1,2,3-Trihydroxypropane",
+        "1,2,3-Propanetriol"
+      ],
+      "description": "",
+      "description_fr": "Agent humidifiant obtenu par hydrolyse des huiles (végétales comme palme, coco, ou animales). \nIl est possible qu'il soit d'origine animale sans que ça soit précisé sur l'emballage",
+      "e_number": "E422",
+      "name": "Glycerol",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E422"
+        }
+      ],
+      "name_fr": "Glycérol"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E430",
+      "name": "Polyoxyethene",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E_number"
+        }
+      ],
+      "name_fr": "Polyoxyéthylène"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E431",
+      "name": "Polyoxyethene",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E431"
+        }
+      ],
+      "name_fr": "Polyoxyéthylène"
+    },
+    {
+      "alternative_names": [
+        "Kolliphor PS 20",
+        "Montanox 20",
+        "Polysorbate 20",
+        "PEG(20)sorbitan monolaurate",
+        "Alkest TW 20",
+        "Tween 20",
+        "Kotilen-20"
+      ],
+      "description": "",
+      "e_number": "E432",
+      "name": "Polyoxyethene",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E432"
+        }
+      ],
+      "name_fr": "Polyoxyéthylène"
+    },
+    {
+      "alternative_names": [
+        "Kolliphor PS 80",
+        "Montanox 80",
+        "Alkest TW 80",
+        "Tween 80",
+        "PS 80",
+        "Kotilen-80"
+      ],
+      "description": "",
+      "e_number": "E433",
+      "name": "Polyoxyethene",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E433"
+        }
+      ],
+      "name_fr": "Polyoxyéthylène"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E434",
+      "name": "Polyoxyethene",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E434"
+        }
+      ],
+      "name_fr": "Polyoxyéthylène"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E435",
+      "name": "Polyoxyethene",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E435"
+        }
+      ],
+      "name_fr": "Polyoxyéthylène"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E436",
+      "name": "Polyoxyethene",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E436"
+        }
+      ],
+      "name_fr": "Polyoxyéthylène"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E442",
+      "name": "Ammonium phosphatides",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E442"
+        }
+      ],
+      "name_fr": "Phosphatides d'ammonium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E470a",
+      "name": "Sodium, potassium and calcium salts of fatty acids",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E_number"
+        }
+      ],
+      "name_fr": "Sels de sodium, de potassium et de calcium d'acides gras"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E470b",
+      "name": "Magnesium salts of fatty acids",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E470b"
+        }
+      ],
+      "name_fr": "Sels de magnésium d'acides gras"
+    },
+    {
+      "alternative_names": [],
+      "description_fr": "Il sert comme émulsifiant, agent d'enrobage, gélifiant, antioxydant et support pour colorant. Il est obtenu à partir de graisse alimentaire d'origine animale, végétale ou synthétique. \nMême si le e471 provient en général de graisse végétale, il n'est pas totalement exclu d'en trouver provenant de cochons ou de boeuf. La mention de l'origine n'est pas obligatoire.",
+      "description": "",
+      "e_number": "E471",
+      "name": "Mono- and diglycerides of fatty acids",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E471"
+        }
+      ],
+      "name_fr": "Mono- et diglycérides d'acides gras"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E472a",
+      "name": "Acetic acid esters of mono- and diglycerides of fatty acids",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E_number"
+        }
+      ],
+      "name_fr": "Esters d'acide acétique de mono- et diglycérides d'acides gras"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E472b",
+      "name": "Lactic acid esters of mono- and diglycerides of fatty acids",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E_number"
+        }
+      ],
+      "name_fr": "Esters d'acide lactique de mono- et diglycérides d'acides gras"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E472c",
+      "name": "Citric acid esters of mono- and diglycerides of fatty acids",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E_number"
+        }
+      ],
+      "name_fr": "Esters d'acide citrique de mono- et diglycérides d'acides gras"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E472d",
+      "name": "Tartaric acid esters of mono- and diglycerides of fatty acids",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E_number"
+        }
+      ],
+      "name_fr": "Esters d'acide tartrique de mono- et diglycérides d'acides gras"
+    },
+    {
+      "alternative_names": [
+        "Diacetyl tartaric acid ester of mono- and diglycerides"
+      ],
+      "description": "",
+      "e_number": "E472e",
+      "name": "Mono- and diacetyl tartaric acid esters of mono- and diglycerides of fatty acids",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E472e"
+        }
+      ],
+      "name_fr": "Esters d'acide tartrique mono- et diacétyl de mono- et diglycérides d'acides gras"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E472f",
+      "name": "Mixed acetic and tartaric acid esters of mono- and diglycerides of fatty acids",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E_number"
+        }
+      ],
+      "name_fr": "Esters mixtes d'acide acétique et tartrique de mono- et diglycérides d'acides gras"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E473",
+      "name": "Sucrose esters of fatty acids",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E473"
+        }
+      ],
+      "name_fr": "Esters de saccharose d'acides gras"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E474",
+      "name": "Sucroglycerides",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Sucroglyceride"
+        }
+      ],
+      "name_fr": "Sucroglycérides"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E475",
+      "name": "Polyglycerol esters of fatty acids",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E475"
+        }
+      ],
+      "name_fr": "Esters polyglycéroliques d'acides gras"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E476",
+      "name": "Polyglycerol polyricinoleate",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E476"
+        }
+      ],
+      "name_fr": "Polyricinoléate de polyglycérol"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E477",
+      "name": "Propane-1,2-diol esters of fatty acids, propylene glycol esters of fatty acids",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E477"
+        }
+      ],
+      "name_fr": "Esters de propane-1,2-diol d'acides gras, esters de propylène glycol d'acides gras"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E478",
+      "name": "Lactylated fatty acid esters of glycerol and propane-1",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E_number"
+        }
+      ],
+      "name_fr": "Esters d'acides gras lactylés de glycérol et de propane-1"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E479b",
+      "name": "Thermally oxidized soya bean oil interacted with mono- and diglycerides of fatty acids",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E479b"
+        }
+      ],
+      "name_fr": "Interaction de l'huile de soja oxydée thermiquement avec les mono- et diglycérides d'acides gras"
+    },
+    {
+      "alternative_names": ["sodium stelate", "lactic acid, sodium salt"],
+      "description": "",
+      "e_number": "E481",
+      "name": "Sodium stearoyl-2-lactylate",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E481"
+        }
+      ],
+      "name_fr": "Stéaroyl-2-lactylate de sodium"
+    },
+    {
+      "alternative_names": [
+        "octadecanoic acid, 2-(1-carboxyethoxy)-1-methyl-2-oxoethyl ester, calcium salt",
+        "calcium bis(2-{[2-(stearoyloxy)propanoyl]oxy}propanoate)",
+        "calcium verate",
+        "calcium stearoyl lactylate",
+        "calcium stearoyl-2-lactylate",
+        "calcium stearyl-2-lactylate",
+        "calcium stelate",
+        "stearoyl-2-lactylic acid, calcium salt",
+        "calcium alpha-(alpha-(stearoyloxy)propionyloxy)propionate",
+        "calcium 2-(1-carboxyethoxy)-1-methyl-2-oxoethyloctadecanoate",
+        "stearic acid, ester with lactate of lactic acid, calcium salt",
+        "stearic acid ester with lactic acid bimol. ester calcium salt",
+        "calcium bis(2-(1-carboxylatoethoxy)-1-methyl-2-oxoethyl) distearate"
+      ],
+      "description": "",
+      "e_number": "E482",
+      "name": "Calcium stearoyl-2-lactylate",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E482"
+        }
+      ],
+      "name_fr": "Stéaroyl-2-lactylate de calcium"
+    },
+    {
+      "alternative_names": ["Stearyl tartrate", "E 483"],
+      "description": "",
+      "e_number": "E483",
+      "name": "Stearyl tartrate",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E483"
+        }
+      ],
+      "name_fr": "Tartrate de stéaryle"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E491",
+      "name": "Sorbitan monostearate",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E491"
+        }
+      ],
+      "name_fr": "Monostéarate de sorbitane"
+    },
+    {
+      "alternative_names": [
+        "Sorbitan trioctadecanoate",
+        "Anhydrosorbitan tristearate",
+        "Anhydrosorbitol tristearate",
+        "Span 65"
+      ],
+      "description": "",
+      "e_number": "E492",
+      "name": "Sorbitan tristearate",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E492"
+        }
+      ],
+      "name_fr": "Tristéarate de sorbitane"
+    },
+    {
+      "alternative_names": [
+        "Dodecanoic acid [2-[(2R,3R,4S)-3,4-dihydroxy-2-tetrahydrofuranyl]-2-hydroxyethyl] ester",
+        "alkamuls s 20",
+        "glycomul lC",
+        "sorbitan laurate",
+        "Span 20"
+      ],
+      "description": "",
+      "e_number": "E493",
+      "name": "Sorbitan monolaurate",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E493"
+        }
+      ],
+      "name_fr": "Monolaurate de sorbitane"
+    },
+    {
+      "alternative_names": ["Sorbitan oleate", "Span 80"],
+      "description": "",
+      "e_number": "E494",
+      "name": "Sorbitan monooleate",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E494"
+        }
+      ],
+      "name_fr": "Monooléate de sorbitane"
+    },
+    {
+      "alternative_names": ["Sorbitan palmitate", "Span 40"],
+      "description": "",
+      "e_number": "E495",
+      "name": "Sorbitan monopalmitate",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E495"
+        }
+      ],
+      "name_fr": "Monopalmitate de sorbitane"
+    },
+    {
+      "alternative_names": ["Stearic acid", "C18:0 (Lipid numbers)"],
+      "description": "",
+      "e_number": "E570",
+      "name": "Fatty acids",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E570"
+        }
+      ],
+      "name_fr": "Acides gras"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E572",
+      "name": "Magnesium stearate, calcium stearate",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Magnesium_stearate"
+        }
+      ],
+      "name_fr": "Stéarate de magnésium, stéarate de calcium"
+    },
+    {
+      "alternative_names": ["Iron dilactate", "Iron(II) lactate"],
+      "description": "",
+      "e_number": "E585",
+      "name": "Ferrous lactate",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E585"
+        }
+      ],
+      "name_fr": "Lactate ferreux"
+    },
+    {
+      "alternative_names": ["Sodium 5'-guanylate"],
+      "description": "",
+      "description_fr": "exhausteur de goût, souvent combiné au glutamate. Il est extrait de viandes/poissons séchés ou produit par fermentation de sucres avec des micro-organismes",
+      "e_number": "E627",
+      "name": "Disodium guanylate, sodium guanylate",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E627"
+        }
+      ],
+      "name_fr": "Guanylate disodique, guanylate de sodium"
+    },
+    {
+      "alternative_names": [
+        "Sodium 5′-inosinate",
+        "Disodium inosin 5′-monophosphate",
+        "Inosine 5′-(disodium phosphate)",
+        "Sodium inosinate"
+      ],
+      "description": "",
+      "description_fr": "exhausteur de goût dérivé de sources animales (poissons, viandes) ou par fermentation bactérienne sur substrats végétaux (comme la betterave ou la canne à sucre)",
+      "e_number": "E631",
+      "name": "Disodium inosinate",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E631"
+        }
+      ],
+      "name_fr": "Inosinate disodique"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "e_number": "E635",
+      "name": "Disodium 5'-ribonucleotides",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E635"
+        }
+      ],
+      "name_fr": "5'-ribonucléotides disodiques"
+    },
+    {
+      "alternative_names": [
+        "2-Aminoethanoic acid",
+        "Glycocol",
+        "Glycic acid",
+        "Dicarbamic acid"
+      ],
+      "description": "",
+      "e_number": "E640",
+      "name": "Glycine and its sodium salt",
+      "state": "Ça dépend",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E640"
+        }
+      ],
+      "name_fr": "Glycine et son sel de sodium"
+    },
+    {
+      "alternative_names": [
+        "Diferuloylmethane",
+        "Curcumin I",
+        "C.I. 75300",
+        "Natural Yellow 3"
+      ],
+      "description": "An orange yellow colour derived from the root of the curcuma (turmeric) plant.\nApart from its culinary uses, turmeric is used as a preservative, colorant and flavouring agent in many food products including baked foods and pickles.\n",
+      "description_fr": "Colorant jaune extrait du curcuma. Utilisé dans les plats préparés, les sauces, les produits à base de riz. \nIl est entièrement d’origine végétale.",
+      "e_number": "E100",
+      "name": "Curcumin",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Curcumin"
+        }
+      ],
+      "name_fr": "Curcumine"
+    },
+    {
+      "alternative_names": [
+        "FMN",
+        "Lactoflavin",
+        "Vactochrome",
+        "Vitamin G",
+        "Vitamin B2"
+      ],
+      "description": "Riboflavin is yellow or orange-yellow in colour and in addition to being used as a food colouring it is also used to fortify some foods.\nIt can be found in such foods as baby foods, breakfast cereals, sauces, fruit drinks and vitamin-enriched milk products as well as being widely used in vitamin supplements.\n",
+      "e_number": "E101",
+      "name": "Riboflavin",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Riboflavin"
+        }
+      ],
+      "name_fr": "Riboflavine"
+    },
+    {
+      "alternative_names": [
+        "FMN",
+        "Lactoflavin",
+        "Vactochrome",
+        "Vitamin G",
+        "Vitamin B2"
+      ],
+      "description": "Riboflavin-5'-phosphate is the principal form in which riboflavin is found in cells and tissues.\nIt requires more energy to produce, but is more soluble than E101 Riboflavin.\n",
+      "e_number": "E101a",
+      "name": "Riboflavin-5'-phosphate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Flavin_mononucleotide"
+        }
+      ],
+      "name_fr": "Riboflavine-5'-phosphate"
+    },
+    {
+      "alternative_names": [
+        "FMN",
+        "Lactoflavin",
+        "Vactochrome",
+        "Vitamin G",
+        "Vitamin B2"
+      ],
+      "description": "Riboflavin-5-Sodium Phosphate is a yellow variant of E101a Riboflavin-5'-phosphate\n",
+      "e_number": "E106",
+      "name": "Riboflavin-5-Sodium Phosphate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Flavin_mononucleotide"
+        }
+      ],
+      "name_fr": "Riboflavine-5-phosphate de sodium"
+    },
+    {
+      "alternative_names": ["FD&C Yellow 5"],
+      "description": "A synthetic yellow azo dye found in fruit squash, fruit cordial, coloured fizzy drinks, instant puddings, cake mixes, custard powder, soups, sauces, ice cream, ice lollies, sweets, chewing gum, marzipan, jam, jelly, marmalade, mustard, yoghurt and many convenience foods together with glycerine and lemon. It can also be found in the shells of medicinal capsules.\nIt can also be used with Brilliant Blue FCF, (E133) to produce various green shades e.g. for tinned processed peas.\n",
+      "e_number": "E102",
+      "name": "Tartrazine ",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Tartrazine"
+        }
+      ],
+      "name_fr": "Tartrazine"
+    },
+    {
+      "alternative_names": [
+        "C.I. Natural red 20",
+        "Alkanet extract",
+        "Anchusaic acid",
+        "Anchusin"
+      ],
+      "description": "Alkannin is a natural dye that is obtained from the extracts of plants from the borage family Alkanna tinctoria that are found in the south of France.\nThe dye is used as a food coloring and in cosmetics. It is used as a red-brown food additive in regions such as Australia, but is no longer approved for use.\n",
+      "e_number": "E103",
+      "name": "Alkannin",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Alkannin"
+        }
+      ],
+      "name_fr": "Alkannine"
+    },
+    {
+      "alternative_names": [
+        "C.I. Acid Yellow 3",
+        "Food Yellow 13",
+        "D&C Yellow No. 10",
+        "Acid yellow 3",
+        "Quinidine Yellow KT",
+        "Japan Yellow 203",
+        "Lemon Yellow ZN 3",
+        "C.I. 47005"
+      ],
+      "description": "A synthetic 'coal tar' dye varying in colour between a dull yellow and greenish-yellow..\nUsed in lipsticks hair products, colognes\",\n also in a wide range of medications.\n",
+      "e_number": "E104",
+      "name": "Quinoline Yellow WS",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Quinoline_Yellow_WS"
+        }
+      ],
+      "name_fr": "Jaune de quinoléine WS"
+    },
+    {
+      "alternative_names": [
+        "Fast Yellow",
+        "Acid Yellow",
+        "Food Yellow 2",
+        "C.I. 13015"
+      ],
+      "description": "Fast Yellow AB is an azo dye. It used to be used as a food dye.\nIt is now delisted in both Europe and USA and is forbidden if used in foods and drinks, as toxicological data has shown it is harmful.\n",
+      "e_number": "E105",
+      "name": "Fast Yellow AB",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Fast_Yellow_AB"
+        }
+      ],
+      "name_fr": "Jaune rapide AB"
+    },
+    {
+      "alternative_names": [
+        "Lissamine Fast Yellow",
+        "C.I. Acid Yellow 17",
+        "C.I. 18965",
+        "Light Fast Yellow 2G",
+        "C.I. Food Yellow 5",
+        "Acid Leather Yellow 2GL",
+        "Erio Flavine SX",
+        "Fenalan Yellow G",
+        "Erio Flavine 3G",
+        "Kayacyl Yellow GG"
+      ],
+      "description": "Yellow 2G is a food coloring.\nIt has the appearance of a yellow powder, and it is soluble in water. It is a synthetic yellow azo dye.\n",
+      "e_number": "E107",
+      "name": "Yellow 2G",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Yellow_2G"
+        }
+      ],
+      "name_fr": "Jaune 2G"
+    },
+    {
+      "alternative_names": ["Orange Yellow S", "FD&C Yellow 6", "C.I. 15985"],
+      "description": "A synthetic 'coal tar' and azo yellow dye used in fermented foods which must be heat treated.\nFound in orange squash, marzipan, Swiss roll, apricot jam, citrus marmalade, lemon curd, sweets, hot chocolate mix and packet soups, breadcrumbs, ice cream, and many medications.\n",
+      "e_number": "E110",
+      "name": "Sunset Yellow FCF",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Sunset_Yellow_FCF"
+        }
+      ],
+      "name_fr": "Jaune soleil FCF"
+    },
+    {
+      "alternative_names": ["Alpha-Naphthol Orange"],
+      "description": "Orange GGN is an azo dye formerly used as a food dye.\nIn Europe, it has been forbidden for use in foods since 1 January 1978.\nIt has never been included in the food additives list of the Codex Alimentarius.\nAs such, it is forbidden for food use in general, because toxicological data has shown it is harmful.\n",
+      "e_number": "E111",
+      "name": "Orange GGN",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Orange_GGN"
+        }
+      ],
+      "name_fr": "Orange GGN"
+    },
+    {
+      "alternative_names": [
+        "Cochineal",
+        "Carminic acid",
+        "C.I. Natural Red 4",
+        "Crimson Lake",
+        "C.I. 75470"
+      ],
+      "description": "An expensive red colouring extracted from the crushed carcasses of the female Dactylopius coccus, a cactus-feeding scale insect,\nwhich are killed by either immersion in hot water or by exposure to sunlight, steam, or the heat of an oven.\nThe variety in the appearance of commercial cochineal is caused by these differing extraction methods.\n",
+      "description_fr": "Colorant rouge issu des cochenilles (insectes écrasés). Présent dans certains bonbons, sodas, yaourts, glaces, ...",
+      "e_number": "E120",
+      "name": "Carmine",
+      "state": "carniste",
+      "vegan_alternatives": ["Beetroot Juice", "Allura Red AC"],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Carmine"
+        },
+        {
+          "type": "url",
+          "value": "https://www.vegan.com/carmine/"
+        }
+      ],
+      "name_fr": "Carmin"
+    },
+    {
+      "alternative_names": [
+        "Citrus Red No. 2",
+        "C.I. Solvent Red 80",
+        "C.I. 12156"
+      ],
+      "description": "Citrus Red 2 is an artificial dye.\nAs a food dye, it has been permitted by the US Food and Drug Administration (FDA) since 1956 to color the skin of oranges.\nCitrus Red 2 is listed by the International Agency for Research on Cancer (IARC) as a group 2B carcinogen, a substance \"possibly carcinogenic to humans\".\n",
+      "e_number": "E121",
+      "name": "Citrus Red 2",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Citrus_Red_2"
+        }
+      ],
+      "name_fr": "Rouge Agrumes 2"
+    },
+    {
+      "alternative_names": [
+        "Carmoisine",
+        "Food Red 3",
+        "Azorubin S",
+        "Brillantcarmoisin O",
+        "Acid Red 14",
+        "C.I. 14720"
+      ],
+      "description": "A synthetic red azo dye used in foods which must be heat treated after fermentation.\nAlso found in marzipan, Swiss roll, jams and preserves, sweets, brown sauce, flavoured yogurts, packet soups, jellies and breadcrumbs.\n",
+      "e_number": "E122",
+      "name": "Azorubine",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Azorubine"
+        }
+      ],
+      "name_fr": "Azorubine"
+    },
+    {
+      "alternative_names": [
+        "FD&C Red No. 2",
+        "C.I. Food Red 9",
+        "Acid Red 27",
+        "Azorubin S",
+        "C.I. 16185"
+      ],
+      "description": "Derived from the small herbaceous plant of the same name. \nA purplish-red (blackcurrant) synthetic coal tar or azo dye found in ice creams, gravy granules, jams, jelly, tinned fruit pie fillings, packeted cake mixes and soups.\n",
+      "e_number": "E123",
+      "name": "Amaranth",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Amaranth_(dye)"
+        }
+      ],
+      "name_fr": "Amarante"
+    },
+    {
+      "alternative_names": [
+        "C.I. 16255",
+        "Cochineal Red A",
+        "C.I. Acid Red 18",
+        "Brilliant Scarlet 3R",
+        "Brilliant Scarlet 4R",
+        "New Coccine"
+      ],
+      "description": "A red synthetic coal tar or azo dye found in dessert toppings, jelly, dressings, tinned strawberries, fruit pie fillings, packeted cake mixes and soups.\n",
+      "e_number": "E124",
+      "name": "Ponceau 4R",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Ponceau_4R"
+        }
+      ],
+      "name_fr": "Ponceau 4R"
+    },
+    {
+      "alternative_names": [
+        "Crimson 4R",
+        "C.I. Food Red 1",
+        "Food red 1",
+        "FD & C Red no. 4",
+        "Hexacol Ponceau SX",
+        "Maple Ponceau SX",
+        "Ponceau SX",
+        "Purple 4R"
+      ],
+      "description": "Scarlet GN is a red azo dye once used as a food dye.\nIn the United States, it is not permitted for use in food or ingested drugs and may only be used in externally applied drugs and cosmetics.\nAn exception was added in 1965 to allow the coloring of maraschino cherries, which then were considered mainly decorative and not a foodstuff.\nThis exception was repealed in 1976 due to mounting evidence over its safety concerns.\nIn the European Union, it is not permitted as a food additive.",
+      "e_number": "E125",
+      "name": "Scarlet GN",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Scarlet_GN"
+        }
+      ],
+      "name_fr": "GN écarlate"
+    },
+    {
+      "alternative_names": [
+        "Crystal ponceau 6R",
+        "Crystal scarlet",
+        "Brilliant crystal scarlet 6R",
+        "Acid Red 44",
+        "C.I. 16250"
+      ],
+      "description": "Ponceau 6R is a red azo dye. It is soluble in water and slightly soluble in ethanol.\nIt is closely related to Amaranth (E123).\n",
+      "e_number": "E126",
+      "name": "Ponceau 6R",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Ponceau_6R"
+        }
+      ],
+      "name_fr": "Ponceau 6R"
+    },
+    {
+      "alternative_names": ["Red No. 3", "FD&C Red 3"],
+      "description": "A cherry-pink/red synthetic coal tar dye found in cocktail, glacé and tinned cherries, canned fruit, sweets, bakery, snack foods, biscuits, chocolate and stuffed olives.\nIt is also used to reveal plaque in dental disclosing tablets. \n",
+      "e_number": "E127",
+      "name": "Erythrosine",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Erythrosine"
+        }
+      ],
+      "name_fr": "Érythrosine"
+    },
+    {
+      "alternative_names": [
+        "Acid Red 1",
+        "Food Red 10",
+        "Amidonaphthol red G",
+        "Azogeranine",
+        "Azophloxine",
+        "Azofloxin",
+        "C.I. 18050"
+      ],
+      "description": "A red synthetic coal tar or azo dye. Altough Red 2G is vegan, it is primarily used to colour meats.\nIt can also be found in jams and drinks or as a dye for coatings, inks, paper, crepe paper and fine tissue. \n",
+      "e_number": "E128",
+      "name": "Red 2G",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Red_2G"
+        }
+      ],
+      "name_fr": "Rouge 2G"
+    },
+    {
+      "alternative_names": [
+        "Allura Red",
+        "Food Red 17",
+        "C.I. 16035",
+        "FD&C Red 40"
+      ],
+      "description": "Orange-red colour used in sweets, soft drinks, condiments, cotton candy, cherry flavored products, children's medications, cosmetics and tattoo ink.\nA red synthetic azo dye introduced in the early eighties to replace Amaranth, E123, in the United States of America where E123 is prohibited.\nIt is by far the most commonly used red dye in the United States.\n",
+      "e_number": "E129",
+      "name": "Allura Red AC",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Allura_Red_AC"
+        }
+      ],
+      "name_fr": "Rouge Allura AC"
+    },
+    {
+      "alternative_names": [
+        "Food Blue 5",
+        "Sulphan Blue",
+        "Acid Blue 3",
+        "L-Blau 3",
+        "C-Blau 20",
+        "Patentblau V",
+        "Sky Blue",
+        "C.I. 42051"
+      ],
+      "description": "A dark bluish-violet synthetic coal tar dye.\nNot widely used, but can be found in jellies, blue Curaçao and candles.\nIt is used diagnostically to colour lymph vessels.\n",
+      "e_number": "E131",
+      "name": "Indanthrone blue",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Patent_Blue_V"
+        }
+      ],
+      "name_fr": "Bleu indanthrone"
+    },
+    {
+      "alternative_names": [
+        "Indigotine",
+        "5,5′-indigodisulfonic acid sodium salt",
+        "Brilliant Indigo",
+        "4 G",
+        "C.I. Acid Blue 74",
+        "C.I. 73015",
+        "Food Blue 1",
+        "FD&C Blue 2",
+        "Sicovit Indigotin 85"
+      ],
+      "description": "A blue synthetic coal tar dye commonly added to tablets and capsules; also used in ice cream, sweets, baked goods, confectionery, biscuits. \nIt is also used diagnostically to check for coloured urine in kidney function tests.\n",
+      "e_number": "E132",
+      "name": "Indigo carmine",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/Indigo_carmine"
+        }
+      ],
+      "name_fr": "Carmin indigo"
+    }
+  ]
+}

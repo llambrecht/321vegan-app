@@ -1,0 +1,76 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+    id "com.google.gms.google-services" // This should be the last plugin applied
+}
+
+dependencies {
+    // Import the Firebase BOM to manage Firebase versions
+    implementation platform('com.google.firebase:firebase-bom:33.2.0')
+
+    // Add the dependencies for Firebase products you want to use
+    implementation 'com.google.firebase:firebase-analytics-ktx' // Analytics (optional, can be removed if not needed)
+    implementation 'com.google.firebase:firebase-firestore-ktx' // Firestore dependency
+
+    // Add other dependencies as needed
+}
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader("UTF-8") { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+def flutterVersionCode = "43"
+
+def flutterVersionName = "1.4.2"
+
+
+android {
+    namespace = "com.app321vegan.veganapp"
+    compileSdk = 34
+    ndkVersion = flutter.ndkVersion
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    defaultConfig {
+        applicationId = "com.app321vegan.veganapp"
+        minSdk = 24
+        targetSdk = 34
+        versionCode = flutterVersionCode.toInteger()
+        versionName = flutterVersionName
+    }
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig = signingConfigs.release
+        }
+    }
+}
+
+flutter {
+    source = "../.."
+}
