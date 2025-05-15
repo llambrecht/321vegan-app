@@ -4,7 +4,7 @@
   <img src="https://github.com/llambrecht/321vegan-app/blob/main/images/app_icon.png" alt="321 Vegan Logo" width="120" />
 
   <h1>321 Vegan</h1>
-  <p><strong>A free and transparent tool for vegans — scan products, check additives, browse cosmetics, and contribute by submitting new items. (Currently available in French only)</strong></p>
+  <p><em>A free and transparent tool for vegans — scan products, check additives, browse cosmetics, and contribute by submitting new items</em></p>
 
   <a href="https://www.instagram.com/321vegan.app" target="_blank">
     <img src="https://img.shields.io/badge/Instagram-@321vegan.app-E4405F?logo=instagram&logoColor=white&style=for-the-badge" alt="Instagram Badge"/>
@@ -34,6 +34,19 @@
 
 ---
 
+<div align="center">
+  <h3>💚 Support This Project</h3>
+  <p>
+    This project is completely free for users — but not free to run!<br/>
+    If you'd like to help keep it alive and growing, consider <a href="https://buymeacoffee.com/321vegan?new=1" target="_blank"><strong>buying me a tofu</strong></a>
+  </p>
+  <a href="https://buymeacoffee.com/321vegan" target="_blank">
+    <img src="https://img.shields.io/badge/Buy%20Me%20a%20Tofu-FFDD00?style=for-the-badge&logo=leaflet&logoColor=black" alt="Buy Me a Tofu Badge"/>
+  </a>
+</div>
+
+---
+
 ## 🌱 About 321 Vegan
 
 **321 Vegan** is a free and open-source Flutter app that helps users scan product barcodes and check whether a product is vegan-friendly.
@@ -44,9 +57,10 @@ The goal is to support conscious, plant-based lifestyles by making information a
 
 ---
 
-## How to contribute
+## How to Contribute
 
-This page is in construction
+We’d love your help!
+To get started, check out our [Contributing Guide](CONTRIBUTING.md) for everything you need to know.
 
 ---
 
