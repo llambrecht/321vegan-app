@@ -1,3 +1,25 @@
+- [🌱 Introduction](#-introduction)
+  - [Many thanks to you all!](#many-thanks-to-you-all)
+  - [Why read our guidelines?](#why-read-our-guidelines)
+  - [The types of contribution we are looking for](#the-types-of-contribution-we-are-looking-for)
+  - [The types of contribution we are NOT looking for](#the-types-of-contribution-we-are-not-looking-for)
+- [🚦 Basic Rules](#-basic-rules)
+  - [Our expectations in terms of behaviour](#our-expectations-in-terms-of-behaviour)
+  - [Issues tracker](#issues-tracker)
+  - [Bug reports](#bugs-reports)
+  - [Feature Requests](#feature-requests)
+  - [Pull Requests](#pull-requests)
+    - [For your first contribution](#for-your-first-contribution)
+    - [For members of the 321Vegan team of contributors](#for-members-of-the-321vegan-team-of-contributors)
+    - [Commit Messages Convention](#commit-messages-convention)
+- [🛠️ Setting Up the Project](#️-setting-up-the-project)
+  - [🔨 Prerequisites](#-prerequisites)
+  - [👣 Step-by-Step Setup](#-step-by-step-setup)
+  - [🪲 Troubleshooting Tips](#-troubleshooting-tips)
+- [🌍 Community](#community)
+- [💚 Support this project!](#support-this-project)
+- [📜 Code of Conduct](#code-of-conduct)
+
 # 🌱 Introduction
 
 ## Many thanks to you all!
