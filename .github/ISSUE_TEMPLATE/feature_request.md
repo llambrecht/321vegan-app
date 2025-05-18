@@ -7,12 +7,6 @@ assignees: ''
 
 ---
 
----
-name: "✨ Feature request"
-about: "Suggest a new feature or improvement for the app"
-labels: enhancement
----
-
 <!--
 Thank you for suggesting a feature! Please fill out the form below so we can evaluate your request.
 Before submitting, check if this feature has already been suggested in other issues.
@@ -32,6 +26,7 @@ E.g., "I’m frustrated when…" -->
 <!-- Add any other context, mockups, or screenshots about the feature request here. -->
 
 ### Checklist
+<!-- Replace the blank space by "x" in the [ ] to check the box : [x] -->
 - [ ] I have checked for existing feature requests.
 - [ ] This is not a bug report (If it is, please use the Bug Report template instead).
 - [ ] I agree to follow this project's Code of Conduct.
