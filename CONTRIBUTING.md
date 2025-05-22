@@ -215,7 +215,25 @@ Make sure you have the following installed:
    cd 321vegan-app
    ```
 
-2. **Get the Flutter packages**
+2. **Set up the sample database and Google service keys**
+
+   Copy and rename the following files by removing the word `sample` from their filenames:
+
+   ```
+   flutter_app/android/app/google-services-sample.json
+   flutter_app/ios/GoogleService-Info-sample.plist
+   flutter_app/lib/assets/cosmetics_sample.db.gz
+   flutter_app/lib/assets/vegan_products_sample.db.gz
+   ```
+
+   - Rename `google-services-sample.json` to `google-services.json`
+   - Rename `GoogleService-Info-sample.plist` to `GoogleService-Info.plist`
+   - Rename `cosmetics_sample.db.gz` to `cosmetics.db.gz`
+   - Rename `vegan_products_sample.db.gz` to `vegan_products.db.gz`
+
+   > These files are required for authentication and to provide the sample databases used by the app
+
+3. **Get the Flutter packages**
 
    This pulls in all the dependencies needed to run the app:
 
@@ -223,7 +241,7 @@ Make sure you have the following installed:
    flutter pub get
    ```
 
-3. **Set up an emulator (if needed)**
+4. **Set up an emulator (if needed)**
 
    If you don’t already have an emulator:
 
@@ -232,7 +250,7 @@ Make sure you have the following installed:
    - Choose a phone model and system image, then click **Finish**
    - Start the emulator
 
-4. **Run the app**
+5. **Run the app**
 
    Once the emulator is running (or a physical device is connected), launch the app:
 
@@ -244,7 +262,7 @@ Make sure you have the following installed:
 
    Our team uses Visual Studio Code, so if you decide to go with that too, it'll be easier for us to help you out. If you prefer a different editor, that’s totally fine — we’ll still do our best to support you!
 
-5. **You're up and running! 🎉**
+6. **You're up and running! 🎉**
    If you are stuck at any step in the process, don't hesitate to contact us
 
 ---
