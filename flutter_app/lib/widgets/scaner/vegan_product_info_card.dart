@@ -57,6 +57,9 @@ class VeganProductInfoCard extends StatelessWidget {
     'benenuts',
     'rockstar',
     'montain dew',
+    '7up',
+    'tropicana',
+    'lipton',
 
     // ==== Nestlé ====
     'nestlé',
@@ -69,6 +72,9 @@ class VeganProductInfoCard extends StatelessWidget {
     'nescafé',
     'nesquick',
     'nesquik',
+    'perrier',
+    'vitel',
+    'san pellegrino',
 
     // ==== Unilever ====
     'unilever',
@@ -111,6 +117,7 @@ class VeganProductInfoCard extends StatelessWidget {
     'lu',
     'belin',
     'heudebert',
+    'poulain',
 
     // ==== Danone ====
     'danone',
