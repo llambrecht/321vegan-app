@@ -48,7 +48,7 @@ android/app/google-services.json
 ios/GoogleService-Info.plist
 
 /lib/assets/vegan_products.db*
-/lib/assets/cosmetics.db
+/lib/assets/cosmetics.db*
 
 # Build outputs
 build/
