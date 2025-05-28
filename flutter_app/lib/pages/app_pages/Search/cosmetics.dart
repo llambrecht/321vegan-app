@@ -59,6 +59,7 @@ class CosmeticsPageState extends State<CosmeticsPage> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildSearchBar(),
@@ -69,8 +70,8 @@ class CosmeticsPageState extends State<CosmeticsPage> {
                           horizontal: 16.0, vertical: 32.0),
                       child: _buildEmptyState(),
                     )
-                  : SizedBox(
-                      height: MediaQuery.of(context).size.height - 150,
+                  : Flexible(
+                      fit: FlexFit.loose,
                       child: _buildCosmeticList(),
                     ),
             ],
@@ -125,7 +126,9 @@ class CosmeticsPageState extends State<CosmeticsPage> {
 
   Widget _buildCosmeticList() {
     return ListView.builder(
-      padding: EdgeInsets.zero,
+      padding: const EdgeInsets.only(bottom: 40),
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: filteredCosmetics.length,
       itemBuilder: (context, index) {
         final cosmetic = filteredCosmetics[index];
