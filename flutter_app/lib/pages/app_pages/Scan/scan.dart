@@ -10,6 +10,7 @@ import 'package:vegan_app/pages/app_pages/home.dart';
 import 'package:vegan_app/pages/app_pages/profile.dart';
 import 'package:vegan_app/widgets/scaner/card_product.dart';
 import 'package:vegan_app/widgets/scaner/pending_product_info_card.dart';
+import 'package:vegan_app/widgets/scaner/report_error_button.dart';
 import 'package:vegan_app/widgets/scaner/vegan_product_info_card.dart';
 
 class ScanPage extends StatefulWidget {
@@ -127,7 +128,7 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
     // We want to make sure the barcode is stable before processing it
     // So we wait for 2 consecutive scans of the same barcode
     _barcodeStabilityCount++;
-    if (_barcodeStabilityCount < 2) return;
+    if (_barcodeStabilityCount < 3) return;
 
     // The barcode is stable, so we can process it
     _barcodeStabilityCount = 0;
@@ -312,28 +313,13 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
               right: 16,
               child: const NoResultCard(),
             ),
-          if (productInfo != null && productInfo?['is_vegan'] == 'true')
+          if (productInfo != null && productInfo?['is_vegan'] != "unknown")
             Positioned(
-              bottom: 250.h,
-              left: 15.w,
-              right: 15.w,
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  return Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: Text(
-                      "Remarque : Si vous remarquez des inexactitudes, merci de nous aider à nous améliorer en nous les signalant.",
-                      style: TextStyle(
-                        fontSize: 40.sp,
-                        color: Colors.grey,
-                        fontStyle: FontStyle.italic,
-                      ),
-                      softWrap: true, // Ensure text wraps
-                      overflow:
-                          TextOverflow.visible, // Ensure the text can expand
-                    ),
-                  );
-                },
+              bottom: 240.h,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: ReportErrorButton(barcode: productInfo?['code'] ?? ''),
               ),
             ),
           Positioned.fill(
