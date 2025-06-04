@@ -137,36 +137,48 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                       child: TimeCounter(targetDate: targetDate),
                     ),
                     buildStatCard(
+                      context,
                       'Animaux épargnés',
                       animalUnit,
                       '',
                       Icons.favorite,
                       const Color.fromARGB(247, 255, 103, 153),
                       Colors.pinkAccent,
+                      info:
+                          "L'industrie de l'élevage cause d'immenses souffrances aux animaux en les considérant comme des objets. Choisir le véganisme, c’est refuser cette exploitation. Ici, on souligne l’effet positif que chacun peut avoir pour un monde plus juste et durable.",
                     ),
                     buildStatCard(
+                      context,
                       'CO₂ non émis',
                       co2Unit,
                       'KG',
                       Icons.arrow_downward_sharp,
                       const Color.fromARGB(255, 255, 133, 133),
                       Colors.redAccent,
+                      info:
+                          "L'alimentation végétale a aussi un impact sur l'environnement et permet de réduire considérablement son empreinte carbone. La quantité de CO2 économisée vient du fait que l'élevage est l'une des principales sources d'émission de gaz à effet de serre, de déforestation, de pollution de l'air et de pollution de l'eau.",
                     ),
                     buildStatCard(
+                      context,
                       'Forêt préservée',
                       forestUnit,
                       'm²',
                       Icons.forest_sharp,
                       const Color.fromARGB(127, 105, 240, 175),
                       const Color.fromARGB(197, 36, 139, 87),
+                      info:
+                          "L'élevage est l'une des principales causes de déforestation. Il faut en effet énormément de place pour cultiver les céréales (notamment soja et maïs) destinés à nourrir les animaux d'élevage. Cette déforestation a des conséquences désastreuses sur la biodiversité et les communautés locales. Adopter une alimentation végétale c'est réduire la pression sur les forêts et à encourager une agriculture plus durable.",
                     ),
                     buildStatCard(
+                      context,
                       'Eau économisée',
                       waterUnit,
                       'm³',
                       Icons.water_drop,
                       const Color.fromARGB(255, 97, 166, 250),
                       Colors.blueAccent,
+                      info:
+                          "En choisissant d'être végétalien, vous aidez à économiser de précieuses ressources en eau. La production de produits animaux nécessite une gigantesque quantité d'eau, notamment pour l'irrigation des cultures pour les animaux d'élevage. Et cela sans parler de la polution de l'eau due aux déjections qu'ils produisent.",
                     ),
                   ],
                 ),

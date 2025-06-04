@@ -63,7 +63,7 @@ class AboutMePage extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 5),
         Padding(
           padding: const EdgeInsets.only(top: 16, right: 16),
           child: GestureDetector(
@@ -91,20 +91,20 @@ class AboutMePage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 10),
-                      const Column(
+                      Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             'Rejoignez moi sur Instagram',
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 50.sp,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
                             '@321vegan.app',
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 50.sp,
                               color: Colors.grey,
                             ),
                           ),
@@ -118,7 +118,7 @@ class AboutMePage extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 10),
+        const SizedBox(height: 5),
         Padding(
           padding: const EdgeInsets.only(top: 16, right: 16),
           child: GestureDetector(
@@ -147,20 +147,20 @@ class AboutMePage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 10),
-                      const Column(
+                      Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             'J\'ai signé le Traité Végétalien',
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 50.sp,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
                             'Signez aussi !',
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 50.sp,
                               color: Colors.grey,
                             ),
                           ),

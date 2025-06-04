@@ -67,8 +67,10 @@ class ReportErrorButton extends StatelessWidget {
                       TextField(
                         controller: controller,
                         maxLines: 5,
+                        maxLength: 1000,
                         decoration: InputDecoration(
-                          hintText: "Décrivez le problème rencontré",
+                          hintText:
+                              "Décrivez le problème rencontré. Si nécessaire, laissez un moyen de vous contacter !",
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
