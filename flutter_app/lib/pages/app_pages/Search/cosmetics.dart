@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vegan_app/helpers/database_helper.dart';
+import 'package:vegan_app/helpers/helper.dart';
 
 class CosmeticsPage extends StatefulWidget {
   const CosmeticsPage({super.key});
@@ -34,6 +35,8 @@ class CosmeticsPageState extends State<CosmeticsPage> {
   }
 
   Future<void> _searchCosmetic(String query) async {
+    Helper.saveLastSearchCosmetics(query);
+
     if (query.isEmpty) {
       setState(() => filteredCosmetics = []);
       return;
