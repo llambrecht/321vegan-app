@@ -5497,6 +5497,7 @@
     {
       "alternative_names": ["Lactic acid", "Milk acid"],
       "description": "",
+      "description_fr": "L'acide lactique, également connu sous le code E270, est un acide organique présent naturellement dans le lait et les produits laitiers fermentés, le vin, les viandes fermentées et certains fruits et légumes.\nIl peut donc être d'origine végétale ou produit par fermentation de sucres ou fabriqué à partir de sources animales comme le lactose.\nIl est possible qu'il soit d'origine animale sans que ça soit précisé sur l'emballage.",
       "e_number": "E270",
       "name": "Lactic acid",
       "state": "Ça dépend",
