@@ -52,6 +52,8 @@ class AdditivesPageState extends State<AdditivesPage> {
   }
 
   void _searchENumber(String query) {
+    Helper.saveLastSearch(query);
+
     if (query.isEmpty) {
       setState(() => filteredENumbers = []);
       return;
@@ -67,7 +69,6 @@ class AdditivesPageState extends State<AdditivesPage> {
             ? _filterByENumber(normalizedQuery)
             : _filterByName(normalizedQuery);
       });
-      Helper.saveLastSearch(query);
     }
   }
 
