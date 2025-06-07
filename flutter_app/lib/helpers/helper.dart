@@ -11,6 +11,11 @@ extension StringCasingExtension on String {
 }
 
 class Helper {
+  static String truncate(String text, int maxLength) {
+    if (text.length <= maxLength) return text;
+    return '${text.substring(0, maxLength)}...';
+  }
+
   static void saveLastSearch(String query) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('lastSearch', query);

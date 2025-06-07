@@ -1,6 +1,7 @@
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:vegan_app/helpers/helper.dart';
 import 'package:vegan_app/pages/app_pages/helpers/product.helper.dart';
 
 class NoResultCard extends StatelessWidget {
@@ -293,6 +294,10 @@ class RejectedProductInfoCard extends StatelessWidget {
           end: Alignment.bottomCenter,
         ),
         borderRadius: BorderRadius.circular(30),
+        border: Border.all(
+          color: Colors.red,
+          width: 3,
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.15),
@@ -308,9 +313,12 @@ class RejectedProductInfoCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              (productInfo?['name']?.isNotEmpty ?? false)
-                  ? productInfo!['name']
-                  : 'Unnamed Product',
+              Helper.truncate(
+                (productInfo?['name']?.isNotEmpty ?? false)
+                    ? productInfo!['name']
+                    : 'Unnamed Product',
+                45,
+              ),
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 70.sp,

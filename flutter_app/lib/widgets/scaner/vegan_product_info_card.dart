@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:vegan_app/helpers/helper.dart';
 import 'package:vegan_app/widgets/scaner/info_modal.dart';
 
 class VeganProductInfoCard extends StatelessWidget {
@@ -148,7 +149,7 @@ class VeganProductInfoCard extends StatelessWidget {
     final bool isBDS = isOnBDSList();
 
     return Container(
-      height: 600.h,
+      height: 700.h,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [Colors.white, Colors.grey.shade200],
@@ -156,6 +157,10 @@ class VeganProductInfoCard extends StatelessWidget {
           end: Alignment.bottomCenter,
         ),
         borderRadius: BorderRadius.circular(30),
+        border: Border.all(
+          color: Colors.green,
+          width: 3,
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.15),
@@ -171,9 +176,12 @@ class VeganProductInfoCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              (productInfo?['name']?.isNotEmpty ?? false)
-                  ? productInfo!['name']
-                  : 'Unnamed Product',
+              Helper.truncate(
+                (productInfo?['name']?.isNotEmpty ?? false)
+                    ? productInfo!['name']
+                    : 'Unnamed Product',
+                45,
+              ),
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 70.sp,
