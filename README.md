@@ -18,7 +18,7 @@
 
 <p align="center">
   <a href="https://play.google.com/store/apps/details?id=com.app321vegan.veganapp" target="_blank">
-    <img src="https://img.shields.io/badge/Google_Play-4.7★-3DDC84?logo=google-play&logoColor=white&style=for-the-badge" alt="Download on Google Play"/>
+    <img src="https://img.shields.io/badge/Google_Play-4.9★-3DDC84?logo=google-play&logoColor=white&style=for-the-badge" alt="Download on Google Play"/>
   </a>
   <a href="https://apps.apple.com/fr/app/321-vegan/id6736880006" target="_blank">
     <img src="https://img.shields.io/badge/App_Store-5.0★-0D96F6?logo=apple&logoColor=white&style=for-the-badge" alt="Download on the App Store"/>
