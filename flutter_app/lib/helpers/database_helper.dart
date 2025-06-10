@@ -53,6 +53,7 @@ class DatabaseHelper {
       'cosmetics',
       where: 'brand LIKE ?',
       whereArgs: ['%$name%'],
+      orderBy: 'INSTR(LOWER(brand), LOWER("$name")), brand',
       limit: 100,
     );
   }
