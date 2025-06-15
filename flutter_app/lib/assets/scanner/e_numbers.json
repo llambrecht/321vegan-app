@@ -3172,6 +3172,22 @@
       "name_fr": "Acide sulfurique"
     },
     {
+      "alternative_names": [],
+      "description": "",
+      "description_fr": "Le sulfate de calcium est un composé chimique minéral",
+      "e_number": "E516",
+      "name": "Calcium sulfate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E516"
+        }
+      ],
+      "name_fr": "Sulfate de calcium"
+    },
+    {
       "alternative_names": [
         "Ammonium sulphate",
         "Ammonium sulfate (2:1)",
