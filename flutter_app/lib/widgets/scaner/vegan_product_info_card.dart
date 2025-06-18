@@ -282,7 +282,7 @@ class VeganProductInfoCard extends StatelessWidget {
                         builder: (context) => const InfoModal(
                           title: 'Biodynamie',
                           description:
-                              "La biodynamie est une méthode agricole qui utilise des produits d'origine animale pour cultiver, comme des cornes de vache ou des organes d'animaux. Elle est issue d’un mouvement sectaire. Pour ces raisons, nous ne considérons pas ces produits comme véganes.",
+                              "La biodynamie est une méthode agricole qui utilise des préparations d’origine animale, telles que des cornes de vache ou des organes d’animaux, dans ses pratiques de culture. Cette approche est issue de l’anthroposophie, un courant ésotérique aux dérives parfois considérées comme sectaires. En raison de l’utilisation d’éléments animaux et de son ancrage idéologique, nous ne considérons pas les produits issus de la biodynamie comme compatibles avec les principes du véganisme.",
                         ),
                       );
                     },
