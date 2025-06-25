@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:vegan_app/helpers/preference_helper.dart';
+import '../../../models/product_document.dart';
+import '../../../models/vegan_status.dart';
 
 class ProductHelper {
   static Future<bool> _checkConnectivityAndShowSnackbar(
@@ -29,17 +31,19 @@ class ProductHelper {
   }
 
   static Future<bool> tryAddDocument(BuildContext context,
-      Map<dynamic, dynamic>? productInfo, bool isVegan) async {
+      Map<dynamic, dynamic>? productInfo, VeganStatus? veganStatus) async {
     if (!await _checkConnectivityAndShowSnackbar(context)) return false;
     try {
       // Proceed with Firestore operation
       CollectionReference products =
           FirebaseFirestore.instance.collection('products');
-      await products.doc(productInfo?['name']).set({
-        'created_at': DateTime.now().toUtc(),
-        'isVegan': isVegan,
-      });
-      await PreferencesHelper.addCodeToPreferences(productInfo?['code'], true);
+      final product = ProductDocument(
+        createdAt: DateTime.now().toUtc(),
+        code: productInfo?['code'] ?? '',
+        isVegan: veganStatus ?? VeganStatus.maybeVegan,
+      );
+      await products.doc(product.code).set(product.toJson());
+      await PreferencesHelper.addCodeToPreferences(product.code, true);
 
       if (!context.mounted) return false;
       _showSnackbar(
