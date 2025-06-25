@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vegan_app/helpers/preference_helper.dart';
+import 'package:vegan_app/models/vegan_status.dart';
 import 'package:vegan_app/pages/app_pages/Scan/product_info_helper.dart';
 import 'package:vegan_app/pages/app_pages/helpers/product.helper.dart';
 
@@ -324,7 +325,7 @@ class _HistoryModalState extends State<HistoryModal> {
                                   'code': name,
                                   'name': name,
                                 },
-                                true,
+                                VeganStatus.vegan,
                               );
                               _updateHistory();
                             },
@@ -356,7 +357,7 @@ class _HistoryModalState extends State<HistoryModal> {
                                   'code': name,
                                   'name': name,
                                 },
-                                false,
+                                VeganStatus.nonVegan,
                               );
                               _updateHistory();
                             },

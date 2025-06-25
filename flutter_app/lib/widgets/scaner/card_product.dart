@@ -2,6 +2,7 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vegan_app/helpers/helper.dart';
+import 'package:vegan_app/models/vegan_status.dart';
 import 'package:vegan_app/pages/app_pages/helpers/product.helper.dart';
 
 class NoResultCard extends StatelessWidget {
@@ -205,7 +206,7 @@ class NonVeganProductInfoCardState extends State<NonVeganProductInfoCard> {
                       bool success = await ProductHelper.tryAddDocument(
                         context,
                         widget.productInfo,
-                        true, // True as vegan
+                        VeganStatus.vegan, // Vegan
                       );
                       if (success) {
                         setState(() {
@@ -238,7 +239,7 @@ class NonVeganProductInfoCardState extends State<NonVeganProductInfoCard> {
                       bool success = await ProductHelper.tryAddDocument(
                         context,
                         widget.productInfo,
-                        false, // False as non vegan
+                        VeganStatus.nonVegan, // Non vegan
                       );
                       if (success) {
                         setState(() {
@@ -256,6 +257,39 @@ class NonVeganProductInfoCardState extends State<NonVeganProductInfoCard> {
               ),
               child: Text(
                 'Signaler comme non végane',
+                style: TextStyle(
+                  fontSize: 48.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _isButtonDisabled
+                  ? null
+                  : () async {
+                      bool success = await ProductHelper.tryAddDocument(
+                        context,
+                        widget.productInfo,
+                        VeganStatus.maybeVegan, // Maybe vegan
+                      );
+                      if (success) {
+                        setState(() {
+                          _isButtonDisabled = true;
+                        });
+                        widget.confettiController.play();
+                      }
+                    },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orange,
+                padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 36.w),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+              child: Text(
+                'Peut-être végane',
                 style: TextStyle(
                   fontSize: 48.sp,
                   fontWeight: FontWeight.bold,
