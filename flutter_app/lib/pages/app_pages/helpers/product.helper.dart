@@ -36,7 +36,7 @@ class ProductHelper {
     try {
       // Proceed with Firestore operation
       CollectionReference products =
-          FirebaseFirestore.instance.collection('products');
+          FirebaseFirestore.instance.collection('productsWithMaybe');
       final product = ProductDocument(
         createdAt: DateTime.now().toUtc(),
         code: productInfo?['code'] ?? '',
