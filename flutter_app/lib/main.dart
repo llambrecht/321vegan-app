@@ -1,9 +1,6 @@
 import 'package:upgrader/upgrader.dart';
 import 'package:vegan_app/helpers/database_helper.dart';
-import 'package:vegan_app/pages/app_pages/home.dart';
-import 'pages/first_launch/are_you_vegan_page.dart';
 import 'package:flutter/material.dart';
-import 'pages/first_launch/date_picker_page.dart';
 import 'helpers/first_time_launch.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -48,11 +45,6 @@ class MyApp extends StatelessWidget {
             upgrader: upgrader,
             child: const FirstLaunchChecker(),
           ),
-          routes: {
-            '/home': (context) => const MyHomePage(),
-            '/datePicker': (context) => const DatePickerPage(),
-            '/areYouVegan': (context) => const AreYouVeganPage(),
-          },
           localizationsDelegates: const [
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
