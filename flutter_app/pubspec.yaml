@@ -94,7 +94,6 @@ flutter:
     - lib/assets/white_icon.png
     - lib/assets/app_icon.png
     - lib/assets/logo_instagram.png
-    - lib/assets/logo_pbt.png
     - lib/assets/vegan_products.db.gz
     - lib/assets/intro/additifs.gif
     - lib/assets/intro/cosmetics.gif

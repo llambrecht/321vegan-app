@@ -213,7 +213,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   DotsDecorator getDotsDecorator() => const DotsDecorator(
         size: Size(5, 5),
-        spacing: const EdgeInsets.symmetric(horizontal: 3.0),
+        spacing: EdgeInsets.symmetric(horizontal: 3.0),
         activeSize: Size(14, 10),
         activeColor: Colors.green,
         activeShape: RoundedRectangleBorder(
