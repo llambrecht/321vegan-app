@@ -94,6 +94,7 @@ class VeganProductInfoCard extends StatelessWidget {
     'l\'oreal',
     'loréal',
     'loreal',
+    'garnier',
 
     // ==== Walmart Group ====
     'walmart',
@@ -123,6 +124,7 @@ class VeganProductInfoCard extends StatelessWidget {
     // ==== Danone ====
     'danone',
     'alpro',
+    'volvic',
 
     // ==== Others ====
     'schweppes',

@@ -7,7 +7,7 @@ plugins {
 
 dependencies {
     // Import the Firebase BOM to manage Firebase versions
-    implementation platform('com.google.firebase:firebase-bom:33.2.0')
+    implementation platform('com.google.firebase:firebase-bom:33.4.0')
 
     // Add the dependencies for Firebase products you want to use
     implementation 'com.google.firebase:firebase-analytics-ktx' // Analytics (optional, can be removed if not needed)
@@ -36,7 +36,7 @@ def flutterVersionName = "1.6.0"
 
 android {
     namespace = "com.app321vegan.veganapp"
-    compileSdk = 34
+    compileSdk = 35
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -51,7 +51,7 @@ android {
     defaultConfig {
         applicationId = "com.app321vegan.veganapp"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
     }
