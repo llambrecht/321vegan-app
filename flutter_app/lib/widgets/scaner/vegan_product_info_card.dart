@@ -109,6 +109,7 @@ class VeganProductInfoCard extends StatelessWidget {
     'cien',
     'solevita',
     'sondey',
+    'vemondo',
 
     // ==== Mondelez ====
     'mondelez',
@@ -133,6 +134,7 @@ class VeganProductInfoCard extends StatelessWidget {
     'osem',
     'ahava',
     'sodastream',
+    'oatly',
   ];
 
   bool isOnBDSList() {
