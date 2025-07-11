@@ -31,6 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
   share_plus: ^10.1.4
+  introduction_screen: ^3.1.0
   motion_tab_bar_v2: ^0.3.0
   shared_preferences: ^2.3.2
   intl: ^0.19.0
@@ -93,8 +94,13 @@ flutter:
     - lib/assets/white_icon.png
     - lib/assets/app_icon.png
     - lib/assets/logo_instagram.png
-    - lib/assets/logo_pbt.png
     - lib/assets/vegan_products.db.gz
+    - lib/assets/intro/additifs.gif
+    - lib/assets/intro/cosmetics.gif
+    - lib/assets/intro/scan.gif
+    - lib/assets/intro/scan_unknown.gif
+    - lib/assets/intro/profil.gif
+    - lib/assets/intro/accueil.gif
 
   fonts:
     - family: JosefinSans

@@ -123,7 +123,7 @@ class AboutMePage extends StatelessWidget {
           padding: const EdgeInsets.only(top: 16, right: 16),
           child: GestureDetector(
             onTap: () async {
-              const url = 'https://plantbasedtreaty.org/fr';
+              const url = 'https://buymeacoffee.com/321vegan';
               await launchUrl(Uri.parse(url));
             },
             child: Material(
@@ -138,12 +138,13 @@ class AboutMePage extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ClipOval(
-                        child: Image.asset(
-                          'lib/assets/logo_pbt.png',
-                          width: 50,
-                          height: 50,
-                          fit: BoxFit.fill,
+                      const CircleAvatar(
+                        backgroundColor: Colors.white,
+                        radius: 25,
+                        child: Icon(
+                          Icons.favorite,
+                          size: 40,
+                          color: Colors.green,
                         ),
                       ),
                       const SizedBox(width: 10),
@@ -151,14 +152,14 @@ class AboutMePage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'J\'ai signé le Traité Végétalien',
+                            'Vous pouvez soutenir le projet',
                             style: TextStyle(
                               fontSize: 50.sp,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
-                            'Signez aussi !',
+                            'En faisant un don',
                             style: TextStyle(
                               fontSize: 50.sp,
                               color: Colors.grey,

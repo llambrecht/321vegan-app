@@ -94,6 +94,7 @@ class VeganProductInfoCard extends StatelessWidget {
     'l\'oreal',
     'loréal',
     'loreal',
+    'garnier',
 
     // ==== Walmart Group ====
     'walmart',
@@ -108,6 +109,7 @@ class VeganProductInfoCard extends StatelessWidget {
     'cien',
     'solevita',
     'sondey',
+    'vemondo',
 
     // ==== Mondelez ====
     'mondelez',
@@ -123,6 +125,7 @@ class VeganProductInfoCard extends StatelessWidget {
     // ==== Danone ====
     'danone',
     'alpro',
+    'volvic',
 
     // ==== Others ====
     'schweppes',
@@ -131,6 +134,7 @@ class VeganProductInfoCard extends StatelessWidget {
     'osem',
     'ahava',
     'sodastream',
+    'oatly',
   ];
 
   bool isOnBDSList() {
