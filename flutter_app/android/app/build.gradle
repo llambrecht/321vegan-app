@@ -29,14 +29,14 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
-def flutterVersionCode = "49"
+def flutterVersionCode = "50"
 
-def flutterVersionName = "1.6.0"
+def flutterVersionName = "1.7.0"
 
 
 android {
     namespace = "com.app321vegan.veganapp"
-    compileSdk = 35
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
