@@ -19,7 +19,7 @@ class ProductInfoHelper {
         'brand':
             (product['brand'] ?? 'Marque inconnue').replaceAll('&quot;', "'"),
         'is_vegan': 'true',
-        'problem': product['problem'], // Add problem field
+        'problem': product['problem'],
         'biodynamie':
             (product['biodynamie'] != null && product['biodynamie'] == 'Y')
                 ? true
@@ -33,7 +33,7 @@ class ProductInfoHelper {
         'name': product['name'] ?? 'Produit inconnu',
         'brand': product['brand'] ?? 'Marque inconnue',
         'is_vegan': 'false',
-        'problem': product['problem'], // Add problem field
+        'problem': product['problem'],
         'biodynamie':
             (product['biodynamie'] != null && product['biodynamie'] == 'Y')
                 ? true
@@ -47,7 +47,7 @@ class ProductInfoHelper {
         'name': product['name'] ?? 'Produit inconnu',
         'brand': product['brand'] ?? 'Marque inconnue',
         'is_vegan': 'waiting',
-        'problem': product['problem'], // Add problem field
+        'problem': product['problem'],
         'biodynamie': false,
       };
     } else if (dbResult.isNotEmpty && dbResult.first['status'] == 'N') {
@@ -58,7 +58,7 @@ class ProductInfoHelper {
         'name': product['name'] ?? 'Produit inconnu',
         'brand': product['brand'] ?? 'Marque inconnue',
         'is_vegan': 'not_found',
-        'problem': product['problem'], // Add problem field
+        'problem': product['problem'],
         'biodynamie': false,
       };
     } else if (dbResult.isEmpty) {

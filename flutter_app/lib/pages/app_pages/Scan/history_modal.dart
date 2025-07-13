@@ -149,8 +149,7 @@ class _HistoryModalState extends State<HistoryModal> {
                                     'Marque inconnue',
                                 scannedDate: timestamp,
                                 isVegan: productDetails['is_vegan'],
-                                problem: productDetails[
-                                    'problem'], // Add problem field
+                                problem: productDetails['problem'],
                                 biodynamie: productDetails['biodynamie'],
                                 alreadySent: isAlreadySent,
                               );
