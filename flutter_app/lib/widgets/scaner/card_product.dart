@@ -315,9 +315,8 @@ class RejectedProductInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // In the database, the reason why its not vegan is stored in the brand field; separated by '--'
-    // TODO : add a separated column for the reason in the database and change this.
-    final reason = productInfo?['brand'].split('--')[1];
-    final brand = productInfo?['brand'].split('--')[0];
+    final reason = productInfo?['problem'];
+    final brand = productInfo?['brand'];
 
     return Container(
       height: 600.h,

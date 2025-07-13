@@ -19,6 +19,7 @@ class ProductInfoHelper {
         'brand':
             (product['brand'] ?? 'Marque inconnue').replaceAll('&quot;', "'"),
         'is_vegan': 'true',
+        'problem': product['problem'], // Add problem field
         'biodynamie':
             (product['biodynamie'] != null && product['biodynamie'] == 'Y')
                 ? true
@@ -32,6 +33,7 @@ class ProductInfoHelper {
         'name': product['name'] ?? 'Produit inconnu',
         'brand': product['brand'] ?? 'Marque inconnue',
         'is_vegan': 'false',
+        'problem': product['problem'], // Add problem field
         'biodynamie':
             (product['biodynamie'] != null && product['biodynamie'] == 'Y')
                 ? true
@@ -45,6 +47,7 @@ class ProductInfoHelper {
         'name': product['name'] ?? 'Produit inconnu',
         'brand': product['brand'] ?? 'Marque inconnue',
         'is_vegan': 'waiting',
+        'problem': product['problem'], // Add problem field
         'biodynamie': false,
       };
     } else if (dbResult.isNotEmpty && dbResult.first['status'] == 'N') {
@@ -55,6 +58,7 @@ class ProductInfoHelper {
         'name': product['name'] ?? 'Produit inconnu',
         'brand': product['brand'] ?? 'Marque inconnue',
         'is_vegan': 'not_found',
+        'problem': product['problem'], // Add problem field
         'biodynamie': false,
       };
     } else if (dbResult.isEmpty) {
@@ -67,6 +71,7 @@ class ProductInfoHelper {
           'name': 'Produit inconnu',
           'brand': 'Marque inconnue',
           'is_vegan': 'already_scanned',
+          'problem': null, // No problem for already scanned products
           'biodynamie': false,
         };
       } else {
@@ -75,6 +80,7 @@ class ProductInfoHelper {
           'name': barcode,
           'brand': 'inconnue',
           'is_vegan': 'unknown',
+          'problem': null, // No problem for unknown products
           'biodynamie': false,
         };
       }
@@ -84,6 +90,7 @@ class ProductInfoHelper {
         'name': barcode,
         'brand': 'inconnue',
         'is_vegan': 'unknown',
+        'problem': null, // No problem for fallback case
         'biodynamie': false,
       };
     }
