@@ -127,45 +127,51 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   textAlign: TextAlign.left,
                 ),
                 const SizedBox(height: 20.0),
-                TextFormField(
-                  controller: _dateController,
-                  decoration: InputDecoration(
-                    labelText: 'Sélectionnez une date',
-                    labelStyle: const TextStyle(color: Colors.black),
-                    enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _dateController,
+                        decoration: InputDecoration(
+                          labelText: 'Sélectionnez une date',
+                          labelStyle: const TextStyle(color: Colors.black),
+                          enabledBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
+                          focusedBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
+                          border: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
+                          suffixIcon: IconButton(
+                            icon: const Icon(Icons.calendar_today,
+                                color: Colors.black),
+                            onPressed: _pickDate,
+                          ),
+                        ),
+                        readOnly: true,
+                        style: const TextStyle(color: Colors.black),
+                        onTap: _pickDate,
+                      ),
                     ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
+                    const SizedBox(width: 10.0),
+                    ElevatedButton(
+                      onPressed: () async {
+                        _onIntroEnd(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
+                        textStyle: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      child: const Text('Continuer'),
                     ),
-                    border: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
-                    ),
-                    suffixIcon: IconButton(
-                      icon:
-                          const Icon(Icons.calendar_today, color: Colors.black),
-                      onPressed: _pickDate,
-                    ),
-                  ),
-                  readOnly: true,
-                  style: const TextStyle(color: Colors.black),
-                  onTap: _pickDate,
+                  ],
                 ),
-                const SizedBox(height: 7.0),
-                ElevatedButton(
-                  onPressed: () async {
-                    _onIntroEnd(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 32, vertical: 12),
-                    textStyle: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  child: const Text('Continuer'),
-                )
               ],
             ),
           ),
