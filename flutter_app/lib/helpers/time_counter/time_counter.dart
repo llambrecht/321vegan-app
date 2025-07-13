@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TimeCounter extends StatefulWidget {
   final DateTime? targetDate;
@@ -123,8 +124,8 @@ class TimeColumn extends StatelessWidget {
               child: Text(
                 paddedValue,
                 key: ValueKey<String>(paddedValue),
-                style: const TextStyle(
-                  fontSize: 32,
+                style: TextStyle(
+                  fontSize: 100.sp,
                   fontWeight: FontWeight.bold,
                 ),
               ),

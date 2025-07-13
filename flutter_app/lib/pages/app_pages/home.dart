@@ -124,11 +124,11 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    SizedBox(height: 100.h),
+                    SizedBox(height: 200.h),
                     Text(
                       "Vous êtes végane depuis",
                       style: TextStyle(
-                          fontSize: 94.sp,
+                          fontSize: 90.sp,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                           fontFamily: 'Baloo'),
@@ -184,7 +184,7 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 ),
                 if (targetDate == null)
                   Positioned(
-                    bottom: 150.h,
+                    bottom: 100.h,
                     child: ElevatedButton(
                       onPressed: launchCounter,
                       style: ElevatedButton.styleFrom(

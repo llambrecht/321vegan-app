@@ -106,7 +106,7 @@ Widget buildStatCard(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        SizedBox(height: 8.sp),
                         Row(
                           children: <Widget>[
                             AnimatedSwitcher(
