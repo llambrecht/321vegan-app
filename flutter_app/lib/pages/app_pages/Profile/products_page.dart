@@ -64,6 +64,7 @@ class ProductsPageState extends State<ProductsPage> {
             'name': product['name'] ?? 'Nom inconnu',
             'brand': product['brand'] ?? 'Marque inconnue',
             'status': status,
+            'problem': product['problem'],
           };
         }
       }
@@ -125,13 +126,8 @@ class ProductsPageState extends State<ProductsPage> {
               itemBuilder: (context, index) {
                 final product = productDatas[index];
                 final status = product['status'];
-                String brand = product['brand'];
-                String? reason;
-                if (status == 'Refusé' && brand.contains(' -- ')) {
-                  final parts = brand.split(' -- ');
-                  brand = parts[0];
-                  reason = parts.length > 1 ? parts[1] : null;
-                }
+                final brand = product['brand'];
+                final reason = product['problem'];
 
                 return Card(
                   margin:
@@ -197,7 +193,7 @@ class ProductsPageState extends State<ProductsPage> {
                                 ),
                               ),
                             ),
-                            if (reason != null)
+                            if (reason != null && reason.isNotEmpty)
                               Padding(
                                 padding:
                                     const EdgeInsets.only(top: 8, right: 8),

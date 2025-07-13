@@ -131,6 +131,7 @@ class _HistoryModalState extends State<HistoryModal> {
                                 brand: 'Impossible de charger le produit',
                                 scannedDate: timestamp,
                                 isVegan: null,
+                                problem: null, // No problem for error case
                               );
                             } else {
                               final productDetails =
@@ -148,6 +149,7 @@ class _HistoryModalState extends State<HistoryModal> {
                                     'Marque inconnue',
                                 scannedDate: timestamp,
                                 isVegan: productDetails['is_vegan'],
+                                problem: productDetails['problem'],
                                 biodynamie: productDetails['biodynamie'],
                                 alreadySent: isAlreadySent,
                               );
@@ -174,6 +176,7 @@ class _HistoryModalState extends State<HistoryModal> {
     required String brand,
     required String scannedDate,
     required String? isVegan,
+    String? problem, // Add problem parameter
     bool biodynamie = false,
     required BuildContext context,
     bool alreadySent = false,
@@ -224,28 +227,19 @@ class _HistoryModalState extends State<HistoryModal> {
                           style: TextStyle(
                               fontSize: 40.sp, fontWeight: FontWeight.w600)),
                       SizedBox(height: 4.h),
-                      isVegan == 'false' && brand.contains('--')
-                          ? Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  brand.split('--')[0],
-                                  style: TextStyle(
-                                      fontSize: 40.sp, color: Colors.grey[700]),
-                                ),
-                                SizedBox(height: 4.h),
-                                Text(
-                                  brand.split('--')[1],
-                                  style: TextStyle(
-                                      fontSize: 36.sp, color: Colors.red[700]),
-                                ),
-                              ],
-                            )
-                          : Text(
-                              brand,
-                              style: TextStyle(
-                                  fontSize: 40.sp, color: Colors.grey[700]),
-                            ),
+                      Text(
+                        brand,
+                        style:
+                            TextStyle(fontSize: 40.sp, color: Colors.grey[700]),
+                      ),
+                      if (problem != null && problem.isNotEmpty) ...[
+                        SizedBox(height: 4.h),
+                        Text(
+                          problem,
+                          style: TextStyle(
+                              fontSize: 36.sp, color: Colors.red[700]),
+                        ),
+                      ],
                       SizedBox(height: 2.h),
                       Text(
                         DateTime.parse(scannedDate)
