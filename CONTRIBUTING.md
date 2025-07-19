@@ -215,23 +215,37 @@ Make sure you have the following installed:
    cd 321vegan-app
    ```
 
-2. **Set up the sample database and Google service keys**
+2. **Set up the sample database and API configuration**
 
    Copy and rename the following files by removing the word `sample` from their filenames:
 
    ```
-   flutter_app/android/app/google-services-sample.json
-   flutter_app/ios/GoogleService-Info-sample.plist
    flutter_app/lib/assets/cosmetics_sample.db.gz
    flutter_app/lib/assets/vegan_products_sample.db.gz
    ```
 
-   - Rename `google-services-sample.json` to `google-services.json`
-   - Rename `GoogleService-Info-sample.plist` to `GoogleService-Info.plist`
    - Rename `cosmetics_sample.db.gz` to `cosmetics.db.gz`
    - Rename `vegan_products_sample.db.gz` to `vegan_products.db.gz`
 
-   > These files are required for authentication and to provide the sample databases used by the app
+   > These files provide the sample databases used by the app
+
+   **Set up API configuration:**
+
+   Create a `.env` file in the `flutter_app` directory based on `.env.example`:
+
+   ```bash
+   cd flutter_app
+   cp .env.example .env
+   ```
+
+   Then edit `.env` and replace `your_api_key_here` with your actual API key:
+
+   ```
+   API_KEY=your_actual_api_key_here
+   API_BASE_URL=https://api.321vegan.fr
+   ```
+
+   > The `.env` file is required for API authentication and is ignored by git for security
 
 3. **Get the Flutter packages**
 
