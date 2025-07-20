@@ -45,9 +45,8 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Google firestore
-android/app/google-services.json
-ios/GoogleService-Info.plist
+# Environment variables
+.env
 
 /lib/assets/vegan_products.db*
 /lib/assets/cosmetics.db*

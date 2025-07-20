@@ -26,67 +26,97 @@ class ReportErrorButton extends StatelessWidget {
         showDialog(
           context: rootContext,
           builder: (context) {
-            final TextEditingController controller = TextEditingController();
-            String? errorText;
+            final TextEditingController commentController =
+                TextEditingController();
+            final TextEditingController contactController =
+                TextEditingController();
+            String? commentErrorText;
             return StatefulBuilder(
               builder: (context, setState) {
                 return AlertDialog(
                   title: const Text("Signaler une erreur"),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Code-barre : $barcode",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                          fontStyle: FontStyle.italic,
+                  content: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Code-barre : $barcode",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[600],
+                            fontStyle: FontStyle.italic,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 12),
-                      RichText(
-                        text: const TextSpan(
-                          text: "Détails de l'erreur ",
+                        const SizedBox(height: 12),
+                        RichText(
+                          text: const TextSpan(
+                            text: "Détails de l'erreur ",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                            ),
+                            children: [
+                              TextSpan(
+                                text: "*",
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        TextField(
+                          controller: commentController,
+                          maxLines: 4,
+                          maxLength: 800,
+                          decoration: InputDecoration(
+                            hintText:
+                                "Décrivez le problème rencontré avec ce produit",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 16,
+                              horizontal: 12,
+                            ),
+                            errorText: commentErrorText,
+                          ),
+                          onChanged: (_) {
+                            if (commentErrorText != null) {
+                              setState(() => commentErrorText = null);
+                            }
+                          },
+                        ),
+                        const SizedBox(height: 12),
+                        const Text(
+                          "Contact (optionnel)",
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 16,
                           ),
-                          children: [
-                            TextSpan(
-                              text: "*",
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
-                              ),
+                        ),
+                        const SizedBox(height: 4),
+                        TextField(
+                          controller: contactController,
+                          maxLines: 2,
+                          maxLength: 200,
+                          decoration: InputDecoration(
+                            hintText:
+                                "Email ou @ instagram (au cas où on aurait besoin d'infos)",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      TextField(
-                        controller: controller,
-                        maxLines: 5,
-                        maxLength: 1000,
-                        decoration: InputDecoration(
-                          hintText:
-                              "Décrivez le problème rencontré. Si nécessaire, laissez un moyen de vous contacter !",
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 16,
+                              horizontal: 12,
+                            ),
                           ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 16,
-                            horizontal: 12,
-                          ),
-                          errorText: errorText,
                         ),
-                        onChanged: (_) {
-                          if (errorText != null) {
-                            setState(() => errorText = null);
-                          }
-                        },
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   actions: [
                     TextButton(
@@ -95,14 +125,16 @@ class ReportErrorButton extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () async {
-                        if (controller.text.trim().isEmpty) {
-                          setState(() => errorText = "Ce champ est requis.");
+                        if (commentController.text.trim().isEmpty) {
+                          setState(
+                              () => commentErrorText = "Ce champ est requis.");
                         } else {
                           Navigator.of(context).pop();
                           bool result = await ProductHelper.tryAddError(
                             rootContext,
                             barcode,
-                            controller.text.trim(),
+                            commentController.text.trim(),
+                            contact: contactController.text.trim(),
                           );
 
                           await Future.delayed(

@@ -16,6 +16,17 @@ extension VeganStatusExtension on VeganStatus {
     }
   }
 
+  String toApiString() {
+    switch (this) {
+      case VeganStatus.vegan:
+        return 'VEGAN';
+      case VeganStatus.nonVegan:
+        return 'NON_VEGAN';
+      case VeganStatus.maybeVegan:
+        return 'MAYBE_VEGAN';
+    }
+  }
+
   static VeganStatus fromString(String? value) {
     switch (value) {
       case 'vegan':

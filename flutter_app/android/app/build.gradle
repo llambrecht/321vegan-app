@@ -2,17 +2,9 @@ plugins {
     id "com.android.application"
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
-    id "com.google.gms.google-services" // This should be the last plugin applied
 }
 
 dependencies {
-    // Import the Firebase BOM to manage Firebase versions
-    implementation platform('com.google.firebase:firebase-bom:33.4.0')
-
-    // Add the dependencies for Firebase products you want to use
-    implementation 'com.google.firebase:firebase-analytics-ktx' // Analytics (optional, can be removed if not needed)
-    implementation 'com.google.firebase:firebase-firestore-ktx' // Firestore dependency
-
     // Add other dependencies as needed
 }
 def localProperties = new Properties()
@@ -29,9 +21,9 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
-def flutterVersionCode = "51"
+def flutterVersionCode = "52"
 
-def flutterVersionName = "1.7.1"
+def flutterVersionName = "1.8.0"
 
 
 android {
