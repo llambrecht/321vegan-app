@@ -45,7 +45,7 @@ class NoResultCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            "La base de données est construite à partir de\nOpenFoodFacts.\nCertains produits peuvent ne pas être référencés, mais vous pouvez nous aider à les ajouter en les scannant et en les signalant !",
+            "La base de données est construite à partir de\nOpenFoodFacts.\nLe scan est prévu pour les produits alimentaires. Pour les cosmétiques, vous pouvez utiliser la recherche.",
             style: TextStyle(fontSize: 40.sp),
           ),
         ],
