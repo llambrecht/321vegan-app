@@ -128,7 +128,6 @@ class VeganProductInfoCard extends StatelessWidget {
     'volvic',
 
     // ==== Others ====
-    'schweppes',
     'starbucks',
     'la grande épicerie paris',
     'osem',
