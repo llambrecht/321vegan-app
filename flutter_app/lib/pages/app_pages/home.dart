@@ -232,13 +232,7 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       ),
       bottomNavigationBar: MotionTabBar(
         controller: motionTabBarController,
-        labels: const [
-          "Partenaires",
-          "Accueil",
-          "Recherche",
-          "Scan",
-          "Profile"
-        ],
+        labels: const ["Promos", "Accueil", "Recherche", "Scan", "Profile"],
         initialSelectedTab: "Accueil",
         tabIconColor: Colors.grey,
         tabSelectedColor: Theme.of(context).colorScheme.primary,
@@ -248,7 +242,7 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           });
         },
         icons: const [
-          Icons.euro,
+          Icons.percent,
           Icons.home,
           Icons.search,
           Icons.qr_code_scanner,
