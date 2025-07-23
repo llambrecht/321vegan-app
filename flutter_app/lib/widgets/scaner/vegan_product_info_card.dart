@@ -255,7 +255,7 @@ class VeganProductInfoCard extends StatelessWidget {
                         builder: (context) => const InfoModal(
                           title: 'Boycott',
                           description:
-                              "Les produits notés 'Boycott' sont des produits de marques qui soutiennent le génocide contre le peuple palestinien. Le mouvement BDS (Boycott, Désinvestissement, Sanctions) appelle au boycott de ces marques. Pour plus d'informations, consultez le site bdsfrance.org",
+                              "Les produits notés 'Boycott' sont des produits de marques qui ont des actions néfastes pour l'environnement, la santé, le droits des animaux ou les droits humains. Sont indiqués notamments les produits de marques soutenant le génocide du peuple palestinien. Nous vous encourageons à boycotter ces marques pour soutenir des pratiques éthiques et responsables.",
                         ),
                       );
                     },
