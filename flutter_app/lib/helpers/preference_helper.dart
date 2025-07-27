@@ -99,15 +99,23 @@ class PreferencesHelper {
     final prefs = await SharedPreferences.getInstance();
     int total = 0;
     if (prefs.getInt('total_successful_submissions') == null) {
-      Map<String, bool> codesWithStatus =
-          await getCodesWithStatusFromPreferences();
-      total =
-          codesWithStatus.entries.where((entry) => entry.value == true).length;
-      await prefs.setInt('total_successful_submissions', total);
+      total = await migrateTotalSuccessfulSubmissions();
+    } else {
+      total = prefs.getInt('total_successful_submissions') ?? 0;
     }
 
-    total = prefs.getInt('total_successful_submissions') ?? 0;
+    return total;
+  }
 
+  static Future<int> migrateTotalSuccessfulSubmissions() async {
+    final prefs = await SharedPreferences.getInstance();
+    int total = 0;
+
+    Map<String, bool> codesWithStatus =
+        await getCodesWithStatusFromPreferences();
+    total =
+        codesWithStatus.entries.where((entry) => entry.value == true).length;
+    await prefs.setInt('total_successful_submissions', total);
     return total;
   }
 
