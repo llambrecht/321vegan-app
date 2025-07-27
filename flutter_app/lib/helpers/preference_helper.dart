@@ -55,7 +55,12 @@ class PreferencesHelper {
     }
 
     // Track total successful submissions
-    int totalSuccessful = prefs.getInt('total_successful_submissions') ?? 0;
+    int totalSuccessful = 0;
+    if (prefs.getInt('total_successful_submissions') == null) {
+      totalSuccessful = await migrateTotalSuccessfulSubmissions();
+    } else {
+      totalSuccessful = prefs.getInt('total_successful_submissions') ?? 0;
+    }
     if (success) {
       totalSuccessful++;
       await prefs.setInt('total_successful_submissions', totalSuccessful);
