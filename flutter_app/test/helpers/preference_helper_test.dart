@@ -136,6 +136,84 @@ void main() {
       final codesJson = prefs.getString('codes_with_status');
       expect(codesJson, isNull);
     });
+
+    test('keeps only 300 sent codes', () async {
+      // Add 301 codes to exceed the limit
+      for (int i = 0; i < 301; i++) {
+        await PreferencesHelper.addCodeToPreferences('code$i', true);
+      }
+
+      final prefs = await SharedPreferences.getInstance();
+      final codesJson = prefs.getString('codes_with_status');
+      final codes = Map<String, dynamic>.from(json.decode(codesJson!));
+
+      // Should have exactly 300 codes
+      expect(codes.length, 300);
+
+      // The oldest code (code0) should be removed
+      expect(codes.containsKey('code0'), false);
+
+      // The newest code (code300) should be present
+      expect(codes.containsKey('code300'), true);
+    });
+
+    test('tracks total successful submissions', () async {
+      // Add some successful submissions
+      await PreferencesHelper.addCodeToPreferences('code1', true);
+      await PreferencesHelper.addCodeToPreferences('code2', true);
+      await PreferencesHelper.addCodeToPreferences(
+          'code3', false); // This shouldn't count
+      await PreferencesHelper.addCodeToPreferences('code4', true);
+
+      final total = await PreferencesHelper.getTotalSuccessfulSubmissions();
+      expect(total, 3);
+    });
+
+    test('maintains total count even when codes are removed due to limit',
+        () async {
+      // Add 301 successful codes to exceed the limit
+      for (int i = 0; i < 301; i++) {
+        await PreferencesHelper.addCodeToPreferences('code$i', true);
+      }
+
+      final total = await PreferencesHelper.getTotalSuccessfulSubmissions();
+      expect(total,
+          301); // Total should still be 301 even though only 300 codes remain
+
+      final prefs = await SharedPreferences.getInstance();
+      final codesJson = prefs.getString('codes_with_status');
+      final codes = Map<String, dynamic>.from(json.decode(codesJson!));
+      expect(codes.length, 300); // But only 300 codes should remain
+    });
+
+    test('migrates existing submissions on first call', () async {
+      // Simulate existing data without migration
+      SharedPreferences.setMockInitialValues({
+        'codes_with_status':
+            '{"code1": true, "code2": true, "code3": false, "code4": true}',
+        'total_successful_submissions': '0', // Not migrated yet
+        'migration_done': 'false',
+      });
+
+      final total = await PreferencesHelper.getTotalSuccessfulSubmissions();
+      expect(total, 3); // Should count the 3 successful submissions
+
+      // Check that migration flag was set
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getBool('migration_done'), true);
+    });
+
+    test('does not migrate twice', () async {
+      // Simulate already migrated data
+      SharedPreferences.setMockInitialValues({
+        'codes_with_status': '{"code1": true, "code2": true}',
+        'total_successful_submissions': '5', // Already migrated
+        'migration_done': 'true',
+      });
+
+      final total = await PreferencesHelper.getTotalSuccessfulSubmissions();
+      expect(total, 5); // Should return the stored value, not recalculate
+    });
   });
 
   group('PreferencesHelper.getCodesWithStatusFromPreferences', () {
@@ -239,9 +317,9 @@ void main() {
       expect(history.length, 1);
     });
 
-    test('keeps only 50 items in history', () async {
+    test('keeps only 300 items in history', () async {
       final now = DateTime.now();
-      final initialHistory = List.generate(50, (i) {
+      final initialHistory = List.generate(300, (i) {
         return {
           'barcode': '123$i',
           'timestamp': now.subtract(Duration(minutes: i + 1)).toIso8601String(),
@@ -256,7 +334,7 @@ void main() {
       final historyJson = prefs.getString('scan_history');
       final history =
           List<Map<String, dynamic>>.from(json.decode(historyJson!));
-      expect(history.length, 50);
+      expect(history.length, 300);
       expect(history.last['barcode'], '6958591');
     });
   });
