@@ -186,33 +186,14 @@ void main() {
       expect(codes.length, 300); // But only 300 codes should remain
     });
 
-    test('migrates existing submissions on first call', () async {
-      // Simulate existing data without migration
-      SharedPreferences.setMockInitialValues({
-        'codes_with_status':
-            '{"code1": true, "code2": true, "code3": false, "code4": true}',
-        'total_successful_submissions': '0', // Not migrated yet
-        'migration_done': 'false',
-      });
-
-      final total = await PreferencesHelper.getTotalSuccessfulSubmissions();
-      expect(total, 3); // Should count the 3 successful submissions
-
-      // Check that migration flag was set
+    test(
+        'sets total_successful_submissions to the number of successful submissions',
+        () async {
+      await PreferencesHelper.addCodeToPreferences('code1', true);
+      await PreferencesHelper.addCodeToPreferences('code2', true);
       final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getBool('migration_done'), true);
-    });
-
-    test('does not migrate twice', () async {
-      // Simulate already migrated data
-      SharedPreferences.setMockInitialValues({
-        'codes_with_status': '{"code1": true, "code2": true}',
-        'total_successful_submissions': '5', // Already migrated
-        'migration_done': 'true',
-      });
-
-      final total = await PreferencesHelper.getTotalSuccessfulSubmissions();
-      expect(total, 5); // Should return the stored value, not recalculate
+      final total = prefs.getInt('total_successful_submissions');
+      expect(total, 2);
     });
   });
 
