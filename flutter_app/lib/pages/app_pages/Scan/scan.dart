@@ -5,9 +5,8 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vegan_app/helpers/preference_helper.dart';
 import 'package:vegan_app/pages/app_pages/Scan/history_modal.dart';
+import 'package:vegan_app/pages/app_pages/Scan/sent_products_modal.dart';
 import 'package:vegan_app/pages/app_pages/Scan/product_info_helper.dart';
-import 'package:vegan_app/pages/app_pages/home.dart';
-import 'package:vegan_app/pages/app_pages/profile.dart';
 import 'package:vegan_app/widgets/scaner/card_product.dart';
 import 'package:vegan_app/widgets/scaner/pending_product_info_card.dart';
 import 'package:vegan_app/widgets/scaner/report_error_button.dart';
@@ -249,18 +248,35 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
               height: 0.05.sh,
               child: FloatingActionButton(
                 onPressed: () {
-                  final homePageState =
-                      context.findAncestorStateOfType<MyHomePageState>();
-                  if (homePageState != null) {
-                    homePageState.setState(() {
-                      homePageState.selectedSubPage =
-                          SubPage.products; // Update the subpage
-                    });
-                    Future.delayed(const Duration(milliseconds: 50), () {
-                      homePageState.motionTabBarController.index =
-                          3; // Navigate to the profile page
-                    });
-                  }
+                  // Stop the scanner when opening the modal
+                  controller.stop();
+                  setState(() {
+                    productInfo = null;
+                  });
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Dialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20.0),
+                          child: Stack(
+                            children: [
+                              SizedBox(
+                                height: 0.70.sh,
+                                child: const SentProductsModal(),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ).then((_) {
+                    controller
+                        .start(); // Restart the scanner when the modal is closed
+                  });
                 },
                 backgroundColor: const Color(0xFF1A722E),
                 child: Row(

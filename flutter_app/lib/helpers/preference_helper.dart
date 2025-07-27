@@ -54,7 +54,26 @@ class PreferencesHelper {
       codesWithStatus[code] = true;
     }
 
-    // Save the updated map back to shared preferences
+    // Track total successful submissions
+    int totalSuccessful = 0;
+    if (prefs.getInt('total_successful_submissions') == null) {
+      totalSuccessful = await migrateTotalSuccessfulSubmissions();
+    } else {
+      totalSuccessful = prefs.getInt('total_successful_submissions') ?? 0;
+    }
+    if (success) {
+      totalSuccessful++;
+      await prefs.setInt('total_successful_submissions', totalSuccessful);
+    }
+
+    // Ensure the codes list contains a maximum of 300 items
+    if (codesWithStatus.length > 300) {
+      List<MapEntry<String, bool>> entries = codesWithStatus.entries.toList();
+      // Remove the oldest entries (first in the list)
+      entries.removeRange(0, entries.length - 300);
+      codesWithStatus = Map.fromEntries(entries);
+    }
+
     await prefs.setString('codes_with_status', json.encode(codesWithStatus));
   }
 
@@ -78,6 +97,31 @@ class PreferencesHelper {
         .where((entry) => entry.value == true)
         .map((entry) => entry.key)
         .toList();
+  }
+
+  // Method to get total number of successful submissions (including removed ones)
+  static Future<int> getTotalSuccessfulSubmissions() async {
+    final prefs = await SharedPreferences.getInstance();
+    int total = 0;
+    if (prefs.getInt('total_successful_submissions') == null) {
+      total = await migrateTotalSuccessfulSubmissions();
+    } else {
+      total = prefs.getInt('total_successful_submissions') ?? 0;
+    }
+
+    return total;
+  }
+
+  static Future<int> migrateTotalSuccessfulSubmissions() async {
+    final prefs = await SharedPreferences.getInstance();
+    int total = 0;
+
+    Map<String, bool> codesWithStatus =
+        await getCodesWithStatusFromPreferences();
+    total =
+        codesWithStatus.entries.where((entry) => entry.value == true).length;
+    await prefs.setInt('total_successful_submissions', total);
+    return total;
   }
 
   static Future<void> addBarcodeToHistory(String barcode) async {
