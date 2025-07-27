@@ -697,6 +697,25 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
           icon: const Icon(Icons.share),
           label: const Text('Partager l\'application'),
         ),
+        SizedBox(height: 28.h),
+        Text(
+          'Vous pouvez aussi me contacter sur',
+          style: TextStyle(
+            fontSize: 38.sp,
+            color: Colors.grey[700],
+          ),
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(height: 4.h),
+        SelectableText(
+          'contact@321vegan.fr',
+          style: TextStyle(
+            fontSize: 44.sp,
+            color: Theme.of(context).primaryColor,
+            fontWeight: FontWeight.bold,
+          ),
+          textAlign: TextAlign.center,
+        ),
       ],
     );
   }
