@@ -46,21 +46,38 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
     const fallbackUrl = 'https://instagram.com/321vegan.app';
 
     try {
-      bool launched = await launchUrl(Uri.parse(instagramUrl),
-          mode: LaunchMode.externalApplication);
+      // Try to open Instagram app first
+      bool launched = await launchUrl(
+        Uri.parse(instagramUrl),
+        mode: LaunchMode.externalApplication,
+      );
 
+      // If Instagram app failed to launch, try the web URL
       if (!launched) {
-        await launchUrl(Uri.parse(fallbackUrl),
-            mode: LaunchMode.platformDefault);
+        await launchUrl(
+          Uri.parse(fallbackUrl),
+          mode: LaunchMode.externalApplication,
+        );
       }
     } catch (e) {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Impossible d\'ouvrir Instagram'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      // If both attempts fail, try one more time with platform default
+      try {
+        await launchUrl(
+          Uri.parse(fallbackUrl),
+          mode: LaunchMode.platformDefault,
+        );
+      } catch (e2) {
+        if (!context.mounted) {
+          return;
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+                'Impossible d\'ouvrir Instagram. Veuillez vérifier votre connexion internet.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
@@ -94,6 +111,8 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
           SizedBox(height: 32.h),
           _buildDonationGoalSection(),
           SizedBox(height: 24.h),
+          _buildSocialSection(),
+          SizedBox(height: 32.h),
         ],
       ),
     );

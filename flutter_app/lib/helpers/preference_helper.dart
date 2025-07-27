@@ -97,16 +97,16 @@ class PreferencesHelper {
   // Method to get total number of successful submissions (including removed ones)
   static Future<int> getTotalSuccessfulSubmissions() async {
     final prefs = await SharedPreferences.getInstance();
-    int total = prefs.getInt('total_successful_submissions') ?? 0;
-
-    // If total is 0, take the number of successful submissions
-    if (total == 0) {
+    int total = 0;
+    if (prefs.getInt('total_successful_submissions') == null) {
       Map<String, bool> codesWithStatus =
           await getCodesWithStatusFromPreferences();
       total =
           codesWithStatus.entries.where((entry) => entry.value == true).length;
       await prefs.setInt('total_successful_submissions', total);
     }
+
+    total = prefs.getInt('total_successful_submissions') ?? 0;
 
     return total;
   }

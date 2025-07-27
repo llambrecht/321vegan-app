@@ -98,7 +98,6 @@ flutter:
     - lib/assets/intro/cosmetics.gif
     - lib/assets/intro/scan.gif
     - lib/assets/intro/scan_unknown.gif
-    - lib/assets/intro/profil.gif
     - lib/assets/intro/accueil.gif
     - .env
 

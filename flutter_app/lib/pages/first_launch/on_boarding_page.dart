@@ -97,13 +97,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
           decoration: getPageDecorationWithGif(),
         ),
         PageViewModel(
-          title: "Consultez vos envois",
-          body:
-              "Consultez l'historique de vos produits envoyés pour suivre leur statut.",
-          image: Image.asset('lib/assets/intro/profil.gif'),
-          decoration: getPageDecorationWithGif(),
-        ),
-        PageViewModel(
           title: "Suivez votre impact",
           body:
               "Constatez l'impact de vos choix sur l'environnement et les animaux.",
