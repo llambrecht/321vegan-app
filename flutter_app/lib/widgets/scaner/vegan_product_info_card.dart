@@ -61,6 +61,7 @@ class VeganProductInfoCard extends StatelessWidget {
     '7up',
     'tropicana',
     'lipton',
+    'quaker',
 
     // ==== Nestlé ====
     'nestlé',
@@ -134,6 +135,7 @@ class VeganProductInfoCard extends StatelessWidget {
     'ahava',
     'sodastream',
     'oatly',
+    'old el paso'
   ];
 
   bool isOnBDSList() {
