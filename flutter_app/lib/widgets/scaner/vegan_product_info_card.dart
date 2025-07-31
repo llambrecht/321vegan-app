@@ -105,6 +105,7 @@ class VeganProductInfoCard extends StatelessWidget {
 
     // ==== Lidl (and sub-brands) ====
     'lidl',
+    'freshona',
     'favorina',
     'deluxe',
     'cien',
@@ -139,7 +140,8 @@ class VeganProductInfoCard extends StatelessWidget {
     'ahava',
     'sodastream',
     'oatly',
-    'old el paso'
+    'old el paso',
+    'redefine meat',
   ];
 
   bool isOnBDSList() {
