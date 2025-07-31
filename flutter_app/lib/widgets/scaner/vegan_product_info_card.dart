@@ -122,13 +122,13 @@ class VeganProductInfoCard extends StatelessWidget {
     'belin',
     'heudebert',
     'poulain',
+    'sour patch',
 
     // ==== Danone ====
     'danone',
     'alpro',
     'volvic',
     'evian',
-
     'bledina',
 
     // ==== Others ====
