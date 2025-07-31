@@ -126,6 +126,7 @@ class VeganProductInfoCard extends StatelessWidget {
 
     // ==== Danone ====
     'danone',
+    'materne',
     'alpro',
     'volvic',
     'evian',
