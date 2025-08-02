@@ -13,6 +13,8 @@ import 'package:vegan_app/helpers/time_counter/time_counter.dart';
 import 'package:vegan_app/widgets/homepage/stat_card.dart';
 import 'package:confetti/confetti.dart';
 import 'package:vegan_app/widgets/wave_clipper.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -23,15 +25,16 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   DateTime? targetDate;
-  SubPage selectedSubPage = SubPage.aboutMe; // Default subpage
   late MotionTabBarController motionTabBarController;
   late Map<String, int> _savings;
   late Timer _timer;
   late ConfettiController _confettiController;
+  final TextEditingController _dateController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    initializeDateFormatting('fr_FR', null);
     _timer = Timer.periodic(
         const Duration(minutes: 1), (Timer t) => _updateSavings());
     motionTabBarController = MotionTabBarController(
@@ -51,6 +54,7 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     motionTabBarController.dispose();
     _confettiController.dispose();
     _timer.cancel();
+    _dateController.dispose();
     super.dispose();
   }
 
@@ -69,12 +73,32 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     });
   }
 
+  Future<void> _pickDate() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: targetDate ?? DateTime.now(),
+      firstDate: DateTime(1920),
+      lastDate: DateTime.now(),
+    );
+
+    if (picked != null && picked != targetDate) {
+      setState(() {
+        targetDate = picked;
+        _dateController.text = DateFormat.yMMMd('fr_FR').format(targetDate!);
+      });
+
+      await PreferencesHelper.addSelectedDateToPrefs(targetDate!);
+      _onDateSaved(targetDate!);
+    }
+  }
+
   Future<void> loadTargetDate() async {
     final DateTime? dateFromPrefs =
         await PreferencesHelper.getSelectedDateFromPrefs();
     if (dateFromPrefs != null) {
       setState(() {
         targetDate = dateFromPrefs;
+        _dateController.text = DateFormat.yMMMd('fr_FR').format(targetDate!);
       });
     }
   }
@@ -205,6 +229,71 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                       child: Text('Démarrer le compteur',
                           style: TextStyle(fontSize: 60.sp)),
                     ),
+                  )
+                else
+                  Positioned(
+                    bottom: 120.h,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 32.w, vertical: 12.h),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(30.r),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            spreadRadius: 1,
+                            blurRadius: 3,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            DateFormat.yMd('fr_FR').format(targetDate!),
+                            style: TextStyle(
+                              fontSize: 50.sp,
+                              fontFamily: 'Baloo',
+                              color: Colors.black87,
+                            ),
+                          ),
+                          SizedBox(width: 20.w),
+                          GestureDetector(
+                            onTap: _pickDate,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20.w, vertical: 8.h),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor,
+                                borderRadius: BorderRadius.circular(20.r),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "Modifier",
+                                    style: TextStyle(
+                                      fontSize: 45.sp,
+                                      fontFamily: 'Baloo',
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  SizedBox(width: 8.w),
+                                  Icon(
+                                    Icons.calendar_today,
+                                    color: Colors.white,
+                                    size: 40.sp,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ConfettiWidget(
                   numberOfParticles: 20,
@@ -226,13 +315,12 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           const ScanPage(),
           ProfilePage(
             onDateSaved: _onDateSaved,
-            selectedInitialSubPage: selectedSubPage,
           ),
         ],
       ),
       bottomNavigationBar: MotionTabBar(
         controller: motionTabBarController,
-        labels: const ["Promos", "Accueil", "Recherche", "Scan", "Profile"],
+        labels: const ["Promos", "Accueil", "Recherche", "Scan", "À propos"],
         initialSelectedTab: "Accueil",
         tabIconColor: Colors.grey,
         tabSelectedColor: Theme.of(context).colorScheme.primary,
@@ -246,7 +334,7 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           Icons.home,
           Icons.search,
           Icons.qr_code_scanner,
-          Icons.person
+          Icons.info_outline
         ],
         textStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
       ),

@@ -40,6 +40,16 @@ void main() {
       ),
     );
     await tester.pump(const Duration(seconds: 1));
+
+    // Check that all time values are displayed as '00'
     expect(find.text('00'), findsNWidgets(6));
+
+    // Verify that all time labels are present
+    expect(find.text('ans'), findsOneWidget);
+    expect(find.text('mois'), findsOneWidget);
+    expect(find.text('jours'), findsOneWidget);
+    expect(find.text('heures'), findsOneWidget);
+    expect(find.text('min'), findsOneWidget);
+    expect(find.text('sec'), findsOneWidget);
   });
 }

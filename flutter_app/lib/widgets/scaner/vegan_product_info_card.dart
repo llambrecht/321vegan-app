@@ -61,6 +61,7 @@ class VeganProductInfoCard extends StatelessWidget {
     '7up',
     'tropicana',
     'lipton',
+    'quaker',
 
     // ==== Nestlé ====
     'nestlé',
@@ -104,6 +105,7 @@ class VeganProductInfoCard extends StatelessWidget {
 
     // ==== Lidl (and sub-brands) ====
     'lidl',
+    'freshona',
     'favorina',
     'deluxe',
     'cien',
@@ -121,11 +123,15 @@ class VeganProductInfoCard extends StatelessWidget {
     'belin',
     'heudebert',
     'poulain',
+    'sour patch',
 
     // ==== Danone ====
     'danone',
+    'materne',
     'alpro',
     'volvic',
+    'evian',
+    'bledina',
 
     // ==== Others ====
     'starbucks',
@@ -134,6 +140,8 @@ class VeganProductInfoCard extends StatelessWidget {
     'ahava',
     'sodastream',
     'oatly',
+    'old el paso',
+    'redefine meat',
   ];
 
   bool isOnBDSList() {

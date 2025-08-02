@@ -53,120 +53,182 @@ class _HistoryModalState extends State<HistoryModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(20.r),
-      child: Padding(
-        padding: EdgeInsets.all(16.r),
-        child: Column(
-          children: [
-            Row(
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+      child: Column(
+        children: [
+          // Header
+          Container(
+            padding: EdgeInsets.all(20.w),
+            decoration: BoxDecoration(
+              color: const Color(0xFF1A722E),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(20.0),
+                topRight: Radius.circular(20.0),
+              ),
+            ),
+            child: Row(
               children: [
-                Icon(Icons.history, color: Colors.black54, size: 40.sp),
-                SizedBox(width: 8.w),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Historique des scans',
-                      style: TextStyle(
-                        fontSize: 40.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      '(50 derniers scans)',
-                      style: TextStyle(
-                        fontSize: 35.sp,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
+                Icon(
+                  Icons.history,
+                  color: Colors.white,
+                  size: 40.sp,
                 ),
-                const Spacer(),
-                TextButton.icon(
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Historique',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 50.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        '(50 derniers scans)',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.8),
+                          fontSize: 35.sp,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                ElevatedButton.icon(
                   onPressed: _clearHistory,
-                  icon: Icon(Icons.delete, color: Colors.red, size: 40.sp),
+                  icon: Icon(Icons.delete, color: Colors.white, size: 40.sp),
                   label: Text(
                     'Effacer',
                     style: TextStyle(
                       fontSize: 40.sp,
-                      color: Colors.red,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: Icon(
+                    Icons.close,
+                    color: Colors.white,
+                    size: 40.sp,
                   ),
                 ),
               ],
             ),
-            const Divider(),
-            Expanded(
-              child: _history.isNotEmpty
-                  ? ListView.builder(
-                      itemCount: _history.length,
-                      itemBuilder: (context, index) {
-                        final item = _history[index];
-                        final barcode = item['barcode'];
-                        final timestamp = item['timestamp'];
+          ),
+          // Content
+          Expanded(
+            child: _history.isNotEmpty
+                ? ListView.builder(
+                    padding: EdgeInsets.all(16.w),
+                    itemCount: _history.length,
+                    itemBuilder: (context, index) {
+                      final item = _history[index];
+                      final barcode = item['barcode'];
+                      final timestamp = item['timestamp'];
 
-                        return FutureBuilder<List<dynamic>>(
-                          future: Future.wait([
-                            _fetchProductDetails(
-                                barcode), // Fetch product details
-                            _isProductAlredySent(
-                                barcode), // Check if the product is already sent
-                          ]),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Padding(
-                                padding: EdgeInsets.all(12.0),
-                                child: Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                              );
-                            } else if (snapshot.hasError ||
-                                snapshot.data == null) {
-                              return _buildProductCard(
-                                context: context,
-                                name: 'Erreur',
-                                brand: 'Impossible de charger le produit',
-                                scannedDate: timestamp,
-                                isVegan: null,
-                                problem: null, // No problem for error case
-                              );
-                            } else {
-                              final productDetails =
-                                  snapshot.data![0] as Map<String, dynamic>;
-                              final isAlreadySent = snapshot.data![1] as bool;
+                      return FutureBuilder<List<dynamic>>(
+                        future: Future.wait([
+                          _fetchProductDetails(
+                              barcode), // Fetch product details
+                          _isProductAlredySent(
+                              barcode), // Check if the product is already sent
+                        ]),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Padding(
+                              padding: EdgeInsets.all(12.0),
+                              child: Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          } else if (snapshot.hasError ||
+                              snapshot.data == null) {
+                            return _buildProductCard(
+                              context: context,
+                              name: 'Erreur',
+                              brand: 'Impossible de charger le produit',
+                              scannedDate: timestamp,
+                              isVegan: null,
+                              problem: null, // No problem for error case
+                            );
+                          } else {
+                            final productDetails =
+                                snapshot.data![0] as Map<String, dynamic>;
+                            final isAlreadySent = snapshot.data![1] as bool;
 
-                              return _buildProductCard(
-                                context: context,
-                                name: (productDetails['name']?.isNotEmpty ??
-                                        false)
-                                    ? productDetails['name']
-                                    : productDetails['code'] ??
-                                        'Produit inconnu',
-                                brand: productDetails['brand'] ??
-                                    'Marque inconnue',
-                                scannedDate: timestamp,
-                                isVegan: productDetails['is_vegan'],
-                                problem: productDetails['problem'],
-                                biodynamie: productDetails['biodynamie'],
-                                alreadySent: isAlreadySent,
-                              );
-                            }
-                          },
-                        );
-                      },
-                    )
-                  : Center(
-                      child: Text(
-                        'Scannez des produits pour les voir apparaître dans cet historique',
-                        style: TextStyle(fontSize: 40.sp, color: Colors.black),
+                            return _buildProductCard(
+                              context: context,
+                              name: (productDetails['name']?.isNotEmpty ??
+                                      false)
+                                  ? productDetails['name']
+                                  : productDetails['code'] ?? 'Produit inconnu',
+                              brand:
+                                  productDetails['brand'] ?? 'Marque inconnue',
+                              scannedDate: timestamp,
+                              isVegan: productDetails['is_vegan'],
+                              problem: productDetails['problem'],
+                              biodynamie: productDetails['biodynamie'],
+                              alreadySent: isAlreadySent,
+                            );
+                          }
+                        },
+                      );
+                    },
+                  )
+                : Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(20.w),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.history_outlined,
+                            size: 80.sp,
+                            color: Colors.grey,
+                          ),
+                          SizedBox(height: 16.h),
+                          Text(
+                            'Aucun historique',
+                            style: TextStyle(
+                              fontSize: 50.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          SizedBox(height: 8.h),
+                          Text(
+                            'Scannez des produits pour les voir apparaître dans cet historique',
+                            style: TextStyle(
+                              fontSize: 40.sp,
+                              color: Colors.grey,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
                       ),
                     ),
-            ),
-          ],
-        ),
+                  ),
+          ),
+        ],
       ),
     );
   }
