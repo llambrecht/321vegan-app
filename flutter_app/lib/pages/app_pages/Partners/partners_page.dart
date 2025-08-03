@@ -234,22 +234,12 @@ class PartnersPage extends StatelessWidget {
   void _launchWebsite(BuildContext context, String url) async {
     try {
       final Uri uri = Uri.parse(url);
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
-      } else {
-        if (!context.mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Impossible d\'ouvrir le lien'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
     } catch (e) {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Erreur lors de l\'ouverture du lien'),
+          content: Text('Impossible d\'ouvrir le lien'),
           backgroundColor: Colors.red,
         ),
       );
