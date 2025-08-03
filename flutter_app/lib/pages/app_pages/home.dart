@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:motion_tab_bar_v2/motion-tab-bar.dart';
 import 'package:motion_tab_bar_v2/motion-tab-controller.dart';
 import 'package:vegan_app/helpers/preference_helper.dart';
+import 'package:vegan_app/pages/app_pages/Partners/partners_page.dart';
 import 'package:vegan_app/pages/app_pages/Scan/scan.dart';
 import 'package:vegan_app/pages/app_pages/profile.dart';
 import 'package:vegan_app/pages/app_pages/search.dart';
@@ -37,8 +38,8 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     _timer = Timer.periodic(
         const Duration(minutes: 1), (Timer t) => _updateSavings());
     motionTabBarController = MotionTabBarController(
-      initialIndex: 0,
-      length: 4,
+      initialIndex: 1,
+      length: 5,
       vsync: this,
     );
     _savings = {};
@@ -118,6 +119,7 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       body: TabBarView(
         controller: motionTabBarController,
         children: [
+          const PartnersPage(),
           Center(
             child: Stack(
               alignment: Alignment.center,
@@ -318,7 +320,7 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       ),
       bottomNavigationBar: MotionTabBar(
         controller: motionTabBarController,
-        labels: const ["Accueil", "Recherche", "Scan", "À propos"],
+        labels: const ["Promos", "Accueil", "Recherche", "Scan", "À propos"],
         initialSelectedTab: "Accueil",
         tabIconColor: Colors.grey,
         tabSelectedColor: Theme.of(context).colorScheme.primary,
@@ -328,6 +330,7 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           });
         },
         icons: const [
+          Icons.percent,
           Icons.home,
           Icons.search,
           Icons.qr_code_scanner,
