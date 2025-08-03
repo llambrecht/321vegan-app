@@ -57,7 +57,7 @@ class PartnersPage extends StatelessWidget {
                         SizedBox(width: 12.w),
                         Expanded(
                           child: Text(
-                            'Avec les codes affiliés 321 Vegan, vous bénéficiez de réductions dans certaines boutiques en ligne.\nUtiliser ces codes permet de soutenir l\'application !',
+                            'Avec les codes promos de nos partenaires, vous bénéficiez de réductions dans certaines boutiques en ligne.',
                             style: TextStyle(
                               fontSize: 42.sp,
                               fontWeight: FontWeight.w400,
@@ -81,32 +81,23 @@ class PartnersPage extends StatelessWidget {
                       children: [
                         _buildPartnerCard(
                           context: context,
-                          brandName: 'PlantJoy',
-                          logoName: 'logo-plantjoy.png',
+                          brandName: 'Vegetal Food',
+                          logoName: 'logo-vegetalfood.png',
                           discountCode: '321VEGAN10',
+                          discountAmount: '10% de réduction (hors promos)',
+                          websiteUrl: 'https://vegetalfood.fr',
+                          description:
+                              'Boutique de produits alimentaires véganes en ligne avec un très large choix !',
+                        ),
+                        _buildPartnerCard(
+                          context: context,
+                          brandName: 'Zebra Vegan Shop',
+                          logoName: 'logo-zebra.png',
+                          discountCode: '321VEGANZEBRA',
                           discountAmount: '10% de réduction',
-                          websiteUrl: 'https://plantjoy.fr',
+                          websiteUrl: 'https://www.zebraveganshop.com/',
                           description:
-                              'Produits végans à réhydrater (Steaks, nuggets, haché, ...)',
-                        ),
-                        _buildPartnerCard(
-                          context: context,
-                          brandName: 'Official Vegan Shop',
-                          logoName: 'logo-ovs.png',
-                          discountCode: '321VEGAN5',
-                          discountAmount: '5% de réduction',
-                          websiteUrl: 'https://officialveganshop.com',
-                          description:
-                              'Boutique de produits véganes en ligne avec un très large choix ! ',
-                        ),
-                        _buildPartnerCard(
-                          context: context,
-                          brandName: 'Véganie',
-                          logoName: 'logo-veganie.png',
-                          discountCode: 'PARTNER321',
-                          discountAmount: '15€ offerts (dès 50€ d\'achat)',
-                          websiteUrl: 'https://veganie.com/',
-                          description: 'Vêtements éthiques et durables',
+                              'La boutique en ligne qui regroupe la plus belle sélection de marques de mode vegan. Fabriqués en Europe à partir de matériaux éco-responsables',
                         ),
                       ],
                     ),

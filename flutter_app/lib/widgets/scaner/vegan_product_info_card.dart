@@ -105,6 +105,7 @@ class VeganProductInfoCard extends StatelessWidget {
 
     // ==== Lidl (and sub-brands) ====
     'lidl',
+    'snack day',
     'freshona',
     'favorina',
     'deluxe',
@@ -112,6 +113,7 @@ class VeganProductInfoCard extends StatelessWidget {
     'solevita',
     'sondey',
     'vemondo',
+    'crownfield',
 
     // ==== Mondelez ====
     'mondelez',
