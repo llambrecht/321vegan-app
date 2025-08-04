@@ -89,6 +89,9 @@ class VeganProductInfoCard extends StatelessWidget {
     'ben & jerry\'s',
     'ben & jerrys',
     'ben&jerry\'s',
+    'elephant',
+    'éléphant',
+    'eléphant',
 
     // ==== L'Oréal ====
     'l\'oréal',
