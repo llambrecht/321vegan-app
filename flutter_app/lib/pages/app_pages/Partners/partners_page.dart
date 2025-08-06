@@ -99,6 +99,16 @@ class PartnersPage extends StatelessWidget {
                           description:
                               'La boutique en ligne qui regroupe la plus belle sélection de marques de mode vegan. Fabriqués en Europe à partir de matériaux éco-responsables',
                         ),
+                        _buildPartnerCard(
+                          context: context,
+                          brandName: 'Terroirs Véganes',
+                          logoName: 'logo-terroirs.png',
+                          discountCode: '321VEGAN10',
+                          discountAmount: '10% de réduction (hors promos)',
+                          websiteUrl: 'https://www.terroirs-veganes.fr',
+                          description:
+                              'Des produits du terroir, innovants, essentiellement français.  Véganes militantes, Lisa & Florence sont également les fondatrices du sanctuaire la Pondation de Félicie',
+                        ),
                       ],
                     ),
                   ),
