@@ -350,7 +350,7 @@ class NonVeganProductInfoCardState extends State<NonVeganProductInfoCard> {
                       Text(
                         'Je ne sais pas',
                         style: TextStyle(
-                          fontSize: 36.sp,
+                          fontSize: 40.sp,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
