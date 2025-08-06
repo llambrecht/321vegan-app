@@ -107,7 +107,7 @@ class PartnersPage extends StatelessWidget {
                           discountAmount: '10% de réduction (hors promos)',
                           websiteUrl: 'https://www.terroirs-veganes.fr',
                           description:
-                              'Des produits du terroir, innovants, essentiellement français.  Véganes militantes, Lisa & Florence sont également les fondatrices du sanctuaire la Pondation de Félicie',
+                              'Des produits du terroir, innovants, essentiellement français. Véganes militantes, Lisa & Florence sont également les fondatrices du sanctuaire la Pondation de Félicie',
                         ),
                       ],
                     ),
