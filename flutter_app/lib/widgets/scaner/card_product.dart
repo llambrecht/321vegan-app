@@ -190,7 +190,8 @@ class NonVeganProductInfoCardState extends State<NonVeganProductInfoCard> {
             ),
             const SizedBox(height: 10),
             Text(
-              "Ce produit nous est inconnu. Vous pouvez le signaler comme végane ou non. Merci !",
+              "Produit non référencé. Envoyez le en cliquant sur un des bouton et nous l'ajouterons après vérification !",
+              textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,
                 fontStyle: FontStyle.italic,
@@ -198,102 +199,164 @@ class NonVeganProductInfoCardState extends State<NonVeganProductInfoCard> {
                 fontWeight: FontWeight.w500,
               ),
             ),
-            SizedBox(height: 80.h),
-            ElevatedButton(
-              onPressed: _isButtonDisabled
-                  ? null
-                  : () async {
-                      bool success = await ProductHelper.tryAddDocument(
-                        context,
-                        widget.productInfo,
-                        VeganStatus.vegan, // Vegan
-                      );
-                      if (success) {
-                        setState(() {
-                          _isButtonDisabled = true;
-                        });
-                        widget.confettiController.play();
-                      }
-                    },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 36.w),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-              child: Text(
-                'Signaler comme végane',
-                style: TextStyle(
-                  fontSize: 48.sp,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+            Text(
+              "(Produits alimentaires uniquement)",
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey.shade700,
               ),
             ),
-            const SizedBox(height: 16), // Add spacing between the buttons
-            ElevatedButton(
-              onPressed: _isButtonDisabled
-                  ? null
-                  : () async {
-                      bool success = await ProductHelper.tryAddDocument(
-                        context,
-                        widget.productInfo,
-                        VeganStatus.nonVegan, // Non vegan
-                      );
-                      if (success) {
-                        setState(() {
-                          _isButtonDisabled = true;
-                        });
-                        widget.confettiController.play();
-                      }
-                    },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 36.w),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+            SizedBox(height: 60.h),
+            // Side by side buttons for vegan/non-vegan
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: _isButtonDisabled
+                        ? null
+                        : () async {
+                            bool success = await ProductHelper.tryAddDocument(
+                              context,
+                              widget.productInfo,
+                              VeganStatus.vegan, // Vegan
+                            );
+                            if (success) {
+                              setState(() {
+                                _isButtonDisabled = true;
+                              });
+                              widget.confettiController.play();
+                            }
+                          },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      padding: EdgeInsets.symmetric(
+                          vertical: 16.h, horizontal: 20.w),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.eco,
+                          color: Colors.white,
+                          size: 60.sp,
+                        ),
+                        SizedBox(height: 8.h),
+                        Text(
+                          "C'est végane",
+                          style: TextStyle(
+                            fontSize: 40.sp,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-              child: Text(
-                'Signaler comme non végane',
-                style: TextStyle(
-                  fontSize: 48.sp,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                SizedBox(width: 16.w),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: _isButtonDisabled
+                        ? null
+                        : () async {
+                            bool success = await ProductHelper.tryAddDocument(
+                              context,
+                              widget.productInfo,
+                              VeganStatus.nonVegan, // Non vegan
+                            );
+                            if (success) {
+                              setState(() {
+                                _isButtonDisabled = true;
+                              });
+                              widget.confettiController.play();
+                            }
+                          },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      padding: EdgeInsets.symmetric(
+                          vertical: 16.h, horizontal: 20.w),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.block,
+                          color: Colors.white,
+                          size: 60.sp,
+                        ),
+                        SizedBox(height: 8.h),
+                        Text(
+                          "C'est pas végane",
+                          style: TextStyle(
+                            fontSize: 40.sp,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _isButtonDisabled
-                  ? null
-                  : () async {
-                      bool success = await ProductHelper.tryAddDocument(
-                        context,
-                        widget.productInfo,
-                        VeganStatus.maybeVegan, // Maybe vegan
-                      );
-                      if (success) {
-                        setState(() {
-                          _isButtonDisabled = true;
-                        });
-                        widget.confettiController.play();
-                      }
-                    },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
-                padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 36.w),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-              child: Text(
-                'Je ne sais pas',
-                style: TextStyle(
-                  fontSize: 48.sp,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+            const SizedBox(height: 20),
+            Center(
+              child: SizedBox(
+                width: 500.w,
+                child: ElevatedButton(
+                  onPressed: _isButtonDisabled
+                      ? null
+                      : () async {
+                          bool success = await ProductHelper.tryAddDocument(
+                            context,
+                            widget.productInfo,
+                            VeganStatus.maybeVegan, // Maybe vegan
+                          );
+                          if (success) {
+                            setState(() {
+                              _isButtonDisabled = true;
+                            });
+                            widget.confettiController.play();
+                          }
+                        },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange,
+                    padding:
+                        EdgeInsets.symmetric(vertical: 16.h, horizontal: 24.w),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.help_outline,
+                        color: Colors.white,
+                        size: 60.sp,
+                      ),
+                      SizedBox(width: 20.w),
+                      Text(
+                        'Je ne sais pas',
+                        style: TextStyle(
+                          fontSize: 40.sp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

@@ -92,6 +92,7 @@ class VeganProductInfoCard extends StatelessWidget {
     'elephant',
     'éléphant',
     'eléphant',
+    'the vegetarian butcher',
 
     // ==== L'Oréal ====
     'l\'oréal',
