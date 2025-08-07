@@ -25,7 +25,7 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
 
   Future<void> fetchDonationGoals() async {
     const url =
-        'https://raw.githubusercontent.com/llambrecht/321vegan_appcast/refs/heads/main/goals.json';
+        'https://raw.githubusercontent.com/llambrecht/321vegan_appcast/main/goals.json';
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
