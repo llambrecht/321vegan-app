@@ -13,7 +13,7 @@ class AboutPage extends StatefulWidget {
 }
 
 class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
-  double? currentAmount = 14;
+  double? currentAmount = 17;
   double? goalFrais = 45;
   double? goalVivre = 2000;
 
@@ -25,7 +25,7 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
 
   Future<void> fetchDonationGoals() async {
     const url =
-        'https://raw.githubusercontent.com/llambrecht/321vegan_appcast/main/goals.json';
+        'https://raw.githubusercontent.com/llambrecht/321vegan_appcast/refs/heads/main/goals.json';
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
