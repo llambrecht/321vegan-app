@@ -11,7 +11,7 @@ class VeganProductInfoCard extends StatelessWidget {
     required this.productInfo,
   });
 
-  // This is a temporary solution to check if the product is on the BDS list.
+  // This is a temporary solution to check if a brand is boycott.
   // Todo : Find a better solution; like using a json file with more infos for each manufacturer or a database ?
   static const List<String> bdsBrands = [
     // ==== Mars Group ====
@@ -148,6 +148,8 @@ class VeganProductInfoCard extends StatelessWidget {
     'oatly',
     'old el paso',
     'redefine meat',
+    'henaff',
+    'hénaff',
   ];
 
   bool isOnBDSList() {
