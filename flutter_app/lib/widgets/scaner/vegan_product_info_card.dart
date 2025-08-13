@@ -2,14 +2,56 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vegan_app/helpers/helper.dart';
 import 'package:vegan_app/widgets/scaner/info_modal.dart';
+import 'package:vegan_app/services/brand_score_service.dart';
+import 'package:vegan_app/models/brand_score.dart';
+import 'package:vegan_app/widgets/scaner/brand_score_bottom_sheet.dart';
 
-class VeganProductInfoCard extends StatelessWidget {
+class VeganProductInfoCard extends StatefulWidget {
   final Map<dynamic, dynamic>? productInfo;
 
   const VeganProductInfoCard({
     super.key,
     required this.productInfo,
   });
+
+  @override
+  VeganProductInfoCardState createState() => VeganProductInfoCardState();
+}
+
+class VeganProductInfoCardState extends State<VeganProductInfoCard> {
+  BrandScore? _brandScore;
+  bool _isLoadingBrandScore = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBrandScore();
+  }
+
+  void _loadBrandScore() async {
+    final brand = widget.productInfo?['brand'];
+    if (brand != null && brand is String && brand.isNotEmpty) {
+      setState(() {
+        _isLoadingBrandScore = true;
+      });
+
+      try {
+        final score = await BrandScoreService.fetchBrandScore(brand);
+        if (mounted) {
+          setState(() {
+            _brandScore = score;
+            _isLoadingBrandScore = false;
+          });
+        }
+      } catch (e) {
+        if (mounted) {
+          setState(() {
+            _isLoadingBrandScore = false;
+          });
+        }
+      }
+    }
+  }
 
   // This is a temporary solution to check if a brand is boycott.
   // Todo : Find a better solution; like using a json file with more infos for each manufacturer or a database ?
@@ -153,7 +195,7 @@ class VeganProductInfoCard extends StatelessWidget {
   ];
 
   bool isOnBDSList() {
-    final brand = productInfo?['brand'];
+    final brand = widget.productInfo?['brand'];
     if (brand != null && brand is String) {
       final brandList =
           brand.split(',').map((e) => e.trim().toLowerCase()).toList();
@@ -196,8 +238,8 @@ class VeganProductInfoCard extends StatelessWidget {
           children: [
             Text(
               Helper.truncate(
-                (productInfo?['name']?.isNotEmpty ?? false)
-                    ? productInfo!['name']
+                (widget.productInfo?['name']?.isNotEmpty ?? false)
+                    ? widget.productInfo!['name']
                     : 'Unnamed Product',
                 45,
               ),
@@ -215,7 +257,7 @@ class VeganProductInfoCard extends StatelessWidget {
               children: [
                 Text(
                   (() {
-                    final brand = productInfo?['brand'];
+                    final brand = widget.productInfo?['brand'];
                     if (brand != null && brand is String && brand.isNotEmpty) {
                       String formattedBrand =
                           '${brand[0].toUpperCase()}${brand.substring(1)}';
@@ -240,9 +282,9 @@ class VeganProductInfoCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (productInfo?['biodynamie'] != true)
+                if (widget.productInfo?['biodynamie'] != true)
                   TweenAnimationBuilder<double>(
-                    key: ValueKey(productInfo?[
+                    key: ValueKey(widget.productInfo?[
                         'name']), // Use a unique key for each product
                     duration: const Duration(milliseconds: 1000),
                     tween: Tween(begin: 0.8, end: 1.0),
@@ -261,7 +303,6 @@ class VeganProductInfoCard extends StatelessWidget {
                       );
                     },
                   ),
-
                 if (isBDS) ...[
                   const SizedBox(width: 8),
                   ElevatedButton(
@@ -292,7 +333,7 @@ class VeganProductInfoCard extends StatelessWidget {
                   ),
                 ],
                 // If its biodynamie
-                if (!isBDS && productInfo?['biodynamie'] == true) ...[
+                if (!isBDS && widget.productInfo?['biodynamie'] == true) ...[
                   const SizedBox(width: 8),
                   ElevatedButton(
                     onPressed: () {
@@ -327,6 +368,32 @@ class VeganProductInfoCard extends StatelessWidget {
                 ],
               ],
             ),
+            // Brand Info Button - moved outside the Row
+            if (_brandScore != null) ...[
+              const SizedBox(height: 16),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      BrandScoreBottomSheet.show(context, _brandScore!);
+                    },
+                    icon: const Icon(Icons.info_outline),
+                    label: const Text('En savoir plus sur la marque'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue.shade600,
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(
+                          vertical: 12.h, horizontal: 16.w),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
       ),
