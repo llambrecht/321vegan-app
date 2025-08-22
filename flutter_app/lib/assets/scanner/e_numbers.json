@@ -2420,6 +2420,22 @@
       "name_fr": "Extrait de Romarin"
     },
     {
+      "alternative_names": [],
+      "description": "",
+      "description_fr": "Stabilisant obtenu à partir de lactose (lait)",
+      "e_number": "E399",
+      "name": "Calcium lactobionate",
+      "state": "carniste",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://fr.wikipedia.org/wiki/Lactobionate_de_calcium"
+        }
+      ],
+      "name_fr": "Lactobionate de calcium"
+    },
+    {
       "alternative_names": ["Alginic acid"],
       "description": "",
       "e_number": "E400",
@@ -2994,6 +3010,22 @@
         }
       ],
       "name_fr": "Carbonates de sodium"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
+      "description_fr": "",
+      "e_number": "E500ii",
+      "name": "Sodium bicarbonate",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://fr.wikipedia.org/wiki/Bicarbonate_de_sodium"
+        }
+      ],
+      "name_fr": "Bicarbonate de sodium"
     },
     {
       "alternative_names": [],
