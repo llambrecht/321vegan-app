@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vegan_app/helpers/preference_helper.dart';
 import 'package:vegan_app/pages/app_pages/Scan/history_modal.dart';
 import 'package:vegan_app/pages/app_pages/Scan/sent_products_modal.dart';
+import 'package:vegan_app/pages/app_pages/Scan/settings_modal.dart';
 import 'package:vegan_app/pages/app_pages/Scan/product_info_helper.dart';
 import 'package:vegan_app/widgets/scaner/card_product.dart';
 import 'package:vegan_app/widgets/scaner/pending_product_info_card.dart';
@@ -36,6 +37,7 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
   int _barcodeStabilityCount = 0;
   late ConfettiController _confettiController;
   final nonVeganCardKey = GlobalKey<NonVeganProductInfoCardState>();
+  bool _openOnScanPage = false;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -74,6 +76,7 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
         ConfettiController(duration: const Duration(seconds: 2));
 
     _loadScanHistory();
+    _loadOpenOnScanPagePref();
 
     controller.start();
   }
@@ -82,6 +85,41 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
     final history = await PreferencesHelper.getScanHistory();
     setState(() {
       scanHistory = history;
+    });
+  }
+
+  Future<void> _loadOpenOnScanPagePref() async {
+    final value = await PreferencesHelper.getOpenOnScanPagePref();
+    setState(() {
+      _openOnScanPage = value;
+    });
+  }
+
+  void _showSettingsModal() {
+    controller.stop(); // Stop the scanner when opening the modal
+    setState(() {
+      productInfo = null;
+    });
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          child: SettingsModal(
+            initialOpenOnScanPage: _openOnScanPage,
+            onOpenOnScanPageChanged: (value) {
+              setState(() {
+                _openOnScanPage = value;
+              });
+            },
+          ),
+        );
+      },
+    ).then((_) {
+      controller.start(); // Restart the scanner when the modal is closed
     });
   }
 
@@ -354,6 +392,36 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
                   Colors.green,
                   Colors.yellow,
                 ], // Confetti colors
+              ),
+            ),
+          ),
+          // Settings button (positioned last to be on top)
+          Positioned(
+            top: 200.h,
+            left: 60.w,
+            child: Container(
+              padding: EdgeInsets.all(8.w),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    spreadRadius: 1,
+                    blurRadius: 6,
+                    offset: const Offset(0, 1),
+                  ),
+                ],
+              ),
+              child: GestureDetector(
+                onTap: () {
+                  _showSettingsModal();
+                },
+                child: Icon(
+                  Icons.settings,
+                  color: Colors.black54,
+                  size: 80.sp,
+                ),
               ),
             ),
           ),
