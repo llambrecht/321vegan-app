@@ -37,16 +37,32 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     initializeDateFormatting('fr_FR', null);
     _timer = Timer.periodic(
         const Duration(minutes: 1), (Timer t) => _updateSavings());
+
+    // Initialize with default home tab, then update based on preference
     motionTabBarController = MotionTabBarController(
-      initialIndex: 1,
+      initialIndex: 1, // Default to home tab
       length: 5,
       vsync: this,
     );
+
+    _initializeTabController();
+
     _savings = {};
     _confettiController =
         ConfettiController(duration: const Duration(seconds: 6));
 
     _loadData();
+  }
+
+  Future<void> _initializeTabController() async {
+    final shouldOpenOnScanPage =
+        await PreferencesHelper.getOpenOnScanPagePref();
+    if (shouldOpenOnScanPage && mounted) {
+      // Update to scan tab if preference is set
+      setState(() {
+        motionTabBarController.index = 3;
+      });
+    }
   }
 
   @override

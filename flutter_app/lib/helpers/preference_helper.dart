@@ -36,6 +36,18 @@ class PreferencesHelper {
     return false;
   }
 
+  // Save 'open on scan page' preference
+  static Future<void> setOpenOnScanPagePref(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('open_on_scan_page', value);
+  }
+
+  // Load 'open on scan page' preference
+  static Future<bool> getOpenOnScanPagePref() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('open_on_scan_page') ?? false;
+  }
+
   // Method to add or remove a code based on success status
   static Future<void> addCodeToPreferences(String? code, bool success) async {
     if (code == null) return;
