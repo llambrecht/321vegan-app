@@ -102,6 +102,7 @@ flutter:
     - lib/assets/partners/logo-zebra.png
     - lib/assets/partners/logo-vegetalfood.png
     - lib/assets/partners/logo-terroirs.png
+    - lib/assets/partners/logo-comme-avant.png
     - .env
 
   fonts:

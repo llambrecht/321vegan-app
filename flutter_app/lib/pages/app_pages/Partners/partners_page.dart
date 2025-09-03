@@ -81,6 +81,16 @@ class PartnersPage extends StatelessWidget {
                       children: [
                         _buildPartnerCard(
                           context: context,
+                          brandName: 'Comme Avant',
+                          logoName: 'logo-comme-avant.png',
+                          discountCode: 'VEGAN10',
+                          discountAmount: '10% de réduction (1/ personne)',
+                          websiteUrl: 'https://www.comme-avant.bio/?ae=1379',
+                          description:
+                              'Des cosmétiques et produits d\'entretiens 100% vegan, éthiques, fabriqués à la main en France par une entreprise engagée. Vend aussi quelques vêtements durables',
+                        ),
+                        _buildPartnerCard(
+                          context: context,
                           brandName: 'Vegetal Food',
                           logoName: 'logo-vegetalfood.png',
                           discountCode: '321VEGAN10',

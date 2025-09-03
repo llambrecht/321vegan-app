@@ -382,7 +382,7 @@ class RejectedProductInfoCard extends StatelessWidget {
     final brand = productInfo?['brand'];
 
     return Container(
-      height: 600.h,
+      height: 740.h,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [Colors.white, Colors.grey.shade200],
