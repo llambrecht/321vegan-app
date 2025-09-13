@@ -128,13 +128,13 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
           end: Alignment.bottomRight,
           colors: [
             Theme.of(context).primaryColor,
-            Theme.of(context).primaryColor.withOpacity(0.8),
+            Theme.of(context).primaryColor.withValues(alpha: 0.8),
           ],
         ),
         borderRadius: BorderRadius.circular(28.r),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).primaryColor.withOpacity(0.25),
+            color: Theme.of(context).primaryColor.withValues(alpha: 0.25),
             blurRadius: 30,
             offset: const Offset(0, 15),
             spreadRadius: 0,
@@ -146,10 +146,10 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
           Container(
             padding: EdgeInsets.all(20.w),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.15),
+              color: Colors.white.withValues(alpha: 0.15),
               shape: BoxShape.circle,
               border: Border.all(
-                color: Colors.white.withOpacity(0.3),
+                color: Colors.white.withValues(alpha: 0.3),
                 width: 2,
               ),
             ),
@@ -211,7 +211,7 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
         borderRadius: BorderRadius.circular(28.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 30,
             offset: const Offset(0, 15),
             spreadRadius: 0,
@@ -259,12 +259,12 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24.r),
         border: Border.all(
-          color: Theme.of(context).primaryColor.withOpacity(0.1),
+          color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
           width: 2,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -331,15 +331,16 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
                   gradient: LinearGradient(
                     colors: [
                       Theme.of(context).primaryColor,
-                      Theme.of(context).primaryColor.withOpacity(0.8),
-                      Theme.of(context).primaryColor.withOpacity(0.6),
+                      Theme.of(context).primaryColor.withValues(alpha: 0.8),
+                      Theme.of(context).primaryColor.withValues(alpha: 0.6),
                     ],
                     stops: const [0.0, 0.7, 1.0],
                   ),
                   borderRadius: BorderRadius.circular(24.r),
                   boxShadow: [
                     BoxShadow(
-                      color: Theme.of(context).primaryColor.withOpacity(0.3),
+                      color:
+                          Theme.of(context).primaryColor.withValues(alpha: 0.3),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
@@ -360,7 +361,7 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
                         borderRadius: BorderRadius.circular(3),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.orange[600]!.withOpacity(0.5),
+                            color: Colors.orange[600]!.withValues(alpha: 0.5),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
@@ -376,7 +377,7 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
                         borderRadius: BorderRadius.circular(12.r),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
+                            color: Colors.black.withValues(alpha: 0.2),
                             blurRadius: 6,
                             offset: const Offset(0, 3),
                           ),
@@ -419,7 +420,7 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
                         borderRadius: BorderRadius.circular(3),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.green[600]!.withOpacity(0.5),
+                            color: Colors.green[600]!.withValues(alpha: 0.5),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
@@ -435,7 +436,7 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
                         borderRadius: BorderRadius.circular(12.r),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
+                            color: Colors.black.withValues(alpha: 0.2),
                             blurRadius: 6,
                             offset: const Offset(0, 3),
                           ),
@@ -483,7 +484,7 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
+                        color: Colors.black.withValues(alpha: 0.3),
                         blurRadius: 6,
                         offset: const Offset(0, 3),
                       ),
@@ -540,10 +541,10 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
-          color: color.withOpacity(0.3),
+          color: color.withValues(alpha: 0.3),
           width: 1.5,
         ),
       ),
@@ -586,7 +587,7 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
                         gradient: LinearGradient(
                           colors: [
                             color,
-                            color.withOpacity(0.8),
+                            color.withValues(alpha: 0.8),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(3.r),
@@ -643,8 +644,8 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
             child: InkWell(
               onTap: () => _launchInstagram(context),
               borderRadius: BorderRadius.circular(8),
-              splashColor: Colors.blue.withOpacity(0.2),
-              highlightColor: Colors.blue.withOpacity(0.1),
+              splashColor: Colors.blue.withValues(alpha: 0.2),
+              highlightColor: Colors.blue.withValues(alpha: 0.1),
               child: Container(
                 padding:
                     const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -729,7 +730,7 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
         borderRadius: BorderRadius.circular(28.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+            color: Colors.black.withValues(alpha: 0.06),
             blurRadius: 30,
             offset: const Offset(0, 12),
             spreadRadius: 0,

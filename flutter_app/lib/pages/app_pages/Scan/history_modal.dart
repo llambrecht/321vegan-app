@@ -63,9 +63,9 @@ class _HistoryModalState extends State<HistoryModal> {
           // Header
           Container(
             padding: EdgeInsets.all(20.w),
-            decoration: BoxDecoration(
-              color: const Color(0xFF1A722E),
-              borderRadius: const BorderRadius.only(
+            decoration: const BoxDecoration(
+              color: Color(0xFF1A722E),
+              borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20.0),
                 topRight: Radius.circular(20.0),
               ),
@@ -93,7 +93,7 @@ class _HistoryModalState extends State<HistoryModal> {
                       Text(
                         '(50 derniers scans)',
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.8),
+                          color: Colors.white.withValues(alpha: 0.8),
                           fontSize: 35.sp,
                         ),
                       ),
@@ -320,7 +320,7 @@ class _HistoryModalState extends State<HistoryModal> {
                   padding:
                       EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                   decoration: BoxDecoration(
-                    color: badgeColor.withOpacity(0.1),
+                    color: badgeColor.withValues(alpha: 0.1),
                     border: Border.all(color: badgeColor),
                     borderRadius: BorderRadius.circular(20.r),
                   ),
@@ -341,7 +341,7 @@ class _HistoryModalState extends State<HistoryModal> {
                 child: Container(
                   padding: EdgeInsets.all(12.w),
                   decoration: BoxDecoration(
-                    color: Colors.orange.withOpacity(0.1),
+                    color: Colors.orange.withValues(alpha: 0.1),
                     border: Border.all(color: Colors.orange),
                     borderRadius: BorderRadius.circular(12.r),
                   ),

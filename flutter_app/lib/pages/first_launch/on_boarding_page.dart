@@ -178,6 +178,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
       next: const Icon(Icons.arrow_forward),
       showDoneButton: false,
       dotsDecorator: getDotsDecorator(),
+      controlsMargin: EdgeInsets.only(bottom: 80.h),
+      controlsPadding: const EdgeInsets.all(16),
     );
   }
 

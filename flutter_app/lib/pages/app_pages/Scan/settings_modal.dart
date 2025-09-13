@@ -97,7 +97,7 @@ class SettingsModalState extends State<SettingsModal> {
                   onChanged: (value) {
                     _setOpenOnScanPagePref(value);
                   },
-                  activeColor: Colors.white,
+                  activeThumbColor: Colors.white,
                   activeTrackColor: const Color(0xFF1A722E),
                   inactiveThumbColor: Colors.white,
                   inactiveTrackColor: Colors.grey[300],
