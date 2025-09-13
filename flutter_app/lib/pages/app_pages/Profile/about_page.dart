@@ -13,7 +13,7 @@ class AboutPage extends StatefulWidget {
 }
 
 class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
-  double? currentAmount = 29;
+  double? currentAmount = 47;
   double? goalFrais = 45;
   double? goalVivre = 2000;
 
