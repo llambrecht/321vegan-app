@@ -3,6 +3,7 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:vegan_app/helpers/preference_helper.dart';
 import 'package:vegan_app/pages/app_pages/Scan/history_modal.dart';
 import 'package:vegan_app/pages/app_pages/Scan/sent_products_modal.dart';
@@ -29,7 +30,6 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
       BarcodeFormat.upcE, // UPC-E for compressed barcodes
     ],
   );
-  StreamSubscription<BarcodeCapture>? _subscription;
   Map<dynamic, dynamic>? productInfo;
   List<Map<String, dynamic>> scanHistory = [];
   String? _lastScannedBarcode = '';
@@ -45,22 +45,20 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
       return;
     }
 
+    if (!mounted) {
+      return;
+    }
+
     switch (state) {
       case AppLifecycleState.detached:
       case AppLifecycleState.hidden:
       case AppLifecycleState.paused:
-        _subscription?.cancel();
-        _subscription = null;
         controller.stop();
         break;
       case AppLifecycleState.resumed:
-        _subscription?.cancel();
-        _subscription = controller.barcodes.listen(_handleBarcode);
         controller.start();
         break;
       case AppLifecycleState.inactive:
-        _subscription?.cancel();
-        _subscription = null;
         controller.stop();
         break;
     }
@@ -68,17 +66,87 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    controller.stop();
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _subscription = controller.barcodes.listen(_handleBarcode);
     _confettiController =
         ConfettiController(duration: const Duration(seconds: 2));
 
     _loadScanHistory();
     _loadOpenOnScanPagePref();
 
-    controller.start();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _startScanner();
+    });
+  }
+
+  Future<bool> _checkCameraPermission({bool showDialogOnDenied = true}) async {
+    var status = await Permission.camera.status;
+
+    if (status.isDenied) {
+      status = await Permission.camera.request();
+    }
+
+    if (status.isGranted) return true;
+
+    if (showDialogOnDenied) {
+      _showPermissionDialog();
+    }
+
+    return false;
+  }
+
+  void _showPermissionDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Permission requise'),
+          content: const Text(
+            'L\'accès à la caméra est nécessaire pour scanner les codes-barres. '
+            'Veuillez autoriser l\'accès dans les paramètres de l\'application.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Annuler'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                openAppSettings();
+              },
+              child: const Text('Paramètres'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _startScanner() async {
+    try {
+      // Check camera permission first
+      bool hasPermission = await _checkCameraPermission();
+      if (!hasPermission) {
+        return;
+      }
+
+      // Wait for the widget to be fully built before starting scanner
+      await Future.delayed(const Duration(milliseconds: 100));
+
+      // Check if the controller is properly initialized
+      if (!mounted) {
+        return;
+      }
+
+      await controller.start();
+    } catch (e) {
+      // Try to restart scanner after a longer delay in debug mode
+      await Future.delayed(const Duration(milliseconds: 1000));
+      if (mounted) {
+        await controller.start();
+      }
+    }
   }
 
   Future<void> _loadScanHistory() async {
@@ -125,8 +193,9 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    _subscription?.cancel();
     controller.dispose();
+    _confettiController.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -225,7 +294,6 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
               height: 0.05.sh,
               child: FloatingActionButton(
                 onPressed: () {
-                  // TODO : It seems that the scanner is not completely stopped when the modal is opened (TO FIX)
                   controller.stop(); // Stop the scanner when opening the modal
                   setState(() {
                     productInfo = null;
@@ -406,7 +474,7 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
                 borderRadius: BorderRadius.circular(20.r),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
+                    color: Colors.black.withValues(alpha: 0.2),
                     spreadRadius: 1,
                     blurRadius: 6,
                     offset: const Offset(0, 1),

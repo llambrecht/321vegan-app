@@ -19,7 +19,7 @@ class NoResultCard extends StatelessWidget {
         borderRadius: const BorderRadius.all(Radius.circular(20)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withValues(alpha: 0.2),
             spreadRadius: 5,
             blurRadius: 7,
             offset: const Offset(0, 3),
@@ -75,7 +75,7 @@ class NotFoundProductInfoCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.15),
+            color: Colors.black.withValues(alpha: 0.15),
             spreadRadius: 5,
             blurRadius: 10,
             offset: const Offset(0, 4),
@@ -112,7 +112,7 @@ class NotFoundProductInfoCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.1),
+                color: Colors.grey.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: const Text(
@@ -167,7 +167,7 @@ class NonVeganProductInfoCardState extends State<NonVeganProductInfoCard> {
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.15),
+            color: Colors.black.withValues(alpha: 0.15),
             spreadRadius: 5,
             blurRadius: 10,
             offset: const Offset(0, 4),
@@ -396,7 +396,7 @@ class RejectedProductInfoCard extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.15),
+            color: Colors.black.withValues(alpha: 0.15),
             spreadRadius: 5,
             blurRadius: 10,
             offset: const Offset(0, 4),

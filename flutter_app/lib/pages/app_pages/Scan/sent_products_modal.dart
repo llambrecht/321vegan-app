@@ -108,9 +108,9 @@ class _SentProductsModalState extends State<SentProductsModal> {
           // Header
           Container(
             padding: EdgeInsets.all(20.w),
-            decoration: BoxDecoration(
-              color: const Color(0xFF1A722E),
-              borderRadius: const BorderRadius.only(
+            decoration: const BoxDecoration(
+              color: Color(0xFF1A722E),
+              borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20.0),
                 topRight: Radius.circular(20.0),
               ),
@@ -138,7 +138,7 @@ class _SentProductsModalState extends State<SentProductsModal> {
                       Text(
                         '$totalSubmissions au total',
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.8),
+                          color: Colors.white.withValues(alpha: 0.8),
                           fontSize: 35.sp,
                         ),
                       ),
