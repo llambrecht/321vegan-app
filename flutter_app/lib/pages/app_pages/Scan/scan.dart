@@ -33,8 +33,6 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
   Map<dynamic, dynamic>? productInfo;
   List<Map<String, dynamic>> scanHistory = [];
   String? _lastScannedBarcode = '';
-  String? _pendingBarcode;
-  int _barcodeStabilityCount = 0;
   late ConfettiController _confettiController;
   final nonVeganCardKey = GlobalKey<NonVeganProductInfoCardState>();
   bool _openOnScanPage = false;
@@ -225,20 +223,6 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
     if (barcodeValue != null && barcodeValue.length == 12) {
       barcodeValue = '0$barcodeValue';
     }
-    if (barcodeValue != _pendingBarcode) {
-      _pendingBarcode = barcodeValue;
-      _barcodeStabilityCount = 1;
-      return;
-    }
-
-    // We want to make sure the barcode is stable before processing it
-    // So we wait for 2 consecutive scans of the same barcode
-    _barcodeStabilityCount++;
-    if (_barcodeStabilityCount < 3) return;
-
-    // The barcode is stable, so we can process it
-    _barcodeStabilityCount = 0;
-    _pendingBarcode = null;
 
     if (barcodeValue != null && barcodeValue.length == 13) {
       if (!isValidEAN13(barcodeValue)) {
