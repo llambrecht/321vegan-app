@@ -123,7 +123,7 @@ class PartnersPage extends StatelessWidget {
                           brandName: 'Official Vegan Shop ',
                           logoName: 'logo-ovs.png',
                           discountCode: '321VEGANOVS',
-                          discountAmount: '10% de réduction (hors promos)',
+                          discountAmount: '5% de réduction (hors promos)',
                           websiteUrl: 'https://www.officialveganshop.com/',
                           description:
                               'Boutique en ligne entièrement végane avec de très nombreuses références.',
