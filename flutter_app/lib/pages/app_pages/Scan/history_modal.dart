@@ -164,6 +164,7 @@ class _HistoryModalState extends State<HistoryModal> {
                               snapshot.data == null) {
                             return _buildProductCard(
                               context: context,
+                              code: barcode,
                               name: 'Erreur',
                               brand: 'Impossible de charger le produit',
                               scannedDate: timestamp,
@@ -177,6 +178,7 @@ class _HistoryModalState extends State<HistoryModal> {
 
                             return _buildProductCard(
                               context: context,
+                              code: barcode,
                               name: (productDetails['name']?.isNotEmpty ??
                                       false)
                                   ? productDetails['name']
@@ -234,6 +236,7 @@ class _HistoryModalState extends State<HistoryModal> {
   }
 
   Widget _buildProductCard({
+    required String code,
     required String name,
     required String brand,
     required String scannedDate,
@@ -285,6 +288,12 @@ class _HistoryModalState extends State<HistoryModal> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Text(code,
+                          style: TextStyle(
+                              fontSize: 36.sp,
+                              color: Colors.grey[600],
+                              fontWeight: FontWeight.w500)),
+                      SizedBox(height: 4.h),
                       Text(name,
                           style: TextStyle(
                               fontSize: 40.sp, fontWeight: FontWeight.w600)),

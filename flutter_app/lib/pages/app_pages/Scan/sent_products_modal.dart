@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:vegan_app/helpers/database_helper.dart';
 import 'package:vegan_app/helpers/preference_helper.dart';
+import 'package:vegan_app/pages/app_pages/Scan/product_info_helper.dart';
 
 class SentProductsModal extends StatefulWidget {
   const SentProductsModal({super.key});
@@ -41,37 +41,45 @@ class _SentProductsModalState extends State<SentProductsModal> {
 
   Future<void> _searchSentCodesInDb(List<String> codes) async {
     final Map<String, Map<String, dynamic>> processedCodes = {};
+
     for (String code in codes) {
+      // Initialize with default values
       processedCodes[code] = {
         'code': code,
         'name': 'Nom inconnu',
         'brand': 'Marque inconnue',
         'status': 'En cours',
       };
-    }
 
-    for (String code in codes) {
-      final dbResult = await DatabaseHelper.instance.queryProduct(code);
-      if (dbResult.isNotEmpty) {
-        for (var product in dbResult) {
-          var status = product['status'] == "V"
-              ? "Validé"
-              : product['status'] == "R"
-                  ? "Refusé"
-                  : product['status'] == "M"
-                      ? "En attente"
-                      : product['status'] == "N"
-                          ? "Introuvable"
-                          : "En cours";
-          processedCodes[code] = {
-            'code': product['code'],
-            'name': product['name'] ?? 'Nom inconnu',
-            'brand': product['brand'] ?? 'Marque inconnue',
-            'status': status,
-            'problem': product['problem'],
-          };
-        }
+      // Get product info using ProductInfoHelper
+      final productInfo = await ProductInfoHelper.getProductInfo(code);
+
+      // Convert is_vegan status to display status
+      String status;
+      switch (productInfo['is_vegan']) {
+        case 'true':
+          status = 'Validé';
+          break;
+        case 'false':
+          status = 'Refusé';
+          break;
+        case 'waiting':
+          status = 'En attente';
+          break;
+        case 'not_found':
+          status = 'Introuvable';
+          break;
+        default:
+          status = 'En cours';
       }
+
+      processedCodes[code] = {
+        'code': productInfo['code'],
+        'name': productInfo['name'] ?? 'Nom inconnu',
+        'brand': productInfo['brand'] ?? 'Marque inconnue',
+        'status': status,
+        'problem': productInfo['problem'],
+      };
     }
 
     if (mounted) {
