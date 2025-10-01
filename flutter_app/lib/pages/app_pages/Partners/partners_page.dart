@@ -83,7 +83,7 @@ class PartnersPage extends StatelessWidget {
                             SizedBox(width: 12.w),
                             Expanded(
                               child: Text(
-                                'Les étoiles indiquent que c\'est un code affilié, qui génèrent une petite commission. Les utiliser permet de soutenir 321 Vegan, merci !',
+                                'Les étoiles indiquent que c\'est un code affilié, qui me donne une petite commission. Les utiliser permet de soutenir 321 Vegan, merci !',
                                 style: TextStyle(
                                   fontSize: 42.sp,
                                   fontWeight: FontWeight.w400,
