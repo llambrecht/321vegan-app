@@ -42,14 +42,12 @@ class PartnersPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Introduction text
                   Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Premier texte avec icône
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -73,10 +71,7 @@ class PartnersPage extends StatelessWidget {
                             ),
                           ],
                         ),
-
                         SizedBox(height: 16.h),
-
-                        // Deuxième texte avec icône
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
