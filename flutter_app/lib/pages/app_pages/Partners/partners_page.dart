@@ -46,26 +46,59 @@ class PartnersPage extends StatelessWidget {
                   Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
-                    child: Row(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(
-                          Icons.favorite,
-                          color: Colors.red[400],
-                          size: 48.w,
-                        ),
-                        SizedBox(width: 12.w),
-                        Expanded(
-                          child: Text(
-                            'Avec les codes promos de nos partenaires, vous bénéficiez de réductions dans certaines boutiques en ligne.',
-                            style: TextStyle(
-                              fontSize: 42.sp,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.grey[600],
-                              height: 1.3,
+                        // Premier texte avec icône
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.favorite,
+                              color: Colors.red[400],
+                              size: 48.w,
                             ),
-                            textAlign: TextAlign.left,
-                          ),
+                            SizedBox(width: 12.w),
+                            Expanded(
+                              child: Text(
+                                'Avec les codes promos de nos partenaires, vous bénéficiez de réductions dans certaines boutiques en ligne.',
+                                style: TextStyle(
+                                  fontSize: 42.sp,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.grey[600],
+                                  height: 1.3,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        SizedBox(height: 16.h),
+
+                        // Deuxième texte avec icône
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                              size: 48.w,
+                            ),
+                            SizedBox(width: 12.w),
+                            Expanded(
+                              child: Text(
+                                'Les étoiles indiquent que c\'est un code affilié, qui génèrent une petite commission. Les utiliser permet de soutenir 321 Vegan, merci !',
+                                style: TextStyle(
+                                  fontSize: 42.sp,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.grey[600],
+                                  height: 1.3,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -88,6 +121,17 @@ class PartnersPage extends StatelessWidget {
                           websiteUrl: 'https://www.comme-avant.bio/?ae=1379',
                           description:
                               'Des cosmétiques et produits d\'entretiens 100% vegan, éthiques, fabriqués à la main en France par une entreprise engagée. Vend aussi quelques vêtements durables',
+                          hasCommission: true,
+                        ),
+                        _buildPartnerCard(
+                          context: context,
+                          brandName: 'Official Vegan Shop ',
+                          logoName: 'logo-ovs.png',
+                          discountCode: '321VEGANOVS',
+                          discountAmount: '10% de réduction (hors promos)',
+                          websiteUrl: 'https://www.officialveganshop.com/',
+                          description:
+                              'Boutique en ligne entièrement végane avec de très nombreuses références.',
                         ),
                         _buildPartnerCard(
                           context: context,
@@ -139,6 +183,7 @@ class PartnersPage extends StatelessWidget {
     required String discountAmount,
     required String websiteUrl,
     required String description,
+    bool hasCommission = false,
   }) {
     return Card(
       margin: EdgeInsets.all(16.h),
@@ -180,14 +225,26 @@ class PartnersPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Brand name
-                    Text(
-                      brandName,
-                      style: TextStyle(
-                        fontSize: 52.sp,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
+                    // Brand name with optional commission star
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            brandName,
+                            style: TextStyle(
+                              fontSize: 52.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ),
+                        if (hasCommission)
+                          Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                            size: 48.sp,
+                          ),
+                      ],
                     ),
 
                     SizedBox(height: 4.h),

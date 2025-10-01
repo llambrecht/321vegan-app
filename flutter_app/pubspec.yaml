@@ -104,6 +104,7 @@ flutter:
     - lib/assets/partners/logo-vegetalfood.png
     - lib/assets/partners/logo-terroirs.png
     - lib/assets/partners/logo-comme-avant.png
+    - lib/assets/partners/logo-ovs.png
     - .env
 
   fonts:
