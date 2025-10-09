@@ -120,23 +120,13 @@ class PartnersPage extends StatelessWidget {
                         ),
                         _buildPartnerCard(
                           context: context,
-                          brandName: 'Official Vegan Shop ',
-                          logoName: 'logo-ovs.png',
-                          discountCode: '321VEGANOVS',
-                          discountAmount: '5% de réduction (hors promos)',
-                          websiteUrl: 'https://www.officialveganshop.com/',
+                          brandName: 'Maison Protéine',
+                          logoName: 'logo-maisonprot.png',
+                          discountCode: '321MAISON10',
+                          discountAmount: '10% sur la première commande',
+                          websiteUrl: 'https://maisonproteine.com/fr/',
                           description:
-                              'Boutique en ligne entièrement végane avec de très nombreuses références.',
-                        ),
-                        _buildPartnerCard(
-                          context: context,
-                          brandName: 'Vegetal Food',
-                          logoName: 'logo-vegetalfood.png',
-                          discountCode: '321VEGAN10',
-                          discountAmount: '10% de réduction (hors promos)',
-                          websiteUrl: 'https://vegetalfood.fr',
-                          description:
-                              'Boutique de produits alimentaires véganes en ligne avec un très large choix !',
+                              'Des protéines en poudre véganes, bio, fabriquées en france, avec des ingrédients simples et sains',
                         ),
                         _buildPartnerCard(
                           context: context,
@@ -157,6 +147,26 @@ class PartnersPage extends StatelessWidget {
                           websiteUrl: 'https://www.terroirs-veganes.fr',
                           description:
                               'Des produits du terroir, innovants, essentiellement français. Véganes militantes, Lisa & Florence sont également les fondatrices du sanctuaire la Pondation de Félicie',
+                        ),
+                        _buildPartnerCard(
+                          context: context,
+                          brandName: 'Official Vegan Shop ',
+                          logoName: 'logo-ovs.png',
+                          discountCode: '321VEGANOVS',
+                          discountAmount: '5% de réduction (hors promos)',
+                          websiteUrl: 'https://www.officialveganshop.com/',
+                          description:
+                              'Boutique en ligne entièrement végane avec de très nombreuses références.',
+                        ),
+                        _buildPartnerCard(
+                          context: context,
+                          brandName: 'Vegetal Food',
+                          logoName: 'logo-vegetalfood.png',
+                          discountCode: '321VEGAN10',
+                          discountAmount: '10% de réduction (hors promos)',
+                          websiteUrl: 'https://vegetalfood.fr',
+                          description:
+                              'Boutique de produits alimentaires véganes en ligne avec un très large choix !',
                         ),
                       ],
                     ),
