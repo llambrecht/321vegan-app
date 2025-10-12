@@ -33,8 +33,6 @@ class PartnersPage extends StatelessWidget {
             ],
           ),
 
-          SizedBox(height: 60.h),
-
           // Content
           Expanded(
             child: Padding(
@@ -117,6 +115,16 @@ class PartnersPage extends StatelessWidget {
                           description:
                               'Des cosmétiques et produits d\'entretiens 100% vegan, éthiques, fabriqués à la main en France par une entreprise engagée. Vend aussi quelques vêtements durables',
                           hasCommission: true,
+                        ),
+                        _buildPartnerCard(
+                          context: context,
+                          brandName: 'Petit Veganne',
+                          logoName: 'logo-petit-veganne.png',
+                          discountCode: '321PV10',
+                          discountAmount: '10% de réduction',
+                          websiteUrl: 'https://petit-veganne.com',
+                          description:
+                              'Alternatives végétales aux fromages à base de noix de cajou bio. Entreprise artisanale française certifiée et labellisée BIO & VEGAN',
                         ),
                         _buildPartnerCard(
                           context: context,
