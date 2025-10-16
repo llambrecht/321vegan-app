@@ -47,6 +47,32 @@
 
 ---
 
+<div align="center">
+  <h3>🧩 Related Repositories</h3>
+  <p>
+    Explore the other open-source components that power <strong>321 Vegan</strong>:
+  </p>
+
+  <p align="center">
+    <a href="https://github.com/ISAsxm/321vegan-tool" target="_blank">
+      <img src="https://img.shields.io/badge/321_Vegan_Tool-Handle%20Product%20Data-8BC34A?style=for-the-badge&logo=github&logoColor=white" alt="321 Vegan Tool Badge"/>
+    </a>
+    <br/>
+    <em>A tool used to process, analyze, and manage product (and other) datas.</em>
+  </p>
+  
+  <p align="center">
+    <a href="https://github.com/llambrecht/321vegan-api" target="_blank">
+      <img src="https://img.shields.io/badge/321_Vegan_Tool-Handle%20Product%20Data-8BC34A?style=for-the-badge&logo=github&logoColor=white" alt="321 Vegan API Badge"/>
+    </a>
+    <br/>
+    <em>The backend API</em>
+  </p>
+</div>
+
+
+---
+
 ## 🌱 About 321 Vegan
 
 **321 Vegan** is a free and open-source Flutter app that helps users scan product barcodes and check whether a product is vegan-friendly.
