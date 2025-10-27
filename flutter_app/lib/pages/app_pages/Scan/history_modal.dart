@@ -170,6 +170,7 @@ class _HistoryModalState extends State<HistoryModal> {
                               scannedDate: timestamp,
                               isVegan: null,
                               problem: null, // No problem for error case
+                              isEan8: barcode.length == 8,
                             );
                           } else {
                             final productDetails =
@@ -190,6 +191,7 @@ class _HistoryModalState extends State<HistoryModal> {
                               problem: productDetails['problem'],
                               biodynamie: productDetails['biodynamie'],
                               alreadySent: isAlreadySent,
+                              isEan8: barcode.length == 8,
                             );
                           }
                         },
@@ -245,6 +247,7 @@ class _HistoryModalState extends State<HistoryModal> {
     bool biodynamie = false,
     required BuildContext context,
     bool alreadySent = false,
+    bool isEan8 = false,
   }) {
     Color badgeColor;
     String badgeText;
@@ -469,6 +472,39 @@ class _HistoryModalState extends State<HistoryModal> {
                     ),
                   ),
                 ),
+            // EAN-8 Warning Box
+            if (isEan8 && isVegan != 'unknown')
+              Padding(
+                padding: EdgeInsets.only(top: 12.h),
+                child: Container(
+                  padding: EdgeInsets.all(12.w),
+                  decoration: BoxDecoration(
+                    color: Colors.orange.withValues(alpha: 0.1),
+                    border: Border.all(color: Colors.orange, width: 1.5),
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.warning,
+                        color: Colors.orange,
+                        size: 20.sp,
+                      ),
+                      SizedBox(width: 8.w),
+                      Expanded(
+                        child: Text(
+                          'Code EAN-8 : Ce code-barres peut correspondre à plusieurs produits.',
+                          style: TextStyle(
+                            fontSize: 32.sp,
+                            color: Colors.orange[800],
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
           ],
         ),
       ),

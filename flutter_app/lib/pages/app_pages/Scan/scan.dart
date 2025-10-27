@@ -199,6 +199,10 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
 
   Future<void> _checkVeganStatusOffline(String barcode) async {
     final product = await ProductInfoHelper.getProductInfo(barcode);
+    // Add EAN-8 warning flag if barcode is 8 digits
+    if (barcode.length == 8) {
+      product['is_ean8'] = true;
+    }
     setState(() {
       productInfo = product;
     });
@@ -269,6 +273,51 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
               ),
             ],
           ),
+          // EAN-8 Warning Box at top
+          if (productInfo != null &&
+              productInfo?['is_ean8'] == true &&
+              productInfo?['is_vegan'] != 'unknown')
+            Positioned(
+              top: 300.h,
+              left: 16,
+              right: 16,
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 16.w),
+                padding: EdgeInsets.all(16.w),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.9),
+                  border: Border.all(color: Colors.white, width: 2),
+                  borderRadius: BorderRadius.circular(12.r),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.warning,
+                      color: Colors.orange[800],
+                      size: 80.sp,
+                    ),
+                    SizedBox(width: 12.w),
+                    Expanded(
+                      child: Text(
+                        'Code EAN-8 : Ce code-barres peut correspondre à plusieurs produits différents. Vérifiez bien le nom et la marque.',
+                        style: TextStyle(
+                          fontSize: 36.sp,
+                          color: Colors.orange[900],
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           // Add the floating button for scan history
           Positioned(
             top: 0.36.sh,
