@@ -318,6 +318,50 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
                 ),
               ),
             ),
+          // Old receipe non vegan warning box at top
+          if (productInfo != null &&
+              productInfo?['has_non_vegan_old_receipe'] == true)
+            Positioned(
+              top: productInfo?['is_ean8'] == true ? 450.h : 300.h,
+              left: 16,
+              right: 16,
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 16.w),
+                padding: EdgeInsets.all(16.w),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.9),
+                  border: Border.all(color: Colors.white, width: 2),
+                  borderRadius: BorderRadius.circular(12.r),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.warning,
+                      color: Colors.orange[800],
+                      size: 80.sp,
+                    ),
+                    SizedBox(width: 12.w),
+                    Expanded(
+                      child: Text(
+                        'Ancienne recette non vegan : il se peut qu\'il y ait encore du stock avec l\'ancienne recette. Vérifiez les ingrédients.',
+                        style: TextStyle(
+                          fontSize: 36.sp,
+                          color: Colors.orange[900],
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           // Add the floating button for scan history
           Positioned(
             top: 0.36.sh,

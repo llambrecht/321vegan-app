@@ -71,6 +71,7 @@ class ProductInfoHelper {
       'name': barcode,
       'brand': 'inconnue',
       'is_vegan': 'unknown',
+      'has_non_vegan_old_receipe': false,
       'problem': null,
       'biodynamie': false,
     };
@@ -89,6 +90,7 @@ class ProductInfoHelper {
           'name': 'Produit inconnu',
           'brand': 'Marque inconnue',
           'is_vegan': 'already_scanned',
+          'has_non_vegan_old_receipe': false,
           'problem': null,
           'biodynamie': false,
         };
@@ -132,6 +134,7 @@ class ProductInfoHelper {
       'name': productName,
       'brand': brandName,
       'is_vegan': veganStatus,
+      'has_non_vegan_old_receipe': product['has_non_vegan_old_receipe'] == 1,
       'problem': product['problem'],
       'biodynamie': status != 'M' && status != 'N' ? isBiodynamie : false,
     };

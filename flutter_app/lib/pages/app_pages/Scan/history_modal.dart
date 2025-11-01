@@ -169,7 +169,8 @@ class _HistoryModalState extends State<HistoryModal> {
                               brand: 'Impossible de charger le produit',
                               scannedDate: timestamp,
                               isVegan: null,
-                              problem: null, // No problem for error case
+                              hasNonVeganOldReceipe: false,
+                              problem: null,
                               isEan8: barcode.length == 8,
                             );
                           } else {
@@ -188,6 +189,9 @@ class _HistoryModalState extends State<HistoryModal> {
                                   productDetails['brand'] ?? 'Marque inconnue',
                               scannedDate: timestamp,
                               isVegan: productDetails['is_vegan'],
+                              hasNonVeganOldReceipe:
+                                  productDetails['has_non_vegan_old_receipe'] ??
+                                      false,
                               problem: productDetails['problem'],
                               biodynamie: productDetails['biodynamie'],
                               alreadySent: isAlreadySent,
@@ -243,7 +247,8 @@ class _HistoryModalState extends State<HistoryModal> {
     required String brand,
     required String scannedDate,
     required String? isVegan,
-    String? problem, // Add problem parameter
+    required bool hasNonVeganOldReceipe,
+    String? problem,
     bool biodynamie = false,
     required BuildContext context,
     bool alreadySent = false,
@@ -488,12 +493,45 @@ class _HistoryModalState extends State<HistoryModal> {
                       Icon(
                         Icons.warning,
                         color: Colors.orange,
-                        size: 20.sp,
+                        size: 80.sp,
                       ),
                       SizedBox(width: 8.w),
                       Expanded(
                         child: Text(
                           'Code EAN-8 : Ce code-barres peut correspondre à plusieurs produits.',
+                          style: TextStyle(
+                            fontSize: 32.sp,
+                            color: Colors.orange[800],
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            // Non vegan old receipe warning box
+            if (isVegan == 'true' && hasNonVeganOldReceipe)
+              Padding(
+                padding: EdgeInsets.only(top: 12.h),
+                child: Container(
+                  padding: EdgeInsets.all(12.w),
+                  decoration: BoxDecoration(
+                    color: Colors.orange.withValues(alpha: 0.1),
+                    border: Border.all(color: Colors.orange, width: 1.5),
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.warning,
+                        color: Colors.orange,
+                        size: 80.sp,
+                      ),
+                      SizedBox(width: 8.w),
+                      Expanded(
+                        child: Text(
+                          'Ancienne recette non vegan : il se peut qu\'il y ait encore du stock avec l\'ancienne recette. Vérifiez les ingrédients.',
                           style: TextStyle(
                             fontSize: 32.sp,
                             color: Colors.orange[800],
