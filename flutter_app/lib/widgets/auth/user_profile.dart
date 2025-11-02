@@ -69,12 +69,9 @@ class _UserProfileState extends State<UserProfile> {
 
   Future<void> _handleDeleteAccount() async {
     setState(() => _isLoading = true);
-
     final result = await AuthService.deleteAccount(context, _user);
-
     if (mounted) {
       setState(() => _isLoading = false);
-
       if (result.isSuccess) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -115,7 +112,8 @@ class _UserProfileState extends State<UserProfile> {
 
   Widget _buildProfileCard() {
     return _buildCard(
-      child: Column(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Profile icon
           Container(
@@ -135,29 +133,39 @@ class _UserProfileState extends State<UserProfile> {
               color: Colors.green,
             ),
           ),
-          SizedBox(height: 24.h),
+
+          SizedBox(width: 24.w),
 
           // User info
-          Text(
-            _user?.nickname ?? 'Utilisateur',
-            style: TextStyle(
-              fontSize: 56.sp,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[800],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _user?.nickname ?? 'Utilisateur',
+                  style: TextStyle(
+                    fontSize: 56.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey[800],
+                  ),
+                ),
+                Text(
+                  _user?.email ?? '',
+                  style: TextStyle(
+                    fontSize: 44.sp,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                Text(
+                  '${_user?.nbProductsSent?.toString() ?? ''} produits envoyés',
+                  style: TextStyle(
+                    fontSize: 44.sp,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ],
             ),
-            textAlign: TextAlign.center,
           ),
-          SizedBox(height: 8.h),
-
-          Text(
-            _user?.email ?? '',
-            style: TextStyle(
-              fontSize: 44.sp,
-              color: Colors.grey[600],
-            ),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 16.h),
         ],
       ),
     );

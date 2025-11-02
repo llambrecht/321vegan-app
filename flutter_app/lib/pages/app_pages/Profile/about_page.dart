@@ -36,11 +36,7 @@ class _AboutPageState extends State<AboutPage> {
       final result = await AuthService.getCurrentUser();
       if (mounted) {
         setState(() {});
-
-        // If failed to get user info, show error and logout
         if (!result.isSuccess) {
-          print('Failed to get user info: ${result.error}');
-          // For now, we'll clear the login state if we can't get user info
           await AuthService.logout();
           _checkAuthStatus();
         }
@@ -91,10 +87,17 @@ class _AboutPageState extends State<AboutPage> {
     return _buildCard(
       child: Column(
         children: [
-          Icon(
-            Icons.eco,
-            size: 80.sp,
-            color: Colors.green,
+          Image.asset(
+            'lib/assets/app_icon.png',
+            fit: BoxFit.contain,
+            height: 150.h,
+            errorBuilder: (context, error, stackTrace) {
+              return Icon(
+                Icons.account_circle,
+                size: 150.sp,
+                color: Colors.grey,
+              );
+            },
           ),
           SizedBox(height: 16.h),
           Text(
