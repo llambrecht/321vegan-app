@@ -5,12 +5,14 @@ import 'helpers/first_time_launch.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'services/auth_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
   await DatabaseHelper.instance.database;
   await DatabaseHelper.instance.cosmeticsDatabase;
+  await AuthService.init();
   runApp(const MyApp());
 }
 

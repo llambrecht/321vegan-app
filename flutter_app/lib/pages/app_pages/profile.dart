@@ -17,31 +17,14 @@ class ProfilePage extends StatefulWidget {
 class ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
             Stack(
-              children: [
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: ClipPath(
-                    clipper: WaveClipper(),
-                    child: Container(
-                      color: Theme.of(context).colorScheme.primary,
-                      height: 0.19.sh,
-                    ),
-                  ),
-                ),
-                CustomPaint(
-                  size: Size.fromHeight(0.190.sh),
-                  painter: WaveTextPainter("À propos"),
-                ),
-              ],
+              children: [],
             ),
-            const AboutPage(),
+            AboutPage(),
           ],
         ),
       ),

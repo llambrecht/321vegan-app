@@ -336,7 +336,7 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       ),
       bottomNavigationBar: MotionTabBar(
         controller: motionTabBarController,
-        labels: const ["Promos", "Accueil", "Recherche", "Scan", "À propos"],
+        labels: const ["Promos", "Accueil", "Recherche", "Scan", "Profil"],
         initialSelectedTab: "Accueil",
         tabIconColor: Colors.grey,
         tabSelectedColor: Theme.of(context).colorScheme.primary,
