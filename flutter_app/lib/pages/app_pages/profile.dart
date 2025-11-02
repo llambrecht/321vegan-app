@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:vegan_app/widgets/wave_clipper.dart';
 import './Profile/about_page.dart';
 
 class ProfilePage extends StatefulWidget {

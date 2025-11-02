@@ -67,6 +67,34 @@ class _UserProfileState extends State<UserProfile> {
     }
   }
 
+  Future<void> _handleDeleteAccount() async {
+    setState(() => _isLoading = true);
+
+    final result = await AuthService.deleteAccount(context, _user);
+
+    if (mounted) {
+      setState(() => _isLoading = false);
+
+      if (result.isSuccess) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Compte supprimé avec succès.'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        widget.onLogout?.call();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content:
+                Text(result.error ?? 'Erreur lors de la suppression du compte'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
@@ -130,36 +158,6 @@ class _UserProfileState extends State<UserProfile> {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 16.h),
-
-          // Status badge
-          Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: 16.w,
-              vertical: 8.h,
-            ),
-            decoration: BoxDecoration(
-              color: (_user?.isActive ?? false)
-                  ? Colors.green.withValues(alpha: 0.1)
-                  : Colors.orange.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(20.r),
-              border: Border.all(
-                color: (_user?.isActive ?? false)
-                    ? Colors.green.withValues(alpha: 0.3)
-                    : Colors.orange.withValues(alpha: 0.3),
-                width: 1,
-              ),
-            ),
-            child: Text(
-              (_user?.isActive ?? false) ? 'Compte actif' : 'Compte inactif',
-              style: TextStyle(
-                fontSize: 36.sp,
-                color: (_user?.isActive ?? false)
-                    ? Colors.green[700]
-                    : Colors.orange[700],
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -182,7 +180,7 @@ class _UserProfileState extends State<UserProfile> {
 
           // Account info text
           Text(
-            'Votre compte vous permet de contribuer à la base de données 321 Vegan en ajoutant des produits et en signalant des erreurs.',
+            'Votre compte permet de conserver certaines données et de collectionner des badges.',
             style: TextStyle(
               fontSize: 42.sp,
               color: Colors.grey[600],
@@ -206,6 +204,36 @@ class _UserProfileState extends State<UserProfile> {
                 : const Icon(Icons.logout),
             label: Text(
               _isLoading ? 'Déconnexion...' : 'Se déconnecter',
+              style: TextStyle(fontSize: 44.sp),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              padding: EdgeInsets.symmetric(
+                horizontal: 24.w,
+                vertical: 16.h,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+            ),
+          ),
+
+          // Delete button
+          ElevatedButton.icon(
+            onPressed: _isLoading ? null : _handleDeleteAccount,
+            icon: _isLoading
+                ? SizedBox(
+                    width: 20.w,
+                    height: 20.w,
+                    child: const CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  )
+                : const Icon(Icons.delete),
+            label: Text(
+              _isLoading ? 'Suppression...' : 'Supprimer mon compte',
               style: TextStyle(fontSize: 44.sp),
             ),
             style: ElevatedButton.styleFrom(

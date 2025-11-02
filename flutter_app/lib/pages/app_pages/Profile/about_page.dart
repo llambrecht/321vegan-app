@@ -25,11 +25,27 @@ class _AboutPageState extends State<AboutPage> {
     _checkAuthStatus();
   }
 
-  void _checkAuthStatus() {
+  void _checkAuthStatus() async {
     setState(() {
       _isLoggedIn = AuthService.isLoggedIn;
       _currentView = _isLoggedIn ? AuthView.profile : AuthView.login;
     });
+
+    // If logged in but user data is not loaded, fetch it
+    if (_isLoggedIn && AuthService.currentUser == null) {
+      final result = await AuthService.getCurrentUser();
+      if (mounted) {
+        setState(() {});
+
+        // If failed to get user info, show error and logout
+        if (!result.isSuccess) {
+          print('Failed to get user info: ${result.error}');
+          // For now, we'll clear the login state if we can't get user info
+          await AuthService.logout();
+          _checkAuthStatus();
+        }
+      }
+    }
   }
 
   void _onLoginSuccess() {
@@ -63,7 +79,7 @@ class _AboutPageState extends State<AboutPage> {
       child: Column(
         children: [
           SizedBox(height: 100.h),
-          _buildHeader(),
+          if (!_isLoggedIn) _buildHeader(),
           SizedBox(height: 32.h),
           _buildAuthContent(),
         ],
@@ -91,9 +107,7 @@ class _AboutPageState extends State<AboutPage> {
           ),
           SizedBox(height: 8.h),
           Text(
-            _isLoggedIn
-                ? 'Hello ${AuthService.currentUser!.nickname}'
-                : 'Connectez-vous ou créez votre compte',
+            'Connectez-vous ou créez votre compte',
             style: TextStyle(
               fontSize: 44.sp,
               color: Colors.grey[600],

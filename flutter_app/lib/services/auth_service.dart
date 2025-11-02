@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/material.dart';
 import '../models/auth.dart';
 import '../models/user.dart';
 
@@ -82,9 +83,6 @@ class AuthService {
         body: request.toFormData(),
       );
 
-      debugPrint('Login response status: ${response.statusCode}');
-      debugPrint('Login response body: ${response.body}');
-
       if (response.statusCode == 200) {
         if (response.body.isEmpty) {
           return AuthResult.error('Empty response from server');
@@ -95,24 +93,22 @@ class AuthService {
           await _storeToken(token.accessToken);
           return AuthResult.success(token);
         } catch (jsonError) {
-          debugPrint('JSON parsing error: $jsonError');
           return AuthResult.error('Invalid response format');
         }
       } else {
         if (response.body.isEmpty) {
-          return AuthResult.error('Login failed (${response.statusCode})');
+          return AuthResult.error(
+              'Erreur de connexion (${response.statusCode})');
         }
         try {
-          final error = json.decode(response.body);
-          return AuthResult.error(error['detail'] ?? 'Login failed');
+          return AuthResult.error('Mot de passe ou email incorrect');
         } catch (jsonError) {
-          debugPrint('Error JSON parsing error: $jsonError');
-          return AuthResult.error('Login failed (${response.statusCode})');
+          return AuthResult.error(
+              'Erreur de connexion (${response.statusCode})');
         }
       }
     } catch (e) {
-      debugPrint('Error during login: $e');
-      return AuthResult.error('Network error during login');
+      return AuthResult.error('Erreur réseau lors de la connexion');
     }
   }
 
@@ -123,19 +119,12 @@ class AuthService {
       final url = Uri.parse('$_baseUrl/users/');
       final body = json.encode(request.toJson());
 
-      debugPrint('Registration request to: $url');
-      debugPrint('Registration body: $body');
-
       // Use API key headers for registration (same as product posting)
       final response = await http.post(
         url,
         headers: _headersWithApiKey,
         body: body,
       );
-
-      debugPrint('Registration response status: ${response.statusCode}');
-      debugPrint('Registration response body: ${response.body}');
-      debugPrint('Registration response headers: ${response.headers}');
 
       // Handle redirects
       if (response.statusCode == 307 || response.statusCode == 308) {
@@ -251,6 +240,63 @@ class AuthService {
       await _clearToken();
       return AuthResult.success('Logged out locally');
     }
+  }
+
+  // Delete account
+  static Future<AuthResult<String>> deleteAccount(
+      BuildContext context, currentUser) async {
+    // Ask for confirmation before deleting account
+    final confirmed = await _showDeleteConfirmationDialog(context);
+    if (!confirmed) {
+      return AuthResult.error('Annulation de la suppression du compte');
+    }
+    try {
+      final url = Uri.parse('$_baseUrl/users/${currentUser.id}');
+
+      final response = await http.delete(
+        url,
+        headers: _authHeaders,
+      );
+
+      if (response.statusCode == 204) {
+        await _clearToken();
+        return AuthResult.success('Compte supprimé avec succès.');
+      } else {
+        return AuthResult.error('Erreur lors de la suppression du compte');
+      }
+    } catch (e) {
+      debugPrint('Error during account deletion: $e');
+      await _clearToken();
+      return AuthResult.error('Erreur réseau lors de la suppression du compte');
+    }
+  }
+
+  // Helper method to show delete confirmation dialog
+  static Future<bool> _showDeleteConfirmationDialog(
+      BuildContext context) async {
+    return await showDialog<bool>(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext dialogContext) {
+            return AlertDialog(
+              title: const Text('Confirmer la suppression'),
+              content: const Text(
+                  'Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.'),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('Annuler'),
+                  onPressed: () => Navigator.of(dialogContext).pop(false),
+                ),
+                TextButton(
+                  child: const Text('Supprimer'),
+                  style: TextButton.styleFrom(foregroundColor: Colors.red),
+                  onPressed: () => Navigator.of(dialogContext).pop(true),
+                ),
+              ],
+            );
+          },
+        ) ??
+        false;
   }
 
   // Request password reset
