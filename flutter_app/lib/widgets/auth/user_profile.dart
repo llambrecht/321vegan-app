@@ -595,8 +595,9 @@ class _UserProfileState extends State<UserProfile> {
                         return Icon(
                           Icons.emoji_events,
                           size: 80.sp,
-                          color:
-                              isUnlocked ? Colors.amber[700] : Colors.grey[600],
+                          color: isUnlocked
+                              ? Theme.of(context).colorScheme.primary
+                              : Colors.grey[600],
                         );
                       },
                     ),
@@ -651,7 +652,9 @@ class _UserProfileState extends State<UserProfile> {
                 shape: BoxShape.circle,
                 color: isUnlocked ? Colors.white : Colors.grey[300],
                 border: Border.all(
-                  color: isUnlocked ? Colors.amber[700]! : Colors.grey[400]!,
+                  color: isUnlocked
+                      ? Theme.of(context).colorScheme.primary
+                      : Colors.grey[400]!,
                   width: 3,
                 ),
               ),
