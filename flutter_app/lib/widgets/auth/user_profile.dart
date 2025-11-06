@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import '../../services/auth_service.dart';
 import '../../models/user.dart';
+import '../../models/badge.dart' as app_badge;
 import '../../pages/app_pages/Scan/sent_products_modal.dart';
 import '../../helpers/preference_helper.dart';
 import './edit_profile_modal.dart';
@@ -115,6 +116,8 @@ class _UserProfileState extends State<UserProfile> {
         _buildProfileCard(),
         SizedBox(height: 24.h),
         _buildStatsCards(),
+        SizedBox(height: 24.h),
+        _buildBadgesSection(),
         SizedBox(height: 32.h),
         _buildActionsCard(),
       ],
@@ -253,7 +256,7 @@ class _UserProfileState extends State<UserProfile> {
         Expanded(
           child: _buildStatCard(
             icon: Icons.calendar_today,
-            iconColor: Colors.blue,
+            iconColor: Theme.of(context).primaryColor,
             title: 'Végane depuis',
             value: _user?.veganSince != null
                 ? DateFormat.yMMMd('fr_FR').format(_user!.veganSince!)
@@ -424,7 +427,7 @@ class _UserProfileState extends State<UserProfile> {
               style: TextStyle(fontSize: 44.sp),
             ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
+              backgroundColor: Colors.orange[700],
               foregroundColor: Colors.white,
               padding: EdgeInsets.symmetric(
                 horizontal: 24.w,
@@ -466,6 +469,298 @@ class _UserProfileState extends State<UserProfile> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildBadgesSection() {
+    final productsSent = _user?.nbProductsSent ?? 0;
+    final veganSince = _user?.veganSince;
+
+    // Sort badges: unlocked first, then locked
+    final sortedBadges = List<app_badge.Badge>.from(app_badge.Badges.all);
+    sortedBadges.sort((a, b) {
+      final aUnlocked = a.isUnlocked(
+        productsSent: productsSent,
+        veganSince: veganSince,
+      );
+      final bUnlocked = b.isUnlocked(
+        productsSent: productsSent,
+        veganSince: veganSince,
+      );
+
+      // Unlocked badges first (true comes before false)
+      if (aUnlocked && !bUnlocked) return -1;
+      if (!aUnlocked && bUnlocked) return 1;
+      return 0; // Keep original order within same unlock status
+    });
+
+    return _buildCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Section title
+          Row(
+            children: [
+              Icon(
+                Icons.emoji_events,
+                size: 64.sp,
+                color: Colors.amber[700],
+              ),
+              SizedBox(width: 40.w),
+              Text(
+                'Badges',
+                style: TextStyle(
+                  fontSize: 56.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[800],
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: 16.h),
+
+          // Badges grid (scrollable horizontally)
+          SizedBox(
+            height: 450.h,
+            child: GridView.builder(
+              padding: EdgeInsets.all(25.w),
+              scrollDirection: Axis.vertical,
+              physics: const AlwaysScrollableScrollPhysics(),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                crossAxisSpacing: 16.w,
+                mainAxisSpacing: 16.h,
+                childAspectRatio: 0.85,
+              ),
+              itemCount: sortedBadges.length,
+              itemBuilder: (context, index) {
+                final badge = sortedBadges[index];
+                final isUnlocked = badge.isUnlocked(
+                  productsSent: productsSent,
+                  veganSince: veganSince,
+                );
+
+                return _buildBadgeItem(badge, isUnlocked);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBadgeItem(app_badge.Badge badge, bool isUnlocked) {
+    return GestureDetector(
+      onTap: () => _showBadgeDetails(badge, isUnlocked),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Badge icon
+          Container(
+            width: 180.w,
+            height: 180.w,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: isUnlocked ? Colors.white : Colors.grey[300],
+              border: Border.all(
+                color: isUnlocked
+                    ? Theme.of(context).colorScheme.primary
+                    : Colors.grey[400]!,
+                width: isUnlocked ? 3 : 2,
+              ),
+              boxShadow: isUnlocked
+                  ? [
+                      BoxShadow(
+                        color:
+                            Theme.of(context).colorScheme.primary.withAlpha(80),
+                        blurRadius: 10,
+                        spreadRadius: 2,
+                      ),
+                    ]
+                  : [],
+            ),
+            child: ClipOval(
+              child: Stack(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(20.w),
+                    child: Image.asset(
+                      badge.iconPath,
+                      fit: BoxFit.contain,
+                      color: isUnlocked ? null : Colors.grey[600],
+                      colorBlendMode: isUnlocked ? null : BlendMode.saturation,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Icon(
+                          Icons.emoji_events,
+                          size: 80.sp,
+                          color:
+                              isUnlocked ? Colors.amber[700] : Colors.grey[600],
+                        );
+                      },
+                    ),
+                  ),
+                  if (!isUnlocked)
+                    Center(
+                      child: Icon(
+                        Icons.lock,
+                        size: 64.sp,
+                        color: Colors.orange[700],
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+
+          SizedBox(height: 8.h),
+
+          // Badge name
+          Text(
+            badge.name,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 32.sp,
+              fontWeight: isUnlocked ? FontWeight.bold : FontWeight.normal,
+              color: isUnlocked ? Colors.grey[800] : Colors.grey[500],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showBadgeDetails(app_badge.Badge badge, bool isUnlocked) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.r),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Badge icon
+            Container(
+              width: 200.w,
+              height: 200.w,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isUnlocked ? Colors.white : Colors.grey[300],
+                border: Border.all(
+                  color: isUnlocked ? Colors.amber[700]! : Colors.grey[400]!,
+                  width: 3,
+                ),
+              ),
+              child: ClipOval(
+                child: Stack(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(24.w),
+                      child: Image.asset(
+                        badge.iconPath,
+                        fit: BoxFit.contain,
+                        color: isUnlocked ? null : Colors.grey[600],
+                        colorBlendMode:
+                            isUnlocked ? null : BlendMode.saturation,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(
+                            Icons.emoji_events,
+                            size: 100.sp,
+                            color: isUnlocked
+                                ? Colors.amber[700]
+                                : Colors.grey[600],
+                          );
+                        },
+                      ),
+                    ),
+                    if (!isUnlocked)
+                      Center(
+                        child: Icon(
+                          Icons.lock,
+                          size: 64.sp,
+                          color: Colors.orange[700],
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+
+            SizedBox(height: 24.h),
+
+            // Badge name
+            Text(
+              badge.name,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 56.sp,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[800],
+              ),
+            ),
+
+            SizedBox(height: 12.h),
+
+            // Badge description
+            Text(
+              badge.description,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 44.sp,
+                color: Colors.grey[600],
+              ),
+            ),
+
+            SizedBox(height: 16.h),
+
+            // Status
+            Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: 16.w,
+                vertical: 8.h,
+              ),
+              decoration: BoxDecoration(
+                color: isUnlocked
+                    ? Colors.green.withValues(alpha: 0.1)
+                    : Colors.orange.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12.r),
+                border: Border.all(
+                  color: isUnlocked ? Colors.green : Colors.orange,
+                  width: 1,
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    isUnlocked ? Icons.check_circle : Icons.lock_outline,
+                    size: 44.sp,
+                    color: isUnlocked ? Colors.green : Colors.orange,
+                  ),
+                  SizedBox(width: 8.w),
+                  Flexible(
+                    child: Text(
+                      isUnlocked
+                          ? 'Badge débloqué !'
+                          : badge.getRequirementText(),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 40.sp,
+                        fontWeight: FontWeight.w600,
+                        color:
+                            isUnlocked ? Colors.green[700] : Colors.orange[700],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -166,12 +166,20 @@ class _EditProfileModalState extends State<EditProfileModal> {
               color: Colors.grey[800],
             ),
           ),
+          Text(
+            'Illustrations par @kodasmarket.art',
+            textAlign: TextAlign.left,
+            style: TextStyle(
+              fontSize: 36.sp,
+              color: Colors.grey[600],
+            ),
+          ),
 
           SizedBox(height: 16.h),
 
           // Avatar grid
           SizedBox(
-            height: 400.h,
+            height: 300.h,
             child: GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
@@ -223,7 +231,6 @@ class _EditProfileModalState extends State<EditProfileModal> {
               },
             ),
           ),
-
           SizedBox(height: 24.h),
 
           // Save button
