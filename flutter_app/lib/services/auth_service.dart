@@ -427,6 +427,8 @@ class AuthService {
   static Future<AuthResult<User>> updateUser({
     int? userId,
     DateTime? veganSince,
+    String? nickname,
+    String? email,
   }) async {
     try {
       // Use the current user's id if not provided
@@ -440,6 +442,12 @@ class AuthService {
 
       if (veganSince != null) {
         updates['vegan_since'] = veganSince.toIso8601String();
+      }
+      if (nickname != null) {
+        updates['nickname'] = nickname;
+      }
+      if (email != null) {
+        updates['email'] = email;
       }
 
       final response = await dio.patch(

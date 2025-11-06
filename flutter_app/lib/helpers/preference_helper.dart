@@ -204,4 +204,19 @@ class PreferencesHelper {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('scan_history');
   }
+
+  // Avatar preference methods
+  static Future<void> saveAvatar(String? avatar) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (avatar == null) {
+      await prefs.remove('user_avatar');
+    } else {
+      await prefs.setString('user_avatar', avatar);
+    }
+  }
+
+  static Future<String?> getAvatar() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('user_avatar');
+  }
 }

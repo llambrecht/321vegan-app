@@ -5,6 +5,7 @@ import '../../services/auth_service.dart';
 import '../../models/user.dart';
 import '../../pages/app_pages/Scan/sent_products_modal.dart';
 import '../../helpers/preference_helper.dart';
+import './edit_profile_modal.dart';
 
 class UserProfile extends StatefulWidget {
   final VoidCallback? onLogout;
@@ -23,6 +24,7 @@ class UserProfile extends StatefulWidget {
 class _UserProfileState extends State<UserProfile> {
   User? _user;
   bool _isLoading = false;
+  String? _selectedAvatar;
 
   @override
   void initState() {
@@ -34,10 +36,12 @@ class _UserProfileState extends State<UserProfile> {
     setState(() => _isLoading = true);
 
     final result = await AuthService.getCurrentUser();
+    final avatar = await PreferencesHelper.getAvatar();
 
     if (mounted) {
       setState(() {
         _isLoading = false;
+        _selectedAvatar = avatar;
         if (result.isSuccess) {
           _user = result.data;
         }
@@ -122,22 +126,31 @@ class _UserProfileState extends State<UserProfile> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Profile icon
-          Container(
-            width: 120.w,
-            height: 120.w,
-            decoration: BoxDecoration(
-              color: Colors.green.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: Colors.green.withValues(alpha: 0.3),
-                width: 2,
-              ),
-            ),
-            child: Icon(
-              Icons.person,
-              size: 64.sp,
-              color: Colors.green,
+          // Profile avatar
+          SizedBox(
+            width: 400.w,
+            height: 400.w,
+            child: ClipOval(
+              child: _selectedAvatar != null
+                  ? Padding(
+                      padding: EdgeInsets.all(16.w),
+                      child: Image.asset(
+                        'lib/assets/partners/$_selectedAvatar',
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(
+                            Icons.person,
+                            size: 64.sp,
+                            color: Colors.green,
+                          );
+                        },
+                      ),
+                    )
+                  : Icon(
+                      Icons.person,
+                      size: 64.sp,
+                      color: Colors.green,
+                    ),
             ),
           ),
 
@@ -166,7 +179,41 @@ class _UserProfileState extends State<UserProfile> {
               ],
             ),
           ),
+
+          // Edit button
+          IconButton(
+            onPressed: _openEditProfileModal,
+            icon: Icon(
+              Icons.edit,
+              size: 64.sp,
+              color: Colors.grey[600],
+            ),
+          ),
         ],
+      ),
+    );
+  }
+
+  void _openEditProfileModal() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20.r),
+            topRight: Radius.circular(20.r),
+          ),
+        ),
+        child: EditProfileModal(
+          currentNickname: _user?.nickname ?? 'Utilisateur',
+          currentAvatar: _selectedAvatar,
+          onProfileUpdated: () {
+            _loadUserInfo();
+          },
+        ),
       ),
     );
   }
