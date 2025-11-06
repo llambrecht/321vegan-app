@@ -89,6 +89,11 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     });
   }
 
+  Future<void> _onLoginSuccess() async {
+    // Reload target date from preferences after login
+    await loadTargetDate();
+  }
+
   Future<void> _pickDate() async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -111,12 +116,15 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   Future<void> loadTargetDate() async {
     final DateTime? dateFromPrefs =
         await PreferencesHelper.getSelectedDateFromPrefs();
-    if (dateFromPrefs != null) {
-      setState(() {
-        targetDate = dateFromPrefs;
+    setState(() {
+      targetDate = dateFromPrefs;
+      if (targetDate != null) {
         _dateController.text = DateFormat.yMMMd('fr_FR').format(targetDate!);
-      });
-    }
+      } else {
+        _dateController.clear();
+      }
+      _savings = computeSavings(targetDate);
+    });
   }
 
   void _updateSavings() {
@@ -331,6 +339,7 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           const ScanPage(),
           ProfilePage(
             onDateSaved: _onDateSaved,
+            onLoginSuccess: _onLoginSuccess,
           ),
         ],
       ),

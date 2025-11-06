@@ -4,13 +4,16 @@ import 'package:intl/intl.dart';
 import '../../services/auth_service.dart';
 import '../../models/user.dart';
 import '../../pages/app_pages/Scan/sent_products_modal.dart';
+import '../../helpers/preference_helper.dart';
 
 class UserProfile extends StatefulWidget {
   final VoidCallback? onLogout;
+  final Function(DateTime)? onDateSaved;
 
   const UserProfile({
     super.key,
     this.onLogout,
+    this.onDateSaved,
   });
 
   @override
@@ -293,28 +296,39 @@ class _UserProfileState extends State<UserProfile> {
     );
 
     if (picked != null && picked != _user?.veganSince) {
-      // TODO: Update the vegan date on the backend
-      // For now, just update locally
-      setState(() {
-        _user = User(
-          id: _user!.id,
-          email: _user!.email,
-          nickname: _user!.nickname,
-          isActive: _user!.isActive,
-          nbProductsSent: _user!.nbProductsSent,
-          veganSince: picked,
-          createdAt: _user!.createdAt,
-          updatedAt: _user!.updatedAt,
-        );
-      });
+      setState(() => _isLoading = true);
+
+      // Update both local storage and backend (via PreferencesHelper)
+      await PreferencesHelper.addSelectedDateToPrefs(picked);
+
+      // Refresh user data from backend to get the updated info
+      final result = await AuthService.getCurrentUser();
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Date mise à jour (local seulement pour le moment)'),
-            backgroundColor: Colors.orange,
-          ),
-        );
+        setState(() => _isLoading = false);
+
+        if (result.isSuccess) {
+          setState(() {
+            _user = result.data;
+          });
+
+          // Notify the home page about the date change
+          widget.onDateSaved?.call(picked);
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Date mise à jour avec succès !'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(result.error ?? 'Erreur lors de la mise à jour'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       }
     }
   }

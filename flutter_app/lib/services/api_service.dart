@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter/foundation.dart';
 
 class ApiService {
   static String get _baseUrl =>
@@ -37,7 +36,6 @@ class ApiService {
       return (response.statusCode >= 200 && response.statusCode < 300) ||
           response.statusCode == 409;
     } catch (e) {
-      debugPrint('Error posting product: $e');
       return false;
     }
   }
@@ -68,7 +66,6 @@ class ApiService {
 
       return response.statusCode >= 200 && response.statusCode < 300;
     } catch (e) {
-      debugPrint('Error posting error report: $e');
       return false;
     }
   }

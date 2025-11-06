@@ -5,8 +5,10 @@ class ProfilePage extends StatefulWidget {
   const ProfilePage({
     super.key,
     required this.onDateSaved,
+    this.onLoginSuccess,
   });
   final Function(DateTime) onDateSaved;
+  final VoidCallback? onLoginSuccess;
 
   @override
   ProfilePageState createState() => ProfilePageState();
@@ -15,14 +17,17 @@ class ProfilePage extends StatefulWidget {
 class ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Stack(
+            const Stack(
               children: [],
             ),
-            AboutPage(),
+            AboutPage(
+              onDateSaved: widget.onDateSaved,
+              onLoginSuccess: widget.onLoginSuccess,
+            ),
           ],
         ),
       ),

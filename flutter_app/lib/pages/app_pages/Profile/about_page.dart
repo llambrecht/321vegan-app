@@ -9,7 +9,10 @@ import '../../../widgets/auth/user_profile.dart';
 enum AuthView { login, register, forgotPassword, profile }
 
 class AboutPage extends StatefulWidget {
-  const AboutPage({super.key});
+  const AboutPage({super.key, this.onDateSaved, this.onLoginSuccess});
+
+  final Function(DateTime)? onDateSaved;
+  final VoidCallback? onLoginSuccess;
 
   @override
   State<AboutPage> createState() => _AboutPageState();
@@ -46,6 +49,8 @@ class _AboutPageState extends State<AboutPage> {
 
   void _onLoginSuccess() {
     _checkAuthStatus();
+    // Notify parent that login was successful so it can reload data
+    widget.onLoginSuccess?.call();
   }
 
   void _onLogout() {
@@ -148,6 +153,7 @@ class _AboutPageState extends State<AboutPage> {
       case AuthView.profile:
         return UserProfile(
           onLogout: _onLogout,
+          onDateSaved: widget.onDateSaved,
         );
     }
   }

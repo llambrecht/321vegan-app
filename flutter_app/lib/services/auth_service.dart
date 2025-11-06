@@ -1,28 +1,19 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import '../models/auth.dart';
 import '../models/user.dart';
+import '../helpers/preference_helper.dart';
+import 'dio_client.dart';
 
 class AuthService {
   static String get _baseUrl =>
       dotenv.env['API_BASE_URL'] ?? 'https://api.321vegan.fr';
 
-  static Map<String, String> get _headers => {
-        'Content-Type': 'application/json',
-      };
-
   static Map<String, String> get _headersWithApiKey => {
         'Content-Type': 'application/json',
         'x-api-key': dotenv.env['API_KEY'] ?? '',
-      };
-
-  static Map<String, String> get _authHeaders => {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${_accessToken}',
       };
 
   static String? _accessToken;
@@ -66,6 +57,26 @@ class AuthService {
     }
   }
 
+  // Sync user data from backend to local preferences
+  static Future<void> _syncUserDataToPreferences() async {
+    try {
+      final userResult = await getCurrentUser();
+      if (userResult.isSuccess) {
+        if (userResult.data?.veganSince != null) {
+          // Use internal method to avoid calling backend again
+          await PreferencesHelper.saveSelectedDateToPrefsOnly(
+            userResult.data!.veganSince,
+          );
+        } else {
+          // Backend has null, so clear local storage
+          await PreferencesHelper.saveSelectedDateToPrefsOnly(null);
+        }
+      } else {}
+    } catch (e) {
+      // Don't throw - this is not critical for login
+    }
+  }
+
   // Check if user is logged in
   static bool get isLoggedIn => _accessToken != null;
 
@@ -75,38 +86,35 @@ class AuthService {
   // Login
   static Future<AuthResult<AuthToken>> login(LoginRequest request) async {
     try {
-      final url = Uri.parse('$_baseUrl/auth/login');
+      final dio = await DioClient.getDio();
 
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: request.toFormData(),
+      final response = await dio.post(
+        '/auth/login',
+        data: FormData.fromMap({
+          'username': request.email,
+          'password': request.password,
+        }),
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
       );
 
       if (response.statusCode == 200) {
-        if (response.body.isEmpty) {
-          return AuthResult.error('Empty response from server');
-        }
-        try {
-          final data = json.decode(response.body);
-          final token = AuthToken.fromJson(data);
-          await _storeToken(token.accessToken);
-          return AuthResult.success(token);
-        } catch (jsonError) {
-          return AuthResult.error('Invalid response format');
-        }
+        final token = AuthToken.fromJson(response.data);
+        await _storeToken(token.accessToken);
+
+        // Fetch user data and sync vegan date to local storage
+        await _syncUserDataToPreferences();
+
+        return AuthResult.success(token);
       } else {
-        if (response.body.isEmpty) {
-          return AuthResult.error(
-              'Erreur de connexion (${response.statusCode})');
-        }
-        try {
-          return AuthResult.error('Mot de passe ou email incorrect');
-        } catch (jsonError) {
-          return AuthResult.error(
-              'Erreur de connexion (${response.statusCode})');
-        }
+        return AuthResult.error('Mot de passe ou email incorrect');
       }
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 400) {
+        return AuthResult.error('Mot de passe ou email incorrect');
+      }
+      return AuthResult.error('Erreur réseau lors de la connexion');
     } catch (e) {
       return AuthResult.error('Erreur réseau lors de la connexion');
     }
@@ -114,61 +122,36 @@ class AuthService {
 
   static Future<AuthResult<String>> register(RegisterRequest request) async {
     try {
-      // Ensure URL ends with trailing slash to avoid redirects
-      final url = Uri.parse('$_baseUrl/users/');
-      final body = json.encode(request.toJson());
+      final dio = await DioClient.getDio();
 
       // Use API key headers for registration
-      final response = await http.post(
-        url,
-        headers: _headersWithApiKey,
-        body: body,
+      final response = await dio.post(
+        '/users/',
+        data: request.toJson(),
+        options: Options(
+          headers: _headersWithApiKey,
+          followRedirects: true,
+          validateStatus: (status) => status! < 500,
+        ),
       );
 
-      // Handle redirects
-      if (response.statusCode == 307 || response.statusCode == 308) {
-        final redirectLocation = response.headers['location'];
-        if (redirectLocation != null) {
-          debugPrint('Following redirect to: $redirectLocation');
-          final redirectResponse = await http.post(
-            Uri.parse(redirectLocation),
-            headers: _headersWithApiKey,
-            body: body,
-          );
-
-          debugPrint(
-              'Redirect response status: ${redirectResponse.statusCode}');
-          debugPrint('Redirect response body: ${redirectResponse.body}');
-
-          return _handleRegistrationResponse(redirectResponse);
-        } else {
-          return AuthResult.error(
-              'Server redirect failed - no location provided');
-        }
-      }
-
       return _handleRegistrationResponse(response);
+    } on DioException catch (e) {
+      if (e.response != null) {
+        return _handleRegistrationResponse(e.response!);
+      }
+      return AuthResult.error('Network error during registration');
     } catch (e) {
-      debugPrint('Error during registration: $e');
       return AuthResult.error('Network error during registration');
     }
   }
 
   // Helper method to handle registration response
-  static AuthResult<String> _handleRegistrationResponse(
-      http.Response response) {
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      // Handle empty or non-JSON responses
-      if (response.body.isEmpty) {
-        return AuthResult.success('Votre compte a bien été créé !');
-      }
-      try {
-        json.decode(response.body); // Just validate it's valid JSON
-        return AuthResult.success('Votre compte a bien été créé !');
-      } catch (jsonError) {
-        debugPrint('JSON parsing error: $jsonError');
-        return AuthResult.success('Votre compte a bien été créé !');
-      }
+  static AuthResult<String> _handleRegistrationResponse(Response response) {
+    if (response.statusCode != null &&
+        response.statusCode! >= 200 &&
+        response.statusCode! < 300) {
+      return AuthResult.success('Votre compte a bien été créé !');
     } else if (response.statusCode == 403) {
       return AuthResult.error(
           'L\'inscription n\'est actuellement pas disponible. Veuillez contacter un administrateur.');
@@ -176,16 +159,14 @@ class AuthService {
       return AuthResult.error(
           'Un utilisateur avec cet email ou ce pseudo existe déjà.');
     } else {
-      // Handle error responses safely
-      if (response.body.isEmpty) {
-        return AuthResult.error(
-            'L\'inscription a échoué (${response.statusCode})');
-      }
       try {
-        final error = json.decode(response.body);
-        return AuthResult.error(error['detail'] ?? 'Registration failed');
+        final error = response.data;
+        if (error is Map && error['detail'] != null) {
+          return AuthResult.error(error['detail']);
+        }
+        return AuthResult.error('Registration failed (${response.statusCode})');
       } catch (jsonError) {
-        debugPrint('Error JSON parsing error: $jsonError');
+        debugPrint('Error parsing registration error: $jsonError');
         return AuthResult.error('Registration failed (${response.statusCode})');
       }
     }
@@ -194,25 +175,27 @@ class AuthService {
   // Refresh token
   static Future<AuthResult<AuthToken>> refreshToken() async {
     try {
-      final url = Uri.parse('$_baseUrl/auth/refresh');
+      final dio = await DioClient.getDio();
 
-      final response = await http.post(
-        url,
-        headers: _headers,
-      );
+      // The refresh_token cookie is automatically sent by dio_cookie_manager
+      final response = await dio.post('/auth/refresh');
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        final token = AuthToken.fromJson(data);
+        final token = AuthToken.fromJson(response.data);
         await _storeToken(token.accessToken);
         return AuthResult.success(token);
       } else {
         await _clearToken();
+        await DioClient.clearCookies();
         return AuthResult.error('Token refresh failed');
       }
-    } catch (e) {
-      debugPrint('Error during token refresh: $e');
+    } on DioException catch (e) {
       await _clearToken();
+      await DioClient.clearCookies();
+      return AuthResult.error('Network error during token refresh');
+    } catch (e) {
+      await _clearToken();
+      await DioClient.clearCookies();
       return AuthResult.error('Network error during token refresh');
     }
   }
@@ -220,23 +203,23 @@ class AuthService {
   // Logout
   static Future<AuthResult<String>> logout() async {
     try {
-      final url = Uri.parse('$_baseUrl/auth/logout');
+      final dio = await DioClient.getDio();
 
-      final response = await http.get(
-        url,
-        headers: _authHeaders,
+      await dio.get(
+        '/auth/logout',
+        options: Options(
+          headers: {'Authorization': 'Bearer $_accessToken'},
+        ),
       );
 
       await _clearToken();
+      await DioClient.clearCookies();
 
-      if (response.statusCode == 200) {
-        return AuthResult.success('Logged out successfully');
-      } else {
-        return AuthResult.success('Logged out locally');
-      }
+      return AuthResult.success('Logged out successfully');
     } catch (e) {
-      debugPrint('Error during logout: $e');
+      debugPrint('❌ Logout error: $e');
       await _clearToken();
+      await DioClient.clearCookies();
       return AuthResult.success('Logged out locally');
     }
   }
@@ -250,22 +233,28 @@ class AuthService {
       return AuthResult.error('Annulation de la suppression du compte');
     }
     try {
-      final url = Uri.parse('$_baseUrl/users/${currentUser.id}');
+      final dio = await DioClient.getDio();
 
-      final response = await http.delete(
-        url,
-        headers: _authHeaders,
+      await dio.delete(
+        '/users/${currentUser.id}',
+        options: Options(
+          headers: {'Authorization': 'Bearer $_accessToken'},
+          validateStatus: (status) => status! < 500,
+        ),
       );
 
-      if (response.statusCode == 204) {
-        await _clearToken();
-        return AuthResult.success('Compte supprimé avec succès.');
-      } else {
-        return AuthResult.error('Erreur lors de la suppression du compte');
-      }
-    } catch (e) {
-      debugPrint('Error during account deletion: $e');
       await _clearToken();
+      await DioClient.clearCookies();
+      return AuthResult.success('Compte supprimé avec succès.');
+    } on DioException catch (e) {
+      debugPrint('❌ Account deletion error: ${e.message}');
+      await _clearToken();
+      await DioClient.clearCookies();
+      return AuthResult.error('Erreur lors de la suppression du compte');
+    } catch (e) {
+      debugPrint('❌ Unexpected deletion error: $e');
+      await _clearToken();
+      await DioClient.clearCookies();
       return AuthResult.error('Erreur réseau lors de la suppression du compte');
     }
   }
@@ -302,24 +291,28 @@ class AuthService {
   static Future<AuthResult<String>> requestPasswordReset(
       PasswordResetRequest request) async {
     try {
-      final url = Uri.parse('$_baseUrl/auth/password-reset/request');
-      final body = json.encode(request.toJson());
+      final dio = await DioClient.getDio();
 
-      final response = await http.post(
-        url,
-        headers: _headers,
-        body: body,
+      final response = await dio.post(
+        '/auth/password-reset/request',
+        data: request.toJson(),
       );
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        final data = response.data;
         return AuthResult.success(data['detail'] ?? 'Reset email sent');
       } else {
-        final error = json.decode(response.body);
+        final error = response.data;
         return AuthResult.error(error['detail'] ?? 'Reset request failed');
       }
+    } on DioException catch (e) {
+      debugPrint('❌ Password reset request error: ${e.message}');
+      if (e.response?.data != null && e.response!.data['detail'] != null) {
+        return AuthResult.error(e.response!.data['detail']);
+      }
+      return AuthResult.error('Network error during password reset request');
     } catch (e) {
-      debugPrint('Error during password reset request: $e');
+      debugPrint('❌ Unexpected password reset error: $e');
       return AuthResult.error('Network error during password reset request');
     }
   }
@@ -328,25 +321,29 @@ class AuthService {
   static Future<AuthResult<String>> confirmPasswordReset(
       PasswordResetConfirm request) async {
     try {
-      final url = Uri.parse('$_baseUrl/auth/password-reset/confirm');
-      final body = json.encode(request.toJson());
+      final dio = await DioClient.getDio();
 
-      final response = await http.post(
-        url,
-        headers: _headers,
-        body: body,
+      final response = await dio.post(
+        '/auth/password-reset/confirm',
+        data: request.toJson(),
       );
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        final data = response.data;
         return AuthResult.success(
             data['detail'] ?? 'Password reset successful');
       } else {
-        final error = json.decode(response.body);
+        final error = response.data;
         return AuthResult.error(error['detail'] ?? 'Password reset failed');
       }
+    } on DioException catch (e) {
+      debugPrint('❌ Password reset confirmation error: ${e.message}');
+      if (e.response?.data != null && e.response!.data['detail'] != null) {
+        return AuthResult.error(e.response!.data['detail']);
+      }
+      return AuthResult.error('Network error during password reset');
     } catch (e) {
-      debugPrint('Error during password reset confirmation: $e');
+      debugPrint('❌ Unexpected password reset error: $e');
       return AuthResult.error('Network error during password reset');
     }
   }
@@ -355,51 +352,116 @@ class AuthService {
   static Future<AuthResult<String>> verifyResetToken(
       PasswordResetTokenVerify request) async {
     try {
-      final url = Uri.parse('$_baseUrl/auth/password-reset/verify-token');
-      final body = json.encode(request.toJson());
+      final dio = await DioClient.getDio();
 
-      final response = await http.post(
-        url,
-        headers: _headers,
-        body: body,
+      final response = await dio.post(
+        '/auth/password-reset/verify-token',
+        data: request.toJson(),
       );
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        final data = response.data;
         return AuthResult.success(data['email'] ?? 'Token is valid');
       } else {
-        final error = json.decode(response.body);
+        final error = response.data;
         return AuthResult.error(error['detail'] ?? 'Invalid token');
       }
+    } on DioException catch (e) {
+      debugPrint('❌ Token verification error: ${e.message}');
+      if (e.response?.data != null && e.response!.data['detail'] != null) {
+        return AuthResult.error(e.response!.data['detail']);
+      }
+      return AuthResult.error('Network error during token verification');
     } catch (e) {
-      debugPrint('Error during token verification: $e');
+      debugPrint('❌ Unexpected token verification error: $e');
       return AuthResult.error('Network error during token verification');
     }
   }
 
-  // Get current user info (if you have a user profile endpoint)
+  // Get current user info
   static Future<AuthResult<User>> getCurrentUser() async {
     try {
-      final url = Uri.parse('$_baseUrl/auth/me');
+      final dio = await DioClient.getDio();
 
-      final response = await http.get(
-        url,
-        headers: _authHeaders,
+      final response = await dio.get(
+        '/auth/me',
+        options: Options(
+          headers: {'Authorization': 'Bearer $_accessToken'},
+        ),
       );
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        _currentUser = User.fromJson(data);
+        _currentUser = User.fromJson(response.data);
         return AuthResult.success(_currentUser!);
-      } else if (response.statusCode == 401) {
-        await _clearToken();
-        return AuthResult.error('Authentication expired');
       } else {
         return AuthResult.error('Failed to get user info');
       }
-    } catch (e) {
-      debugPrint('Error getting current user: $e');
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        // Try to refresh token
+        debugPrint('🔄 Access token expired, attempting refresh...');
+        final refreshResult = await refreshToken();
+
+        if (refreshResult.isSuccess) {
+          // Retry the request with new token
+          debugPrint('✅ Token refreshed, retrying request...');
+          return await getCurrentUser(); // Recursively call with new token
+        }
+
+        // Refresh failed
+        debugPrint('❌ Authentication expired, logging out');
+        await _clearToken();
+        await DioClient.clearCookies();
+        return AuthResult.error('Authentication expired');
+      }
+
+      debugPrint('❌ Get current user error: ${e.message}');
       return AuthResult.error('Network error getting user info');
+    } catch (e) {
+      debugPrint('❌ Unexpected get user error: $e');
+      return AuthResult.error('Network error getting user info');
+    }
+  }
+
+  // Update user information
+  static Future<AuthResult<User>> updateUser({
+    int? userId,
+    DateTime? veganSince,
+  }) async {
+    try {
+      // Use the current user's id if not provided
+      final id = userId ?? _currentUser?.id;
+      if (id == null) {
+        return AuthResult.error('User ID not found');
+      }
+
+      final dio = await DioClient.getDio();
+      final Map<String, dynamic> updates = {};
+
+      if (veganSince != null) {
+        updates['vegan_since'] = veganSince.toIso8601String();
+      }
+
+      final response = await dio.patch(
+        '/users/$id',
+        data: updates,
+        options: Options(
+          headers: _headersWithApiKey,
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        _currentUser = User.fromJson(response.data);
+        return AuthResult.success(_currentUser!);
+      } else {
+        return AuthResult.error('Impossible de mettre à jour le profil');
+      }
+    } on DioException catch (e) {
+      debugPrint('❌ Update user error: ${e.message}');
+      return AuthResult.error('Impossible de mettre à jour le profil');
+    } catch (e) {
+      debugPrint('❌ Unexpected update user error: $e');
+      return AuthResult.error('Impossible de contacter le serveur');
     }
   }
 }

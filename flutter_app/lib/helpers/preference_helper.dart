@@ -1,9 +1,12 @@
 import 'dart:convert'; // Import for JSON encoding/decoding
 import 'package:shared_preferences/shared_preferences.dart';
+import '../services/auth_service.dart';
 
 class PreferencesHelper {
-  // Method to add a selected date to shared preferences
-  static Future<void> addSelectedDateToPrefs(DateTime? selectedDate) async {
+  // Internal method: saves date to local storage only (no backend update)
+  // Used by AuthService to avoid circular backend calls during login sync
+  static Future<void> saveSelectedDateToPrefsOnly(
+      DateTime? selectedDate) async {
     final prefs = await SharedPreferences.getInstance();
     String? dateString;
     if (selectedDate == null) {
@@ -12,6 +15,16 @@ class PreferencesHelper {
       dateString = selectedDate.toIso8601String();
     }
     await prefs.setString('selected_date', dateString);
+  }
+
+  // Method to add a selected date to shared preferences and update backend if logged in
+  static Future<void> addSelectedDateToPrefs(DateTime? selectedDate) async {
+    await saveSelectedDateToPrefsOnly(selectedDate);
+
+    // If user is logged in, also update on the backend
+    if (selectedDate != null && AuthService.isLoggedIn) {
+      await AuthService.updateUser(veganSince: selectedDate);
+    }
   }
 
   // Method to get a selected date from shared preferences
