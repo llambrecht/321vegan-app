@@ -112,14 +112,13 @@ class AuthService {
     }
   }
 
-  // Register using API key (like product posting)
   static Future<AuthResult<String>> register(RegisterRequest request) async {
     try {
       // Ensure URL ends with trailing slash to avoid redirects
       final url = Uri.parse('$_baseUrl/users/');
       final body = json.encode(request.toJson());
 
-      // Use API key headers for registration (same as product posting)
+      // Use API key headers for registration
       final response = await http.post(
         url,
         headers: _headersWithApiKey,

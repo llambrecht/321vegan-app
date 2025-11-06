@@ -350,7 +350,7 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           Icons.home,
           Icons.search,
           Icons.qr_code_scanner,
-          Icons.person_pin
+          Icons.person_sharp
         ],
         textStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
       ),

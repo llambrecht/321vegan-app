@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../services/auth_service.dart';
 import '../../models/auth.dart';
+import '../../helpers/preference_helper.dart';
 
 class RegisterForm extends StatefulWidget {
   final VoidCallback? onRegisterSuccess;
@@ -41,11 +42,18 @@ class _RegisterFormState extends State<RegisterForm> {
 
     setState(() => _isLoading = true);
 
+    // Retrieve vegan date and products sent from local storage
+    final veganSince = await PreferencesHelper.getSelectedDateFromPrefs();
+    final nbProductsSent =
+        await PreferencesHelper.getTotalSuccessfulSubmissions();
+
     final request = RegisterRequest(
       email: _emailController.text.trim(),
       nickname: _nicknameController.text.trim(),
       password: _passwordController.text,
-      // Default values are set in the model
+      veganSince: veganSince,
+      nbProductsSent: nbProductsSent,
+      // Default values for role and isActive are set in the model
     );
 
     final result = await AuthService.register(request);

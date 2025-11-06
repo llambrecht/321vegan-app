@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import '../../services/auth_service.dart';
 import '../../models/user.dart';
+import '../../pages/app_pages/Scan/sent_products_modal.dart';
 
 class UserProfile extends StatefulWidget {
   final VoidCallback? onLogout;
@@ -104,6 +106,8 @@ class _UserProfileState extends State<UserProfile> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _buildProfileCard(),
+        SizedBox(height: 24.h),
+        _buildStatsCards(),
         SizedBox(height: 32.h),
         _buildActionsCard(),
       ],
@@ -156,19 +160,163 @@ class _UserProfileState extends State<UserProfile> {
                     color: Colors.grey[600],
                   ),
                 ),
-                Text(
-                  '${_user?.nbProductsSent?.toString() ?? ''} produits envoyés',
-                  style: TextStyle(
-                    fontSize: 44.sp,
-                    color: Colors.grey[600],
-                  ),
-                ),
               ],
             ),
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildStatsCards() {
+    return Row(
+      children: [
+        // Products sent card
+        Expanded(
+          child: _buildStatCard(
+            icon: Icons.info_outline,
+            iconColor: Colors.black,
+            title: 'Produits envoyés',
+            value: _user?.nbProductsSent?.toString() ?? '0',
+            onTap: () {
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (context) => Container(
+                  height: MediaQuery.of(context).size.height * 0.9,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20.r),
+                      topRight: Radius.circular(20.r),
+                    ),
+                  ),
+                  child: const SentProductsModal(),
+                ),
+              );
+            },
+          ),
+        ),
+        SizedBox(width: 16.w),
+        // Vegan since card
+        Expanded(
+          child: _buildStatCard(
+            icon: Icons.calendar_today,
+            iconColor: Colors.blue,
+            title: 'Végane depuis',
+            value: _user?.veganSince != null
+                ? DateFormat.yMMMd('fr_FR').format(_user!.veganSince!)
+                : 'Non défini',
+            onTap: _pickVeganDate,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatCard({
+    required IconData icon,
+    required Color iconColor,
+    required String title,
+    required String value,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.all(20.w),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20.r),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.06),
+              blurRadius: 20,
+              offset: const Offset(0, 8),
+              spreadRadius: 0,
+            ),
+          ],
+          border: Border.all(
+            color: Colors.grey[200]!,
+            width: 1,
+          ),
+        ),
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.all(12.w),
+              decoration: BoxDecoration(
+                color: iconColor.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                icon,
+                size: 48.sp,
+                color: iconColor,
+              ),
+            ),
+            SizedBox(height: 12.h),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 36.sp,
+                color: Colors.grey[600],
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 8.h),
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 44.sp,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[800],
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _pickVeganDate() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _user?.veganSince ?? DateTime.now(),
+      firstDate: DateTime(1920),
+      lastDate: DateTime.now(),
+      locale: const Locale('fr', 'FR'),
+    );
+
+    if (picked != null && picked != _user?.veganSince) {
+      // TODO: Update the vegan date on the backend
+      // For now, just update locally
+      setState(() {
+        _user = User(
+          id: _user!.id,
+          email: _user!.email,
+          nickname: _user!.nickname,
+          isActive: _user!.isActive,
+          nbProductsSent: _user!.nbProductsSent,
+          veganSince: picked,
+          createdAt: _user!.createdAt,
+          updatedAt: _user!.updatedAt,
+        );
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Date mise à jour (local seulement pour le moment)'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+    }
   }
 
   Widget _buildActionsCard() {
