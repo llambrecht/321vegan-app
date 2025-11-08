@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'dart:io' show Platform;
 import '../../services/auth_service.dart';
 import '../../models/user.dart';
 import '../../models/badge.dart' as app_badge;
@@ -118,6 +120,8 @@ class _UserProfileState extends State<UserProfile> {
         _buildStatsCards(),
         SizedBox(height: 24.h),
         _buildBadgesSection(),
+        SizedBox(height: 24.h),
+        _buildSocialAndFeedbackSection(),
         SizedBox(height: 32.h),
         _buildActionsCard(),
       ],
@@ -563,6 +567,128 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
+  Widget _buildSocialAndFeedbackSection() {
+    return _buildCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(height: 24.h),
+
+          // Instagram button
+          ElevatedButton(
+            onPressed: _openInstagram,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              padding: EdgeInsets.symmetric(
+                horizontal: 24.w,
+                vertical: 16.h,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.r),
+                side: BorderSide(color: Colors.grey[300]!),
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'lib/assets/logo_instagram.png',
+                  width: 60.w,
+                  height: 60.w,
+                ),
+                SizedBox(width: 16.w),
+                Flexible(
+                  child: Text(
+                    'Suivez-nous sur Instagram',
+                    style: TextStyle(
+                      fontSize: 44.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          SizedBox(height: 16.h),
+
+          // Rate app button
+          ElevatedButton(
+            onPressed: _rateApp,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).primaryColor,
+              foregroundColor: Colors.white,
+              padding: EdgeInsets.symmetric(
+                horizontal: 24.w,
+                vertical: 16.h,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.star, size: 60.sp),
+                SizedBox(width: 16.w),
+                Flexible(
+                  child: Text(
+                    'Noter l\'application',
+                    style: TextStyle(
+                      fontSize: 44.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _openInstagram() async {
+    final url = Uri.parse('https://www.instagram.com/321vegan.app/');
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Impossible d\'ouvrir Instagram'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _rateApp() async {
+    Uri? url;
+
+    if (Platform.isIOS) {
+      url = Uri.parse('https://apps.apple.com/fr/app/321-vegan/id6736880006');
+    } else if (Platform.isAndroid) {
+      url = Uri.parse(
+          'https://play.google.com/store/apps/details?id=com.app321vegan.veganapp');
+    }
+
+    if (url != null && await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Impossible d\'ouvrir le store'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
   Widget _buildBadgeItem(app_badge.Badge badge, bool isUnlocked) {
     return GestureDetector(
       onTap: () => _showBadgeDetails(badge, isUnlocked),
@@ -598,20 +724,47 @@ class _UserProfileState extends State<UserProfile> {
                 children: [
                   Padding(
                     padding: EdgeInsets.all(20.w),
-                    child: Image.asset(
-                      badge.iconPath,
-                      fit: BoxFit.contain,
-                      color: isUnlocked ? null : Colors.grey[600],
-                      colorBlendMode: isUnlocked ? null : BlendMode.saturation,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Icon(
-                          Icons.emoji_events,
-                          size: 80.sp,
-                          color: isUnlocked
-                              ? Theme.of(context).colorScheme.primary
-                              : Colors.grey[600],
-                        );
-                      },
+                    child: ColorFiltered(
+                      colorFilter: isUnlocked
+                          ? const ColorFilter.mode(
+                              Colors.transparent,
+                              BlendMode.multiply,
+                            )
+                          : const ColorFilter.matrix(<double>[
+                              0.2126,
+                              0.7152,
+                              0.0722,
+                              0,
+                              0,
+                              0.2126,
+                              0.7152,
+                              0.0722,
+                              0,
+                              0,
+                              0.2126,
+                              0.7152,
+                              0.0722,
+                              0,
+                              0,
+                              0,
+                              0,
+                              0,
+                              1,
+                              0,
+                            ]),
+                      child: Image.asset(
+                        badge.iconPath,
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(
+                            Icons.emoji_events,
+                            size: 80.sp,
+                            color: isUnlocked
+                                ? Theme.of(context).colorScheme.primary
+                                : Colors.grey[600],
+                          );
+                        },
+                      ),
                     ),
                   ),
                   if (!isUnlocked)
@@ -675,21 +828,47 @@ class _UserProfileState extends State<UserProfile> {
                   children: [
                     Padding(
                       padding: EdgeInsets.all(24.w),
-                      child: Image.asset(
-                        badge.iconPath,
-                        fit: BoxFit.contain,
-                        color: isUnlocked ? null : Colors.grey[600],
-                        colorBlendMode:
-                            isUnlocked ? null : BlendMode.saturation,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Icon(
-                            Icons.emoji_events,
-                            size: 100.sp,
-                            color: isUnlocked
-                                ? Colors.amber[700]
-                                : Colors.grey[600],
-                          );
-                        },
+                      child: ColorFiltered(
+                        colorFilter: isUnlocked
+                            ? const ColorFilter.mode(
+                                Colors.transparent,
+                                BlendMode.multiply,
+                              )
+                            : const ColorFilter.matrix(<double>[
+                                0.2126,
+                                0.7152,
+                                0.0722,
+                                0,
+                                0,
+                                0.2126,
+                                0.7152,
+                                0.0722,
+                                0,
+                                0,
+                                0.2126,
+                                0.7152,
+                                0.0722,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                1,
+                                0,
+                              ]),
+                        child: Image.asset(
+                          badge.iconPath,
+                          fit: BoxFit.contain,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Icon(
+                              Icons.emoji_events,
+                              size: 100.sp,
+                              color: isUnlocked
+                                  ? Colors.amber[700]
+                                  : Colors.grey[600],
+                            );
+                          },
+                        ),
                       ),
                     ),
                     if (!isUnlocked)

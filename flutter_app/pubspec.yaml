@@ -110,6 +110,13 @@ flutter:
     - lib/assets/partners/logo-ovs.png
     - lib/assets/partners/logo-maisonprot.png
     - lib/assets/partners/logo-petit-veganne.png
+    - lib/assets/badges/1an.png
+    - lib/assets/badges/2ans.png
+    - lib/assets/badges/5ans.png
+    - lib/assets/badges/10ans.png
+    - lib/assets/badges/error1.png
+    - lib/assets/badges/soutien.png
+    - lib/assets/badges/1product.png
     - .env
 
   fonts:
