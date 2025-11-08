@@ -117,6 +117,10 @@ flutter:
     - lib/assets/badges/error1.png
     - lib/assets/badges/soutien.png
     - lib/assets/badges/1product.png
+    - lib/assets/badges/10products.png
+    - lib/assets/badges/50products.png
+    - lib/assets/badges/100products.png
+    - lib/assets/badges/500products.png
     - .env
 
   fonts:
