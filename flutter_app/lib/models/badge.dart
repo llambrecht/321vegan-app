@@ -19,6 +19,8 @@ class Badge {
   bool isUnlocked({
     required int productsSent,
     required DateTime? veganSince,
+    required int supporterLevel,
+    required int errorSolved,
   }) {
     switch (type) {
       case BadgeType.productsSent:
@@ -27,6 +29,10 @@ class Badge {
         if (veganSince == null) return false;
         final years = DateTime.now().difference(veganSince).inDays ~/ 365;
         return years >= requirement;
+      case BadgeType.supporter:
+        return supporterLevel >= requirement;
+      case BadgeType.errorReport:
+        return errorSolved >= requirement;
     }
   }
 
@@ -42,6 +48,16 @@ class Badge {
           return 'Être vegan depuis 1 an';
         }
         return 'Être vegan depuis $requirement ans';
+      case BadgeType.supporter:
+        if (requirement == 1) {
+          return 'Soutenir le projet';
+        }
+        return 'Soutien de niveau $requirement';
+      case BadgeType.errorReport:
+        if (requirement == 1) {
+          return 'Signaler une erreur';
+        }
+        return 'Signaler $requirement erreurs';
     }
   }
 }
@@ -49,16 +65,27 @@ class Badge {
 enum BadgeType {
   productsSent,
   veganYears,
+  supporter,
+  errorReport,
 }
 
 // Predefined badges
 class Badges {
   // Using partner logos as temporary badge icons
   static const List<Badge> all = [
+    // Supporter badges
+    Badge(
+      id: 'supporter_1',
+      name: 'Soutien',
+      description: 'Soutenir le projet d\'une façon ou d\'une autre',
+      iconPath: 'lib/assets/partners/logo-comme-avant.png',
+      type: BadgeType.supporter,
+      requirement: 1,
+    ),
     // Vegan years badges
     Badge(
       id: 'vegan_1_year',
-      name: '1 an vegan',
+      name: '1 an',
       description: 'Vegan depuis 1 an',
       iconPath: 'lib/assets/partners/logo-maisonprot.png',
       type: BadgeType.veganYears,
@@ -66,7 +93,7 @@ class Badges {
     ),
     Badge(
       id: 'vegan_2_years',
-      name: '2 ans vegan',
+      name: '2 ans',
       description: 'Vegan depuis 2 ans',
       iconPath: 'lib/assets/partners/logo-zebra.png',
       type: BadgeType.veganYears,
@@ -74,7 +101,7 @@ class Badges {
     ),
     Badge(
       id: 'vegan_5_years',
-      name: '5 ans vegan',
+      name: '5 ans',
       description: 'Vegan depuis 5 ans',
       iconPath: 'lib/assets/partners/logo-comme-avant.png',
       type: BadgeType.veganYears,
@@ -82,7 +109,7 @@ class Badges {
     ),
     Badge(
       id: 'vegan_10_years',
-      name: '10 ans vegan',
+      name: '10 ans',
       description: 'Vegan depuis 10 ans',
       iconPath: 'lib/assets/partners/logo-petit-veganne.png',
       type: BadgeType.veganYears,
@@ -138,5 +165,15 @@ class Badges {
       type: BadgeType.productsSent,
       requirement: 1000,
     ),
+
+    // Error report badges
+    Badge(
+      id: 'error_report_1',
+      name: 'Inspecteur·ice',
+      description: 'Au moins une erreur signalée !',
+      iconPath: 'lib/assets/partners/logo-petit-veganne.png',
+      type: BadgeType.errorReport,
+      requirement: 1,
+    )
   ];
 }

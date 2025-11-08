@@ -476,17 +476,27 @@ class _UserProfileState extends State<UserProfile> {
   Widget _buildBadgesSection() {
     final productsSent = _user?.nbProductsSent ?? 0;
     final veganSince = _user?.veganSince;
+    final supporterLevel = _user?.supporterLevel ?? 0;
+    final errorReports = _user?.nbErrorReports ?? 0;
 
     // Sort badges: unlocked first, then locked
+    // Supporter badge is always first (locked or not)
     final sortedBadges = List<app_badge.Badge>.from(app_badge.Badges.all);
     sortedBadges.sort((a, b) {
+      if (a.type == app_badge.BadgeType.supporter) return -1;
+      if (b.type == app_badge.BadgeType.supporter) return 1;
+
       final aUnlocked = a.isUnlocked(
         productsSent: productsSent,
         veganSince: veganSince,
+        supporterLevel: supporterLevel,
+        errorSolved: errorReports,
       );
       final bUnlocked = b.isUnlocked(
         productsSent: productsSent,
         veganSince: veganSince,
+        supporterLevel: supporterLevel,
+        errorSolved: errorReports,
       );
 
       // Unlocked badges first (true comes before false)
@@ -540,6 +550,8 @@ class _UserProfileState extends State<UserProfile> {
                 final isUnlocked = badge.isUnlocked(
                   productsSent: productsSent,
                   veganSince: veganSince,
+                  supporterLevel: supporterLevel,
+                  errorSolved: errorReports,
                 );
 
                 return _buildBadgeItem(badge, isUnlocked);

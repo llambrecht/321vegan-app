@@ -8,9 +8,6 @@ import '../helpers/preference_helper.dart';
 import 'dio_client.dart';
 
 class AuthService {
-  static String get _baseUrl =>
-      dotenv.env['API_BASE_URL'] ?? 'https://api.321vegan.fr';
-
   static Map<String, String> get _headersWithApiKey => {
         'Content-Type': 'application/json',
         'x-api-key': dotenv.env['API_KEY'] ?? '',
