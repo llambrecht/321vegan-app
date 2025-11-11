@@ -5,6 +5,7 @@ import '../../../widgets/auth/login_form.dart';
 import '../../../widgets/auth/register_form.dart';
 import '../../../widgets/auth/forgot_password_form.dart';
 import '../../../widgets/auth/user_profile.dart';
+import '../../../widgets/shared/social_feedback_buttons.dart';
 
 enum AuthView { login, register, forgotPassword, profile }
 
@@ -76,13 +77,18 @@ class _AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
+      padding:
+          EdgeInsets.only(top: 200.h, left: 24.w, right: 24.w, bottom: 20.h),
       child: Column(
         children: [
           SizedBox(height: 100.h),
           if (!_isLoggedIn) _buildHeader(),
           SizedBox(height: 32.h),
           _buildAuthContent(),
+          if (!_isLoggedIn) ...[
+            SizedBox(height: 32.h),
+            const SocialFeedbackButtons(showCard: false),
+          ],
         ],
       ),
     );

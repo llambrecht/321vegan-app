@@ -120,6 +120,10 @@ flutter:
     - lib/assets/badges/10products.png
     - lib/assets/badges/50products.png
     - lib/assets/badges/100products.png
+    - lib/assets/avatars/lapin.png
+    - lib/assets/avatars/ver.png
+    - lib/assets/avatars/poisson.png
+    - lib/assets/avatars/canard.png
     - lib/assets/badges/500products.png
     - .env
 

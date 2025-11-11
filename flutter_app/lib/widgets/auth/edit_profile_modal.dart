@@ -24,12 +24,11 @@ class _EditProfileModalState extends State<EditProfileModal> {
   String? _selectedAvatar;
   bool _isLoading = false;
 
-  // Temporary avatars using partner logos - to be replaced later
   final List<String> _availableAvatars = [
-    'logo-comme-avant.png',
-    'logo-petit-veganne.png',
-    'logo-maisonprot.png',
-    'logo-zebra.png',
+    'lapin.png',
+    'ver.png',
+    'poisson.png',
+    'canard.png',
   ];
 
   @override
@@ -167,10 +166,10 @@ class _EditProfileModalState extends State<EditProfileModal> {
             ),
           ),
           Text(
-            'Illustrations par @kodasmarket.art',
+            'Illustrations @kodasmarket.art & @violetteviette.tattoo.dessin',
             textAlign: TextAlign.left,
             style: TextStyle(
-              fontSize: 36.sp,
+              fontSize: 32.sp,
               color: Colors.grey[600],
             ),
           ),
@@ -214,7 +213,7 @@ class _EditProfileModalState extends State<EditProfileModal> {
                       child: Padding(
                         padding: EdgeInsets.all(16.w),
                         child: Image.asset(
-                          'lib/assets/partners/$avatar',
+                          'lib/assets/avatars/$avatar',
                           fit: BoxFit.contain,
                           errorBuilder: (context, error, stackTrace) {
                             return Icon(
