@@ -150,6 +150,8 @@ class VeganProductInfoCard extends StatelessWidget {
     'redefine meat',
     'henaff',
     'hénaff',
+    'redbull',
+    'red bull',
   ];
 
   bool isOnBDSList() {

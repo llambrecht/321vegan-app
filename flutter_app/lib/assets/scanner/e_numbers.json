@@ -4813,6 +4813,21 @@
     {
       "alternative_names": [],
       "description": "",
+      "e_number": "E968",
+      "name": "Erythritol",
+      "state": "vegan",
+      "vegan_alternatives": [],
+      "sources": [
+        {
+          "type": "url",
+          "value": "https://en.wikipedia.org/wiki/E968"
+        }
+      ],
+      "name_fr": "Erythritol"
+    },
+    {
+      "alternative_names": [],
+      "description": "",
       "e_number": "E999",
       "name": "Quillaia extract",
       "state": "vegan",

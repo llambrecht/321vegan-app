@@ -118,6 +118,16 @@ class PartnersPage extends StatelessWidget {
                         ),
                         _buildPartnerCard(
                           context: context,
+                          brandName: 'Le Papondu',
+                          logoName: 'logo-papondu.png',
+                          discountCode: 'PAPON10',
+                          discountAmount: '10% sur la première commande',
+                          websiteUrl: 'https://papondu.fr/acheter/',
+                          description:
+                              'Alternatives végétales aux oeufs. Ingrédients d\'origine naturelle. Permet de substituer les oeufs dans toutes vos recettes',
+                        ),
+                        _buildPartnerCard(
+                          context: context,
                           brandName: 'Petit Veganne',
                           logoName: 'logo-petit-veganne.png',
                           discountCode: '321PV10',
