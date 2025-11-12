@@ -47,10 +47,13 @@ class _RegisterFormState extends State<RegisterForm> {
     final nbProductsSent =
         await PreferencesHelper.getTotalSuccessfulSubmissions();
 
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+
     final request = RegisterRequest(
-      email: _emailController.text.trim(),
+      email: email,
       nickname: _nicknameController.text.trim(),
-      password: _passwordController.text,
+      password: password,
       veganSince: veganSince,
       nbProductsSent: nbProductsSent,
       // Default values for role and isActive are set in the model
@@ -59,18 +62,36 @@ class _RegisterFormState extends State<RegisterForm> {
     final result = await AuthService.register(request);
 
     if (mounted) {
-      setState(() => _isLoading = false);
-
       if (result.isSuccess) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-                'Inscription réussie ! Vous pouvez maintenant vous connecter.'),
-            backgroundColor: Colors.green,
-          ),
+        // Automatically log in the user after successful registration
+        final loginRequest = LoginRequest(
+          email: email,
+          password: password,
         );
-        widget.onRegisterSuccess?.call();
+        final loginResult = await AuthService.login(loginRequest);
+
+        setState(() => _isLoading = false);
+
+        if (loginResult.isSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Compte créé et connecté avec succès !'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          widget.onRegisterSuccess?.call();
+        } else {
+          // Registration succeeded but login failed
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Compte créé ! Vous pouvez vous connecter.'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          widget.onRegisterSuccess?.call();
+        }
       } else {
+        setState(() => _isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(result.error ?? 'Erreur lors de l\'inscription'),

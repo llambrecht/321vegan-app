@@ -71,7 +71,11 @@ class _AboutPageState extends State<AboutPage> {
   }
 
   void _onRegisterSuccess() {
-    setState(() => _currentView = AuthView.login);
+    // Check auth status instead of just switching to login
+    // This handles automatic login after registration
+    _checkAuthStatus();
+    // Notify parent that registration/login was successful
+    widget.onLoginSuccess?.call();
   }
 
   @override

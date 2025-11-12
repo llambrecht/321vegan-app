@@ -22,9 +22,14 @@ class ApiService {
   }) async {
     try {
       final url = Uri.parse('$_baseUrl/products/');
+
+      // Get the current user's ID if logged in
+      final userId = AuthService.currentUser?.id;
+
       final body = json.encode({
         'ean': ean,
         'status': status,
+        if (userId != null) 'user_id': userId,
       });
 
       final response = await http.post(
