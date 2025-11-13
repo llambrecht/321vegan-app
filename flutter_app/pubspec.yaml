@@ -124,6 +124,10 @@ flutter:
     - lib/assets/avatars/ver.png
     - lib/assets/avatars/poisson.png
     - lib/assets/avatars/canard.png
+    - lib/assets/avatars/poule.png
+    - lib/assets/avatars/mouton.png
+    - lib/assets/avatars/cochon.png
+    - lib/assets/avatars/vache.png
     - lib/assets/badges/500products.png
     - lib/assets/partners/logo-papondu.png
     - .env

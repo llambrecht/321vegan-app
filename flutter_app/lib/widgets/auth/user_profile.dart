@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'dart:math';
 import '../../services/auth_service.dart';
 import '../../models/user.dart';
 import '../../models/badge.dart' as app_badge;
@@ -28,10 +29,39 @@ class _UserProfileState extends State<UserProfile> {
   bool _isLoading = false;
   String? _selectedAvatar;
 
+  final List<String> _availableAvatars = [
+    'lapin.png',
+    'ver.png',
+    'poisson.png',
+    'canard.png',
+    'poule.png',
+    'mouton.png',
+    'cochon.png',
+    'vache.png'
+  ];
+
   @override
   void initState() {
     super.initState();
     _loadUserInfo();
+  }
+
+  String _getRandomAvatar(String? currentAvatar) {
+    final random = Random();
+    final availableCopy = List<String>.from(_availableAvatars);
+
+    // Remove current avatar from available choices
+    if (currentAvatar != null && availableCopy.contains(currentAvatar)) {
+      availableCopy.remove(currentAvatar);
+    }
+
+    // If we still have options, pick a random one
+    if (availableCopy.isNotEmpty) {
+      return availableCopy[random.nextInt(availableCopy.length)];
+    }
+
+    // Fallback: return a random avatar from full list
+    return _availableAvatars[random.nextInt(_availableAvatars.length)];
   }
 
   Future<void> _loadUserInfo() async {
@@ -39,11 +69,22 @@ class _UserProfileState extends State<UserProfile> {
 
     final result = await AuthService.getCurrentUser();
     final avatar = await PreferencesHelper.getAvatar();
+    final randomAvatarEnabled =
+        await PreferencesHelper.getRandomAvatarEnabled();
 
     if (mounted) {
+      String? finalAvatar = avatar;
+
+      // If random avatar is enabled, pick a new random one
+      if (randomAvatarEnabled) {
+        finalAvatar = _getRandomAvatar(avatar);
+        // Save the new random avatar
+        await PreferencesHelper.saveAvatar(finalAvatar);
+      }
+
       setState(() {
         _isLoading = false;
-        _selectedAvatar = avatar;
+        _selectedAvatar = finalAvatar;
         if (result.isSuccess) {
           _user = result.data;
         }
@@ -153,7 +194,7 @@ class _UserProfileState extends State<UserProfile> {
                       ),
                     )
                   : Image.asset(
-                      'lib/assets/avatars/lapin.png',
+                      'lib/assets/avatars/cochon.png',
                       fit: BoxFit.contain,
                       errorBuilder: (context, error, stackTrace) {
                         return Icon(
@@ -540,32 +581,29 @@ class _UserProfileState extends State<UserProfile> {
 
           SizedBox(height: 16.h),
 
-          // Badges grid (scrollable horizontally)
-          SizedBox(
-            height: 450.h,
-            child: GridView.builder(
-              padding: EdgeInsets.all(25.w),
-              scrollDirection: Axis.vertical,
-              physics: const AlwaysScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                crossAxisSpacing: 16.w,
-                mainAxisSpacing: 16.h,
-                childAspectRatio: 0.85,
-              ),
-              itemCount: sortedBadges.length,
-              itemBuilder: (context, index) {
-                final badge = sortedBadges[index];
-                final isUnlocked = badge.isUnlocked(
-                  productsSent: productsSent,
-                  veganSince: veganSince,
-                  supporterLevel: supporterLevel,
-                  errorSolved: errorReports,
-                );
-
-                return _buildBadgeItem(badge, isUnlocked);
-              },
+          // Badges grid (show all)
+          GridView.builder(
+            padding: EdgeInsets.all(25.w),
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+              crossAxisSpacing: 16.w,
+              mainAxisSpacing: 16.h,
+              childAspectRatio: 0.85,
             ),
+            itemCount: sortedBadges.length,
+            itemBuilder: (context, index) {
+              final badge = sortedBadges[index];
+              final isUnlocked = badge.isUnlocked(
+                productsSent: productsSent,
+                veganSince: veganSince,
+                supporterLevel: supporterLevel,
+                errorSolved: errorReports,
+              );
+
+              return _buildBadgeItem(badge, isUnlocked);
+            },
           ),
         ],
       ),

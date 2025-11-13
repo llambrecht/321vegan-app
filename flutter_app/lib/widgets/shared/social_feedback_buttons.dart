@@ -123,9 +123,9 @@ class SocialFeedbackButtons extends StatelessWidget {
 
   static Future<void> _openInstagram(BuildContext context) async {
     final url = Uri.parse('https://www.instagram.com/321vegan.app/');
-    if (await canLaunchUrl(url)) {
+    try {
       await launchUrl(url, mode: LaunchMode.externalApplication);
-    } else {
+    } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

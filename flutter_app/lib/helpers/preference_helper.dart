@@ -220,6 +220,16 @@ class PreferencesHelper {
     return prefs.getString('user_avatar');
   }
 
+  static Future<void> saveRandomAvatarEnabled(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('random_avatar_enabled', enabled);
+  }
+
+  static Future<bool> getRandomAvatarEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('random_avatar_enabled') ?? false;
+  }
+
   // Profile badge preference methods
   static Future<void> setHasVisitedProfile(bool value) async {
     final prefs = await SharedPreferences.getInstance();

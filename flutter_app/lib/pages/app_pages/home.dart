@@ -389,7 +389,7 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         // Badge overlay for "NEW" indicator on profile tab
         if (_showProfileBadge)
           Positioned(
-            bottom: 260.h,
+            bottom: 200.h,
             right: 30.w,
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 5.h),

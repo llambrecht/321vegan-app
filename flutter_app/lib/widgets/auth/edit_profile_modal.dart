@@ -23,12 +23,17 @@ class _EditProfileModalState extends State<EditProfileModal> {
   late TextEditingController _nicknameController;
   String? _selectedAvatar;
   bool _isLoading = false;
+  bool _randomAvatarEnabled = false;
 
   final List<String> _availableAvatars = [
     'lapin.png',
     'ver.png',
     'poisson.png',
     'canard.png',
+    'poule.png',
+    'mouton.png',
+    'cochon.png',
+    'vache.png'
   ];
 
   @override
@@ -36,6 +41,14 @@ class _EditProfileModalState extends State<EditProfileModal> {
     super.initState();
     _nicknameController = TextEditingController(text: widget.currentNickname);
     _selectedAvatar = widget.currentAvatar;
+    _loadRandomAvatarSetting();
+  }
+
+  Future<void> _loadRandomAvatarSetting() async {
+    final enabled = await PreferencesHelper.getRandomAvatarEnabled();
+    setState(() {
+      _randomAvatarEnabled = enabled;
+    });
   }
 
   @override
@@ -60,6 +73,9 @@ class _EditProfileModalState extends State<EditProfileModal> {
     setState(() => _isLoading = true);
 
     try {
+      // Save random avatar preference
+      await PreferencesHelper.saveRandomAvatarEnabled(_randomAvatarEnabled);
+
       // Save avatar to SharedPreferences
       if (_selectedAvatar != widget.currentAvatar) {
         await PreferencesHelper.saveAvatar(_selectedAvatar);
@@ -166,7 +182,7 @@ class _EditProfileModalState extends State<EditProfileModal> {
             ),
           ),
           Text(
-            'Illustrations @kodasmarket.art & @violetteviette.tattoo.dessin',
+            'Illustrations @violetteviette.tattoo.dessin & @kodasmarket.art',
             textAlign: TextAlign.left,
             style: TextStyle(
               fontSize: 32.sp,
@@ -178,7 +194,7 @@ class _EditProfileModalState extends State<EditProfileModal> {
 
           // Avatar grid
           SizedBox(
-            height: 300.h,
+            height: 600.h,
             child: GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
@@ -230,7 +246,35 @@ class _EditProfileModalState extends State<EditProfileModal> {
               },
             ),
           ),
-          SizedBox(height: 24.h),
+          // Random avatar checkbox
+          CheckboxListTile(
+            title: Text(
+              'Avatar aléatoire',
+              style: TextStyle(
+                fontSize: 48.sp,
+                color: Colors.grey[800],
+              ),
+            ),
+            subtitle: Text(
+              'Change automatiquement à chaque visite',
+              style: TextStyle(
+                fontSize: 36.sp,
+                color: Colors.grey[600],
+              ),
+            ),
+            value: _randomAvatarEnabled,
+            onChanged: _isLoading
+                ? null
+                : (bool? value) {
+                    setState(() {
+                      _randomAvatarEnabled = value ?? false;
+                    });
+                  },
+            controlAffinity: ListTileControlAffinity.leading,
+            contentPadding: EdgeInsets.zero,
+          ),
+
+          SizedBox(height: 12.h),
 
           // Save button
           ElevatedButton(
