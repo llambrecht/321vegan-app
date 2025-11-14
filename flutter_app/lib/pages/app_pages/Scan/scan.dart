@@ -375,28 +375,16 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
                   setState(() {
                     productInfo = null;
                   });
-                  showDialog(
+                  showModalBottomSheet(
                     context: context,
-                    builder: (BuildContext context) {
-                      return Dialog(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20.0),
-                          child: Stack(
-                            children: [
-                              SizedBox(
-                                height: 0.70.sh,
-                                child: HistoryModal(
-                                  scanHistory: scanHistory,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (context) => SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.9,
+                      child: HistoryModal(
+                        scanHistory: scanHistory,
+                      ),
+                    ),
                   ).then((_) {
                     controller
                         .start(); // Restart the scanner when the modal is closed
@@ -436,26 +424,14 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
                   setState(() {
                     productInfo = null;
                   });
-                  showDialog(
+                  showModalBottomSheet(
                     context: context,
-                    builder: (BuildContext context) {
-                      return Dialog(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20.0),
-                          child: Stack(
-                            children: [
-                              SizedBox(
-                                height: 0.70.sh,
-                                child: const SentProductsModal(),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (context) => SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.9,
+                      child: const SentProductsModal(),
+                    ),
                   ).then((_) {
                     controller
                         .start(); // Restart the scanner when the modal is closed

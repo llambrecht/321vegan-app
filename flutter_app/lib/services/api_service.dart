@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter/foundation.dart';
+import 'auth_service.dart';
 
 class ApiService {
   static String get _baseUrl =>
@@ -22,9 +22,14 @@ class ApiService {
   }) async {
     try {
       final url = Uri.parse('$_baseUrl/products/');
+
+      // Get the current user's ID if logged in
+      final userId = AuthService.currentUser?.id;
+
       final body = json.encode({
         'ean': ean,
         'status': status,
+        if (userId != null) 'user_id': userId,
       });
 
       final response = await http.post(
@@ -37,7 +42,6 @@ class ApiService {
       return (response.statusCode >= 200 && response.statusCode < 300) ||
           response.statusCode == 409;
     } catch (e) {
-      debugPrint('Error posting product: $e');
       return false;
     }
   }
@@ -46,6 +50,7 @@ class ApiService {
   /// [ean] - The product's barcode/EAN
   /// [comment] - User's comment about the error
   /// [contact] - User's contact information (email/phone)
+  /// Automatically adds the logged-in user's ID to created_by if available
   static Future<bool> postErrorReport({
     required String ean,
     required String comment,
@@ -53,11 +58,16 @@ class ApiService {
   }) async {
     try {
       final url = Uri.parse('$_baseUrl/error-reports/');
+
+      // Get the current user's ID if logged in
+      final userId = AuthService.currentUser?.id;
+
       final body = json.encode({
         'ean': ean,
         'comment': comment,
         'contact': contact,
         'handled': false,
+        if (userId != null) 'created_by': userId,
       });
 
       final response = await http.post(
@@ -68,7 +78,6 @@ class ApiService {
 
       return response.statusCode >= 200 && response.statusCode < 300;
     } catch (e) {
-      debugPrint('Error posting error report: $e');
       return false;
     }
   }

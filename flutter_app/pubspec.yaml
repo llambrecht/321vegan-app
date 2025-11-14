@@ -16,7 +16,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.14.0+1
+version: 2.0.1+1
 
 environment:
   sdk: ">=3.6.0 <4.0.0"
@@ -39,6 +39,9 @@ dependencies:
   confetti: ^0.7.0
   mobile_scanner: ^7.0.1
   http: ^1.2.2
+  dio: ^5.9.0
+  cookie_jar: ^4.0.8
+  dio_cookie_manager: ^3.1.1
   flutter_launcher_icons: "^0.13.1"
   flutter_native_splash: ^2.4.1
   flutter_screenutil: ^5.9.3
@@ -107,6 +110,25 @@ flutter:
     - lib/assets/partners/logo-ovs.png
     - lib/assets/partners/logo-maisonprot.png
     - lib/assets/partners/logo-petit-veganne.png
+    - lib/assets/badges/1an.png
+    - lib/assets/badges/2ans.png
+    - lib/assets/badges/5ans.png
+    - lib/assets/badges/10ans.png
+    - lib/assets/badges/error1.png
+    - lib/assets/badges/soutien.png
+    - lib/assets/badges/1product.png
+    - lib/assets/badges/10products.png
+    - lib/assets/badges/50products.png
+    - lib/assets/badges/100products.png
+    - lib/assets/avatars/lapin.png
+    - lib/assets/avatars/ver.png
+    - lib/assets/avatars/poisson.png
+    - lib/assets/avatars/canard.png
+    - lib/assets/avatars/poule.png
+    - lib/assets/avatars/mouton.png
+    - lib/assets/avatars/cochon.png
+    - lib/assets/avatars/vache.png
+    - lib/assets/badges/500products.png
     - lib/assets/partners/logo-papondu.png
     - .env
 

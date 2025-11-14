@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:vegan_app/widgets/wave_clipper.dart';
 import './Profile/about_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({
     super.key,
     required this.onDateSaved,
+    this.onLoginSuccess,
   });
   final Function(DateTime) onDateSaved;
+  final VoidCallback? onLoginSuccess;
 
   @override
   ProfilePageState createState() => ProfilePageState();
@@ -21,27 +21,13 @@ class ProfilePageState extends State<ProfilePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Stack(
-              children: [
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: ClipPath(
-                    clipper: WaveClipper(),
-                    child: Container(
-                      color: Theme.of(context).colorScheme.primary,
-                      height: 0.19.sh,
-                    ),
-                  ),
-                ),
-                CustomPaint(
-                  size: Size.fromHeight(0.190.sh),
-                  painter: WaveTextPainter("À propos"),
-                ),
-              ],
+            const Stack(
+              children: [],
             ),
-            const AboutPage(),
+            AboutPage(
+              onDateSaved: widget.onDateSaved,
+              onLoginSuccess: widget.onLoginSuccess,
+            ),
           ],
         ),
       ),

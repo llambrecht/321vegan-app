@@ -1,298 +1,171 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'dart:io';
+import '../../../services/auth_service.dart';
+import '../../../widgets/auth/login_form.dart';
+import '../../../widgets/auth/register_form.dart';
+import '../../../widgets/auth/forgot_password_form.dart';
+import '../../../widgets/auth/user_profile.dart';
+import '../../../widgets/shared/social_feedback_buttons.dart';
+
+enum AuthView { login, register, forgotPassword, profile }
 
 class AboutPage extends StatefulWidget {
-  const AboutPage({super.key});
+  const AboutPage({super.key, this.onDateSaved, this.onLoginSuccess});
+
+  final Function(DateTime)? onDateSaved;
+  final VoidCallback? onLoginSuccess;
 
   @override
   State<AboutPage> createState() => _AboutPageState();
 }
 
-class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
+class _AboutPageState extends State<AboutPage> {
+  AuthView _currentView = AuthView.login;
+  bool _isLoggedIn = false;
+
   @override
   void initState() {
     super.initState();
+    _checkAuthStatus();
   }
 
-  // Launch Instagram function
-  void _launchInstagram(BuildContext context) async {
-    const instagramUrl = 'instagram://user?username=321vegan.app';
-    const fallbackUrl = 'https://instagram.com/321vegan.app';
+  void _checkAuthStatus() async {
+    setState(() {
+      _isLoggedIn = AuthService.isLoggedIn;
+      _currentView = _isLoggedIn ? AuthView.profile : AuthView.login;
+    });
 
-    try {
-      // Try to open Instagram app first
-      bool launched = await launchUrl(
-        Uri.parse(instagramUrl),
-        mode: LaunchMode.externalApplication,
-      );
-
-      // If Instagram app failed to launch, try the web URL
-      if (!launched) {
-        await launchUrl(
-          Uri.parse(fallbackUrl),
-          mode: LaunchMode.externalApplication,
-        );
-      }
-    } catch (e) {
-      // If both attempts fail, try one more time with platform default
-      try {
-        await launchUrl(
-          Uri.parse(fallbackUrl),
-          mode: LaunchMode.platformDefault,
-        );
-      } catch (e2) {
-        if (!context.mounted) {
-          return;
+    // If logged in but user data is not loaded, fetch it
+    if (_isLoggedIn && AuthService.currentUser == null) {
+      final result = await AuthService.getCurrentUser();
+      if (mounted) {
+        setState(() {});
+        if (!result.isSuccess) {
+          await AuthService.logout();
+          _checkAuthStatus();
         }
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-                'Impossible d\'ouvrir Instagram. Veuillez vérifier votre connexion internet.'),
-            backgroundColor: Colors.red,
-          ),
-        );
       }
     }
   }
 
-  // Launch App Store Review function
-  void _launchAppStoreReview(BuildContext context) async {
-    String reviewUrl;
-    if (Platform.isIOS) {
-      reviewUrl = 'https://apps.apple.com/fr/app/321-vegan/id6736880006';
-    } else if (Platform.isAndroid) {
-      reviewUrl =
-          'https://play.google.com/store/apps/details?id=com.app321vegan.veganapp';
-    } else {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Avis non disponible sur cette plateforme'),
-          backgroundColor: Colors.orange,
-        ),
-      );
-      return;
-    }
+  void _onLoginSuccess() {
+    _checkAuthStatus();
+    // Notify parent that login was successful so it can reload data
+    widget.onLoginSuccess?.call();
+  }
 
-    try {
-      await launchUrl(Uri.parse(reviewUrl),
-          mode: LaunchMode.externalApplication);
-    } catch (e) {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Impossible d\'ouvrir la page d\'avis'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
+  void _onLogout() {
+    _checkAuthStatus();
+  }
+
+  void _switchToRegister() {
+    setState(() => _currentView = AuthView.register);
+  }
+
+  void _switchToLogin() {
+    setState(() => _currentView = AuthView.login);
+  }
+
+  void _switchToForgotPassword() {
+    setState(() => _currentView = AuthView.forgotPassword);
+  }
+
+  void _onRegisterSuccess() {
+    // Check auth status instead of just switching to login
+    // This handles automatic login after registration
+    _checkAuthStatus();
+    // Notify parent that registration/login was successful
+    widget.onLoginSuccess?.call();
   }
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
+      padding:
+          EdgeInsets.only(top: 200.h, left: 24.w, right: 24.w, bottom: 20.h),
       child: Column(
         children: [
-          _buildAboutCard(),
+          SizedBox(height: 100.h),
+          if (!_isLoggedIn) _buildHeader(),
           SizedBox(height: 32.h),
-          _buildSocialSection(),
-          SizedBox(height: 32.h),
-          _buildReviewSection(),
-          SizedBox(height: 32.h),
-          _buildContactSection(),
-          SizedBox(height: 32.h),
+          _buildAuthContent(),
+          if (!_isLoggedIn) ...[
+            SizedBox(height: 32.h),
+            const SocialFeedbackButtons(showCard: false),
+          ],
         ],
       ),
     );
   }
 
-  Widget _buildAboutCard() {
-    return _buildCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          RichText(
-            text: TextSpan(
-              style: TextStyle(
-                fontSize: 46.sp,
-                color: Colors.grey[700],
-                height: 1.5,
-                fontWeight: FontWeight.w400,
-              ),
-              children: const [
-                TextSpan(text: '321 Vegan est une application entièrement '),
-                TextSpan(
-                  text: 'gratuite',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                TextSpan(
-                    text:
-                        ' développée pour aider la communauté végane à identifier plus facilement les produits végétaliens.'),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSocialSection() {
-    return Column(
-      children: [
-        SizedBox(height: 28.h),
-        GestureDetector(
-          onTap: () => _launchInstagram(context),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () => _launchInstagram(context),
-              borderRadius: BorderRadius.circular(8),
-              splashColor: Colors.blue.withValues(alpha: 0.2),
-              highlightColor: Colors.blue.withValues(alpha: 0.1),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ClipOval(
-                      child: Image.asset(
-                        'lib/assets/logo_instagram.png',
-                        width: 50,
-                        height: 50,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Rejoignez moi sur Instagram',
-                          style: TextStyle(
-                            fontSize: 50.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          '@321vegan.app',
-                          style: TextStyle(
-                            fontSize: 50.sp,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-        SizedBox(height: 28.h),
-        ElevatedButton.icon(
-          onPressed: () {
-            Share.share(
-              'Télécharge l\'application 321 Vegan (scan de produits, recherche d\'additifs, suivi de votre impact), sur Android et iOS ! https://linktr.ee/321vegan',
-              subject: '321Vegan App',
-            );
-          },
-          icon: const Icon(Icons.share),
-          label: const Text('Partager l\'application'),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildReviewSection() {
+  Widget _buildHeader() {
     return _buildCard(
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(
-                5,
-                (index) => Icon(
-                      Icons.star,
-                      size: 48.sp,
-                      color: Colors.amber,
-                    )),
+          Image.asset(
+            'lib/assets/app_icon.png',
+            fit: BoxFit.contain,
+            height: 150.h,
+            errorBuilder: (context, error, stackTrace) {
+              return Icon(
+                Icons.account_circle,
+                size: 150.sp,
+                color: Colors.grey,
+              );
+            },
           ),
           SizedBox(height: 16.h),
           Text(
-            'Vous aimez 321 Vegan ?',
+            '321 Vegan',
             style: TextStyle(
-              fontSize: 52.sp,
+              fontSize: 60.sp,
               fontWeight: FontWeight.bold,
               color: Colors.grey[800],
             ),
-            textAlign: TextAlign.center,
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 8.h),
           Text(
-            'Mettre un avis nous aide à améliorer l\'application et à la faire découvrir à d\'autres personnes. C\'est un moyen simple et gratuit de nous soutenir !',
+            'Connectez-vous ou créez votre compte',
             style: TextStyle(
-              fontSize: 42.sp,
+              fontSize: 44.sp,
               color: Colors.grey[600],
-              height: 1.4,
             ),
             textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 24.h),
-          ElevatedButton.icon(
-            onPressed: () => _launchAppStoreReview(context),
-            icon: Icon(
-              Platform.isIOS ? Icons.apple : Icons.android,
-              size: 80.sp,
-            ),
-            label: Text(
-              Platform.isIOS
-                  ? 'Noter sur l\'App Store'
-                  : 'Noter sur Google Play',
-              style: TextStyle(fontSize: 44.sp),
-            ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              foregroundColor: Colors.white,
-              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildContactSection() {
-    return Column(
-      children: [
-        SizedBox(height: 28.h),
-        Text(
-          'Vous pouvez aussi me contacter sur',
-          style: TextStyle(
-            fontSize: 38.sp,
-            color: Colors.grey[700],
-          ),
-          textAlign: TextAlign.center,
-        ),
-        SizedBox(height: 4.h),
-        SelectableText(
-          'contact@321vegan.fr',
-          style: TextStyle(
-            fontSize: 44.sp,
-            color: Theme.of(context).primaryColor,
-            fontWeight: FontWeight.bold,
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ],
+  Widget _buildAuthContent() {
+    return _buildCard(
+      child: _buildCurrentView(),
     );
+  }
+
+  Widget _buildCurrentView() {
+    switch (_currentView) {
+      case AuthView.login:
+        return LoginForm(
+          onLoginSuccess: _onLoginSuccess,
+          onSwitchToRegister: _switchToRegister,
+          onSwitchToForgotPassword: _switchToForgotPassword,
+        );
+      case AuthView.register:
+        return RegisterForm(
+          onRegisterSuccess: _onRegisterSuccess,
+          onSwitchToLogin: _switchToLogin,
+        );
+      case AuthView.forgotPassword:
+        return ForgotPasswordForm(
+          onBackToLogin: _switchToLogin,
+        );
+      case AuthView.profile:
+        return UserProfile(
+          onLogout: _onLogout,
+          onDateSaved: widget.onDateSaved,
+        );
+    }
   }
 
   Widget _buildCard({required Widget child}) {

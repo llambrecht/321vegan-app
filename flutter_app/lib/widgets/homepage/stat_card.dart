@@ -47,9 +47,7 @@ Widget buildStatCard(
                     onTap: () async {
                       final url = Uri.parse('https://321vegan.fr/sources');
                       if (!await launchUrl(url,
-                          mode: LaunchMode.externalApplication)) {
-                        debugPrint("Impossible d'ouvrir le lien");
-                      }
+                          mode: LaunchMode.externalApplication)) {}
                     },
                     child: Text(
                       'Lien vers les sources',
