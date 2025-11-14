@@ -286,15 +286,8 @@ class _UserProfileState extends State<UserProfile> {
                 context: context,
                 isScrollControlled: true,
                 backgroundColor: Colors.transparent,
-                builder: (context) => Container(
+                builder: (context) => SizedBox(
                   height: MediaQuery.of(context).size.height * 0.9,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20.r),
-                      topRight: Radius.circular(20.r),
-                    ),
-                  ),
                   child: const SentProductsModal(),
                 ),
               );
