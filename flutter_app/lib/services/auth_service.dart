@@ -15,10 +15,14 @@ class AuthService {
 
   static String? _accessToken;
   static User? _currentUser;
+  static DateTime? _tokenExpiresAt;
 
   // Initialize the service and check for stored tokens
   static Future<void> init() async {
     await _loadStoredToken();
+    if (isLoggedIn) {
+      await _checkAndRefreshToken();
+    }
   }
 
   // Load stored access token from SharedPreferences
@@ -26,17 +30,27 @@ class AuthService {
     try {
       final prefs = await SharedPreferences.getInstance();
       _accessToken = prefs.getString('access_token');
+      final expiresAtString = prefs.getString('token_expires_at');
+      if (expiresAtString != null) {
+        _tokenExpiresAt = DateTime.parse(expiresAtString);
+      }
     } catch (e) {
       debugPrint('Error loading stored token: $e');
     }
   }
 
   // Store access token in SharedPreferences
-  static Future<void> _storeToken(String token) async {
+  static Future<void> _storeToken(String token,
+      {int expiresInSeconds = 1800}) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('access_token', token);
       _accessToken = token;
+
+      // Calculate and store expiration time (default 30 minutes)
+      _tokenExpiresAt = DateTime.now().add(Duration(seconds: expiresInSeconds));
+      await prefs.setString(
+          'token_expires_at', _tokenExpiresAt!.toIso8601String());
     } catch (e) {
       debugPrint('Error storing token: $e');
     }
@@ -45,12 +59,35 @@ class AuthService {
   // Clear stored token
   static Future<void> _clearToken() async {
     try {
+      _tokenExpiresAt = null;
+
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('access_token');
+      await prefs.remove('token_expires_at');
       _accessToken = null;
       _currentUser = null;
     } catch (e) {
       debugPrint('Error clearing token: $e');
+    }
+  }
+
+  // Check if token is expired or will expire soon, and refresh if needed
+  static Future<void> _checkAndRefreshToken() async {
+    if (_tokenExpiresAt == null) return;
+
+    final now = DateTime.now();
+    final minutesUntilExpiry = _tokenExpiresAt!.difference(now).inMinutes;
+
+    // If token is expired or will expire in less than 5 minutes, refresh it
+    if (minutesUntilExpiry < 5) {
+      final result = await refreshToken();
+      if (result.isSuccess) {
+        debugPrint('✅ Token refreshed on app launch');
+      } else {
+        debugPrint('❌ Failed to refresh token on app launch');
+      }
+    } else {
+      debugPrint('Token still valid (${minutesUntilExpiry} minutes remaining)');
     }
   }
 
@@ -169,7 +206,7 @@ class AuthService {
     }
   }
 
-  // Refresh token
+  // Refresh token (kept for manual refresh if needed, but automatic refresh is now handled by Dio interceptor)
   static Future<AuthResult<AuthToken>> refreshToken() async {
     try {
       final dio = await DioClient.getDio();
@@ -186,10 +223,6 @@ class AuthService {
         await DioClient.clearCookies();
         return AuthResult.error('Token refresh failed');
       }
-    } on DioException catch (e) {
-      await _clearToken();
-      await DioClient.clearCookies();
-      return AuthResult.error('Network error during token refresh');
     } catch (e) {
       await _clearToken();
       await DioClient.clearCookies();
@@ -395,18 +428,8 @@ class AuthService {
       }
     } on DioException catch (e) {
       if (e.response?.statusCode == 401) {
-        // Try to refresh token
-        debugPrint('🔄 Access token expired, attempting refresh...');
-        final refreshResult = await refreshToken();
-
-        if (refreshResult.isSuccess) {
-          // Retry the request with new token
-          debugPrint('✅ Token refreshed, retrying request...');
-          return await getCurrentUser(); // Recursively call with new token
-        }
-
-        // Refresh failed
-        debugPrint('❌ Authentication expired, logging out');
+        // Token refresh is now handled automatically by the Dio interceptor
+        debugPrint('❌ Authentication expired');
         await _clearToken();
         await DioClient.clearCookies();
         return AuthResult.error('Authentication expired');
