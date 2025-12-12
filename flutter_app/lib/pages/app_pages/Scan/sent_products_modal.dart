@@ -58,10 +58,10 @@ class _SentProductsModalState extends State<SentProductsModal> {
       String status;
       switch (productInfo['is_vegan']) {
         case 'true':
-          status = 'Validé';
+          status = 'Vegan';
           break;
         case 'false':
-          status = 'Refusé';
+          status = 'Pas Vegan';
           break;
         case 'waiting':
           status = 'En attente';
@@ -91,13 +91,13 @@ class _SentProductsModalState extends State<SentProductsModal> {
 
   Color _getStatusColor(String status) {
     switch (status) {
-      case 'Validé':
+      case 'Vegan':
         return Colors.green;
       case 'En cours':
         return Colors.orange;
       case 'En attente':
         return Colors.purple;
-      case 'Refusé':
+      case 'Pas Vegan':
         return Colors.red;
       default:
         return Colors.grey;

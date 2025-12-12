@@ -77,6 +77,7 @@ class VeganProductInfoCard extends StatelessWidget {
     'perrier',
     'vitel',
     'san pellegrino',
+    'ferrero',
 
     // ==== Unilever ====
     'unilever',
@@ -273,7 +274,7 @@ class VeganProductInfoCard extends StatelessWidget {
                         builder: (context) => const InfoModal(
                           title: 'Boycott',
                           description:
-                              "Les produits notés 'Boycott' sont des produits de marques qui ont des actions néfastes pour l'environnement, la santé, le droits des animaux ou les droits humains. Sont indiqués notamments les produits de marques soutenant le génocide du peuple palestinien. Nous vous encourageons à boycotter ces marques pour soutenir des pratiques éthiques et responsables.",
+                              "Les produits notés 'Boycott' sont des produits de marques qui ont des actions néfastes pour l'environnement, la santé, le droits des animaux ou les droits humains. Nous vous encourageons à boycotter ces marques pour soutenir des pratiques éthiques et responsables.",
                         ),
                       );
                     },
