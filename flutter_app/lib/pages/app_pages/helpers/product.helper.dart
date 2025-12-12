@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:vegan_app/helpers/preference_helper.dart';
 import 'package:vegan_app/services/api_service.dart';
+import 'package:vegan_app/services/auth_service.dart';
+import 'package:vegan_app/services/badge_service.dart';
 import '../../../models/vegan_status.dart';
 
 class ProductHelper {
@@ -50,6 +52,21 @@ class ProductHelper {
           'Le produit a bien été envoyé. Nous allons vérifier et l\'ajouter à la base de données.',
           Colors.green,
         );
+
+        // Check for newly unlocked badges after sending a product
+        if (AuthService.isLoggedIn && context.mounted) {
+          final userResult = await AuthService.getCurrentUser();
+          if (userResult.isSuccess &&
+              userResult.data != null &&
+              context.mounted) {
+            await BadgeService.checkAndShowNewBadges(
+              context,
+              userResult.data!,
+              mounted: context.mounted,
+            );
+          }
+        }
+
         return true;
       } else {
         if (!context.mounted) return false;
@@ -81,6 +98,20 @@ class ProductHelper {
         comment: message,
         contact: contact,
       );
+
+      // Check for newly unlocked badges after reporting an error
+      if (success && AuthService.isLoggedIn && context.mounted) {
+        final userResult = await AuthService.getCurrentUser();
+        if (userResult.isSuccess &&
+            userResult.data != null &&
+            context.mounted) {
+          await BadgeService.checkAndShowNewBadges(
+            context,
+            userResult.data!,
+            mounted: context.mounted,
+          );
+        }
+      }
 
       return success;
     } catch (e) {

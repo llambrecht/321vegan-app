@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'dart:math';
 import '../../services/auth_service.dart';
+import '../../services/badge_service.dart';
 import '../../models/user.dart';
 import '../../models/badge.dart' as app_badge;
 import '../../pages/app_pages/Scan/sent_products_modal.dart';
@@ -89,6 +90,12 @@ class _UserProfileState extends State<UserProfile> {
           _user = result.data;
         }
       });
+
+      // Check for newly unlocked badges after loading user info
+      if (result.isSuccess && result.data != null && mounted) {
+        await BadgeService.checkAndShowNewBadges(context, result.data!,
+            mounted: mounted);
+      }
     }
   }
 
@@ -96,6 +103,9 @@ class _UserProfileState extends State<UserProfile> {
     setState(() => _isLoading = true);
 
     final result = await AuthService.logout();
+
+    // Clear badge tracking on logout
+    await BadgeService.clearBadgeTracking();
 
     if (mounted) {
       setState(() => _isLoading = false);
@@ -122,6 +132,10 @@ class _UserProfileState extends State<UserProfile> {
   Future<void> _handleDeleteAccount() async {
     setState(() => _isLoading = true);
     final result = await AuthService.deleteAccount(context, _user);
+
+    // Clear badge tracking on account deletion
+    await BadgeService.clearBadgeTracking();
+
     if (mounted) {
       setState(() => _isLoading = false);
       if (result.isSuccess) {
@@ -414,6 +428,12 @@ class _UserProfileState extends State<UserProfile> {
               backgroundColor: Colors.green,
             ),
           );
+
+          // Check for newly unlocked badges after updating vegan date
+          if (result.data != null && mounted) {
+            await BadgeService.checkAndShowNewBadges(context, result.data!,
+                mounted: mounted);
+          }
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
