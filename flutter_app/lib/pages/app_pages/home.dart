@@ -15,6 +15,8 @@ import 'package:confetti/confetti.dart';
 import 'package:vegan_app/widgets/wave_clipper.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:vegan_app/services/auth_service.dart';
+import 'package:vegan_app/services/badge_service.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -147,6 +149,20 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     setState(() {
       _savings = computeSavings(targetDate);
     });
+  }
+
+  Future<void> _checkForNewBadges() async {
+    // Check if user is logged in and get current user
+    if (AuthService.isLoggedIn && mounted) {
+      final result = await AuthService.getCurrentUser();
+      if (result.isSuccess && result.data != null && mounted) {
+        await BadgeService.checkAndShowNewBadges(
+          context,
+          result.data!,
+          mounted: mounted,
+        );
+      }
+    }
   }
 
   @override
@@ -371,6 +387,10 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               setState(() {
                 motionTabBarController.index = value;
               });
+              // Check for new badges when Accueil tab is selected
+              if (value == 1) {
+                _checkForNewBadges();
+              }
               // Mark profile as visited when the profile tab is selected
               if (value == 4 && _showProfileBadge) {
                 _markProfileAsVisited();

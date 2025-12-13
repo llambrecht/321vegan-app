@@ -90,12 +90,6 @@ class _UserProfileState extends State<UserProfile> {
           _user = result.data;
         }
       });
-
-      // Check for newly unlocked badges after loading user info
-      if (result.isSuccess && result.data != null && mounted) {
-        await BadgeService.checkAndShowNewBadges(context, result.data!,
-            mounted: mounted);
-      }
     }
   }
 
@@ -188,15 +182,29 @@ class _UserProfileState extends State<UserProfile> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Profile avatar
-          SizedBox(
-            width: 400.w,
-            height: 480.w,
-            child: ClipOval(
-              child: _selectedAvatar != null
-                  ? Padding(
-                      padding: EdgeInsets.all(16.w),
-                      child: Image.asset(
-                        'lib/assets/avatars/$_selectedAvatar',
+          GestureDetector(
+            onTap: _openEditProfileModal,
+            child: SizedBox(
+              width: 400.w,
+              height: 480.w,
+              child: ClipOval(
+                child: _selectedAvatar != null
+                    ? Padding(
+                        padding: EdgeInsets.all(16.w),
+                        child: Image.asset(
+                          'lib/assets/avatars/$_selectedAvatar',
+                          fit: BoxFit.contain,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Icon(
+                              Icons.person,
+                              size: 64.sp,
+                              color: Colors.green,
+                            );
+                          },
+                        ),
+                      )
+                    : Image.asset(
+                        'lib/assets/avatars/cochon.png',
                         fit: BoxFit.contain,
                         errorBuilder: (context, error, stackTrace) {
                           return Icon(
@@ -206,18 +214,7 @@ class _UserProfileState extends State<UserProfile> {
                           );
                         },
                       ),
-                    )
-                  : Image.asset(
-                      'lib/assets/avatars/cochon.png',
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Icon(
-                          Icons.person,
-                          size: 64.sp,
-                          color: Colors.green,
-                        );
-                      },
-                    ),
+              ),
             ),
           ),
 
@@ -428,12 +425,6 @@ class _UserProfileState extends State<UserProfile> {
               backgroundColor: Colors.green,
             ),
           );
-
-          // Check for newly unlocked badges after updating vegan date
-          if (result.data != null && mounted) {
-            await BadgeService.checkAndShowNewBadges(context, result.data!,
-                mounted: mounted);
-          }
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
