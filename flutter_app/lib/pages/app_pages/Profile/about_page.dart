@@ -40,10 +40,12 @@ class _AboutPageState extends State<AboutPage> {
       final result = await AuthService.getCurrentUser();
       if (mounted) {
         setState(() {});
-        if (!result.isSuccess) {
+        // Only logout if authentication expired, not on network errors
+        if (!result.isSuccess && result.error == 'AUTH_EXPIRED') {
           await AuthService.logout();
           _checkAuthStatus();
         }
+        // If network error, keep user logged in - they can try again later
       }
     }
   }

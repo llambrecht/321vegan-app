@@ -218,15 +218,28 @@ class AuthService {
         final token = AuthToken.fromJson(response.data);
         await _storeToken(token.accessToken);
         return AuthResult.success(token);
-      } else {
+      } else if (response.statusCode == 401) {
+        // Only clear tokens on authentication errors
         await _clearToken();
         await DioClient.clearCookies();
+        return AuthResult.error('AUTH_EXPIRED');
+      } else {
+        // Other errors (5xx, etc.) shouldn't log user out
         return AuthResult.error('Token refresh failed');
       }
+    } on DioException catch (e) {
+      // Only clear tokens on 401 authentication errors
+      if (e.response?.statusCode == 401) {
+        await _clearToken();
+        await DioClient.clearCookies();
+        return AuthResult.error('AUTH_EXPIRED');
+      }
+
+      // Network errors (server down, timeout, no internet) should not log user out
+      return AuthResult.error('NETWORK_ERROR');
     } catch (e) {
-      await _clearToken();
-      await DioClient.clearCookies();
-      return AuthResult.error('Network error during token refresh');
+      // Unexpected errors should not log user out
+      return AuthResult.error('NETWORK_ERROR');
     }
   }
 
@@ -432,14 +445,15 @@ class AuthService {
         debugPrint('❌ Authentication expired');
         await _clearToken();
         await DioClient.clearCookies();
-        return AuthResult.error('Authentication expired');
+        return AuthResult.error('AUTH_EXPIRED');
       }
 
-      debugPrint('❌ Get current user error: ${e.message}');
-      return AuthResult.error('Network error getting user info');
+      // Network errors (server down, no internet, timeout) should not log user out
+      debugPrint('⚠️ Temporary network error getting user info: ${e.message}');
+      return AuthResult.error('NETWORK_ERROR');
     } catch (e) {
       debugPrint('❌ Unexpected get user error: $e');
-      return AuthResult.error('Network error getting user info');
+      return AuthResult.error('NETWORK_ERROR');
     }
   }
 
