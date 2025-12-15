@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../services/auth_service.dart';
+import '../../../services/badge_service.dart';
 import '../../../widgets/auth/login_form.dart';
 import '../../../widgets/auth/register_form.dart';
 import '../../../widgets/auth/forgot_password_form.dart';
@@ -44,6 +45,9 @@ class _AboutPageState extends State<AboutPage> {
         if (!result.isSuccess && result.error == 'AUTH_EXPIRED') {
           await AuthService.logout();
           _checkAuthStatus();
+        } else if (result.data != null) {
+          // Initialize badge tracking for the user if logging in
+          await BadgeService.initializeBadgeTracking(result.data!);
         }
         // If network error, keep user logged in - they can try again later
       }
