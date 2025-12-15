@@ -29,12 +29,26 @@ class NoResultCard extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            'Scannez un code-barre pour savoir si le produit est vegan !',
+          RichText(
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 60.sp,
-              fontWeight: FontWeight.bold,
+            text: TextSpan(
+              style: TextStyle(
+                fontSize: 60.sp,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+              children: [
+                const TextSpan(text: 'Scannez un produit '),
+                TextSpan(
+                  text: 'alimentaire',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 60.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const TextSpan(text: ' pour savoir s\'il est vegan !'),
+              ],
             ),
           ),
           const SizedBox(height: 8),
@@ -43,10 +57,27 @@ class NoResultCard extends StatelessWidget {
             height: 300.h,
             fit: BoxFit.cover,
           ),
-          const SizedBox(height: 8),
-          Text(
-            "La base de données est construite à partir de\nOpenFoodFacts.\nLe scan est prévu pour les produits alimentaires. Pour les cosmétiques, vous pouvez utiliser la recherche.",
-            style: TextStyle(fontSize: 40.sp),
+          const SizedBox(height: 16),
+          RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              style: TextStyle(fontSize: 40.sp, color: Colors.black),
+              children: [
+                const TextSpan(text: 'Le scan est prévu pour les produits '),
+                TextSpan(
+                  text: 'alimentaires',
+                  style: TextStyle(color: Colors.green.shade700),
+                ),
+                const TextSpan(
+                    text:
+                        ' uniquement. \nPour l\'instant nous ne pouvont pas traiter les produits '),
+                TextSpan(
+                  text: 'cosmétiques',
+                  style: TextStyle(color: Colors.red.shade700),
+                ),
+                const TextSpan(text: ', merci de ne pas en envoyer !'),
+              ],
+            ),
           ),
         ],
       ),
@@ -154,6 +185,176 @@ class NonVeganProductInfoCardState extends State<NonVeganProductInfoCard> {
     });
   }
 
+  void _showInfoModal() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20.r),
+            topRight: Radius.circular(20.r),
+          ),
+        ),
+        padding: EdgeInsets.all(24.w),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(12.w),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade50,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      Icons.info_outline,
+                      color: Colors.blue.shade700,
+                      size: 54.sp,
+                    ),
+                  ),
+                  SizedBox(width: 16.w),
+                  const Expanded(
+                    child: Text(
+                      'Informations',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: Icon(Icons.close, color: Colors.grey.shade600),
+                  ),
+                ],
+              ),
+              SizedBox(height: 24.h),
+
+              // Alimentaires uniquement
+              _buildInfoSection(
+                icon: Icons.restaurant,
+                iconColor: Colors.green.shade700,
+                backgroundColor: Colors.green.shade50,
+                title: 'Produits alimentaires uniquement',
+                description:
+                    'Cette application est conçue pour scanner des produits alimentaires. Les autres types de produits ne peuvent pour l\'instant pas être traités correctement.',
+              ),
+
+              SizedBox(height: 16.h),
+
+              // Pas de cosmétiques
+              _buildInfoSection(
+                icon: Icons.block,
+                iconColor: Colors.red.shade700,
+                backgroundColor: Colors.red.shade50,
+                title: 'Pas de produits cosmétiques',
+                description:
+                    'Les cosmétiques ne sont pas acceptés. Merci de ne pas les envoyer, ils seront automatiquement rejetés. En attendant, vous pouvez vérifier les marques de cosmétiques via l\'onglet de recherche !',
+              ),
+
+              SizedBox(height: 16.h),
+
+              // Traitement manuel
+              _buildInfoSection(
+                icon: Icons.schedule,
+                iconColor: Colors.orange.shade700,
+                backgroundColor: Colors.orange.shade50,
+                title: 'Traitement manuel',
+                description:
+                    'Chaque produit envoyé est vérifié manuellement avant d\'être ajouté à la base de données. Cela peut prendre quelques jours.',
+              ),
+
+              SizedBox(height: 16.h),
+
+              // Bouton de fermeture
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue.shade700,
+                    padding: EdgeInsets.symmetric(vertical: 16.h),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text(
+                    'J\'ai compris',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 160.h),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoSection({
+    required IconData icon,
+    required Color iconColor,
+    required Color backgroundColor,
+    required String title,
+    required String description,
+  }) {
+    return Container(
+      padding: EdgeInsets.all(16.w),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: iconColor.withValues(alpha: 0.3),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: iconColor, size: 60.sp),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                SizedBox(height: 4.h),
+                Text(
+                  description,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.black87,
+                    height: 1.4,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -188,27 +389,75 @@ class NonVeganProductInfoCardState extends State<NonVeganProductInfoCard> {
                 color: Colors.black87,
               ),
             ),
-            const SizedBox(height: 10),
             Text(
-              "Produit non référencé. Envoyez le en cliquant sur un des bouton et nous l'ajouterons après vérification !",
+              "Produit non référencé",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,
                 fontStyle: FontStyle.italic,
                 color: Colors.grey.shade600,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w600,
               ),
             ),
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              decoration: BoxDecoration(
+                color: Colors.blue.shade50,
+                borderRadius: BorderRadius.circular(15),
+                border: Border.all(color: Colors.blue.shade200, width: 1.5),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.info_outline,
+                      color: Colors.blue.shade700, size: 24),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: RichText(
+                      text: TextSpan(
+                        style: const TextStyle(
+                            fontSize: 12, color: Colors.black87),
+                        children: [
+                          const TextSpan(
+                              text: 'Merci de n\'envoyer que des produits '),
+                          TextSpan(
+                            text: 'alimentaires.',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green.shade700,
+                            ),
+                          ),
+                          const TextSpan(text: ' Pas de '),
+                          TextSpan(
+                            text: 'cosmétiques',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red.shade700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: _showInfoModal,
+                    icon: Icon(Icons.help_outline, color: Colors.blue.shade700),
+                    tooltip: 'Plus d\'infos',
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
             Text(
-              "(Produits alimentaires uniquement)",
-              textAlign: TextAlign.left,
+              "Traitement manuel • Vérification avant ajout",
+              textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey.shade700,
+                fontSize: 13,
+                fontStyle: FontStyle.italic,
+                color: Colors.grey.shade600,
               ),
             ),
-            SizedBox(height: 60.h),
+            SizedBox(height: 40.h),
             // Side by side buttons for vegan/non-vegan
             Row(
               children: [

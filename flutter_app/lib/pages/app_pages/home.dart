@@ -84,6 +84,9 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     setState(() {
       _savings = savings;
     });
+
+    // Check for new badges on initial load
+    _checkForNewBadges();
   }
 
   Future<void> _loadProfileBadgeState() async {
