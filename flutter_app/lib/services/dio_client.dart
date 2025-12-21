@@ -109,17 +109,42 @@ class DioClient {
             debugPrint('❌ Token refresh failed: $refreshError');
             _isRefreshing = false;
 
-            // Clear stored tokens and cookies
-            final prefs = await SharedPreferences.getInstance();
-            await prefs.remove('access_token');
-            await clearCookies();
+            // Only clear tokens on actual authentication errors (401)
+            // Keep user logged in on network errors (API down, timeout, etc.)
+            bool shouldLogout = false;
+            if (refreshError is DioException) {
+              // Only logout on 401 - authentication actually expired
+              if (refreshError.response?.statusCode == 401) {
+                shouldLogout = true;
+                debugPrint('🔒 Authentication expired - logging out');
+              } else {
+                // Network error, server down, timeout, etc.
+                debugPrint(
+                    '⚠️ Temporary error during token refresh - keeping user logged in');
+              }
+            } else {
+              // Non-Dio exceptions are likely network issues
+              debugPrint(
+                  '⚠️ Network error during token refresh - keeping user logged in');
+            }
+
+            if (shouldLogout) {
+              // Clear stored tokens and cookies only on auth failure
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.remove('access_token');
+              await clearCookies();
+            }
 
             // Reject all queued requests
             for (var queued in _requestsWaitingForRefresh) {
               queued.handler.reject(DioException(
                 requestOptions: queued.options,
-                error: 'Authentication expired',
-                type: DioExceptionType.badResponse,
+                error: shouldLogout
+                    ? 'Authentication expired'
+                    : 'Network error - please try again',
+                type: shouldLogout
+                    ? DioExceptionType.badResponse
+                    : DioExceptionType.connectionError,
               ));
             }
             _requestsWaitingForRefresh.clear();
