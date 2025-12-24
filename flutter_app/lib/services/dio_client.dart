@@ -43,8 +43,11 @@ class DioClient {
     // Add auth interceptor for automatic token refresh
     _dio!.interceptors.add(InterceptorsWrapper(
       onError: (DioException error, ErrorInterceptorHandler handler) async {
-        // Check if this is a 401 error and not already a refresh attempt
         if (error.response?.statusCode == 401 &&
+            error.type != DioExceptionType.connectionTimeout &&
+            error.type != DioExceptionType.sendTimeout &&
+            error.type != DioExceptionType.receiveTimeout &&
+            error.type != DioExceptionType.connectionError &&
             !error.requestOptions.path.contains('/auth/refresh') &&
             !error.requestOptions.path.contains('/auth/login')) {
           debugPrint('🔄 401 error detected, attempting token refresh...');
@@ -117,15 +120,24 @@ class DioClient {
               if (refreshError.response?.statusCode == 401) {
                 shouldLogout = true;
                 debugPrint('🔒 Authentication expired - logging out');
-              } else {
+              } else if (refreshError.type ==
+                      DioExceptionType.connectionTimeout ||
+                  refreshError.type == DioExceptionType.sendTimeout ||
+                  refreshError.type == DioExceptionType.receiveTimeout ||
+                  refreshError.type == DioExceptionType.connectionError ||
+                  refreshError.type == DioExceptionType.unknown) {
                 // Network error, server down, timeout, etc.
                 debugPrint(
-                    '⚠️ Temporary error during token refresh - keeping user logged in');
+                    '⚠️ Network/timeout error during token refresh - keeping user logged in');
+              } else {
+                // Other server errors (5xx, etc.) - keep user logged in
+                debugPrint(
+                    '⚠️ Server error during token refresh - keeping user logged in');
               }
             } else {
               // Non-Dio exceptions are likely network issues
               debugPrint(
-                  '⚠️ Network error during token refresh - keeping user logged in');
+                  '⚠️ Unexpected error during token refresh - keeping user logged in');
             }
 
             if (shouldLogout) {
