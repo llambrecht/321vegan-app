@@ -214,6 +214,8 @@ class _UserProfileState extends State<UserProfile> {
           _buildContributorCards(),
         ],
         SizedBox(height: 24.h),
+        _buildSettingsCard(),
+        SizedBox(height: 24.h),
         _buildBadgesSection(),
         SizedBox(height: 24.h),
         _buildSocialAndFeedbackSection(),
@@ -296,8 +298,8 @@ class _UserProfileState extends State<UserProfile> {
             onPressed: _openEditProfileModal,
             icon: Icon(
               Icons.edit,
-              size: 64.sp,
-              color: Colors.grey[600],
+              size: 80.sp,
+              color: Theme.of(context).colorScheme.primary,
             ),
           ),
         ],
@@ -517,6 +519,59 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
+  Widget _buildSettingsCard() {
+    return GestureDetector(
+      onTap: _showSettingsModal,
+      child: _buildCard(
+        child: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(16.w),
+              decoration: BoxDecoration(
+                color: const Color(0xFF1A722E).withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.settings,
+                size: 56.sp,
+                color: const Color(0xFF1A722E),
+              ),
+            ),
+            SizedBox(width: 20.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Options',
+                    style: TextStyle(
+                      fontSize: 52.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[800],
+                    ),
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    'Personnalisez votre expérience',
+                    style: TextStyle(
+                      fontSize: 36.sp,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.arrow_forward_ios,
+              size: 48.sp,
+              color: Colors.grey[400],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildStatCard({
     required IconData icon,
     required Color iconColor,
@@ -657,29 +712,6 @@ class _UserProfileState extends State<UserProfile> {
             ),
           ),
           SizedBox(height: 32.h),
-
-          // Manage options button
-          ElevatedButton.icon(
-            onPressed: _showSettingsModal,
-            icon: const Icon(Icons.settings),
-            label: Text(
-              'Gérer mes options',
-              style: TextStyle(fontSize: 44.sp),
-            ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF1A722E),
-              foregroundColor: Colors.white,
-              padding: EdgeInsets.symmetric(
-                horizontal: 24.w,
-                vertical: 16.h,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-            ),
-          ),
-
-          SizedBox(height: 16.h),
 
           // Logout button
           ElevatedButton.icon(
