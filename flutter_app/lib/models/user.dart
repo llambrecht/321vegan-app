@@ -6,6 +6,8 @@ class User {
   final int? nbProductsSent;
   final int? supporterLevel;
   final int? nbErrorReports;
+  final int? nbProductsModified;
+  final int? nbCheckings;
   final DateTime? veganSince;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -18,6 +20,8 @@ class User {
     required this.nbProductsSent,
     required this.supporterLevel,
     required this.nbErrorReports,
+    this.nbProductsModified,
+    this.nbCheckings,
     required this.veganSince,
     this.createdAt,
     this.updatedAt,
@@ -34,6 +38,8 @@ class User {
       nbErrorReports: json['error_reports'] != null
           ? (json['error_reports'] as List).length
           : 0,
+      nbProductsModified: json['nb_products_modified'] ?? 0,
+      nbCheckings: json['nb_checkings'] ?? 0,
       veganSince: json['vegan_since'] != null
           ? DateTime.tryParse(json['vegan_since'])
           : null,

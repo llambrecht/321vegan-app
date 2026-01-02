@@ -5,11 +5,15 @@ import 'package:vegan_app/helpers/preference_helper.dart';
 class SettingsModal extends StatefulWidget {
   final bool initialOpenOnScanPage;
   final Function(bool) onOpenOnScanPageChanged;
+  final bool initialShowBoycott;
+  final Function(bool) onShowBoycottChanged;
 
   const SettingsModal({
     super.key,
     required this.initialOpenOnScanPage,
     required this.onOpenOnScanPageChanged,
+    required this.initialShowBoycott,
+    required this.onShowBoycottChanged,
   });
 
   @override
@@ -18,11 +22,13 @@ class SettingsModal extends StatefulWidget {
 
 class SettingsModalState extends State<SettingsModal> {
   late bool _openOnScanPage;
+  late bool _showBoycott;
 
   @override
   void initState() {
     super.initState();
     _openOnScanPage = widget.initialOpenOnScanPage;
+    _showBoycott = widget.initialShowBoycott;
   }
 
   Future<void> _setOpenOnScanPagePref(bool value) async {
@@ -31,6 +37,14 @@ class SettingsModalState extends State<SettingsModal> {
       _openOnScanPage = value;
     });
     widget.onOpenOnScanPageChanged(value);
+  }
+
+  Future<void> _setShowBoycottPref(bool value) async {
+    await PreferencesHelper.setShowBoycottPref(value);
+    setState(() {
+      _showBoycott = value;
+    });
+    widget.onShowBoycottChanged(value);
   }
 
   @override
@@ -96,6 +110,52 @@ class SettingsModalState extends State<SettingsModal> {
                   value: _openOnScanPage,
                   onChanged: (value) {
                     _setOpenOnScanPagePref(value);
+                  },
+                  activeThumbColor: Colors.white,
+                  activeTrackColor: const Color(0xFF1A722E),
+                  inactiveThumbColor: Colors.white,
+                  inactiveTrackColor: Colors.grey[300],
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 16.h),
+          Container(
+            padding: EdgeInsets.all(16.w),
+            decoration: BoxDecoration(
+              color: Colors.grey[50],
+              borderRadius: BorderRadius.circular(12.r),
+              border: Border.all(color: Colors.grey[200]!),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Afficher les mentions Boycott',
+                        style: TextStyle(
+                          fontSize: 40.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      SizedBox(height: 4.h),
+                      Text(
+                        'Afficher les informations de boycott sur les produits',
+                        style: TextStyle(
+                          fontSize: 30.sp,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Switch(
+                  value: _showBoycott,
+                  onChanged: (value) {
+                    _setShowBoycottPref(value);
                   },
                   activeThumbColor: Colors.white,
                   activeTrackColor: const Color(0xFF1A722E),

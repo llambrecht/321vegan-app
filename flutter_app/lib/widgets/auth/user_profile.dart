@@ -7,6 +7,7 @@ import '../../services/badge_service.dart';
 import '../../models/user.dart';
 import '../../models/badge.dart' as app_badge;
 import '../../pages/app_pages/Scan/sent_products_modal.dart';
+import '../../pages/app_pages/Scan/settings_modal.dart';
 import '../../helpers/preference_helper.dart';
 import './edit_profile_modal.dart';
 import '../shared/social_feedback_buttons.dart';
@@ -29,6 +30,8 @@ class _UserProfileState extends State<UserProfile> {
   User? _user;
   bool _isLoading = false;
   String? _selectedAvatar;
+  bool _openOnScanPage = false;
+  bool _showBoycott = true;
 
   final List<String> _availableAvatars = [
     'lapin.png',
@@ -45,6 +48,7 @@ class _UserProfileState extends State<UserProfile> {
   void initState() {
     super.initState();
     _loadUserInfo();
+    _loadPreferences();
   }
 
   String _getRandomAvatar(String? currentAvatar) {
@@ -91,6 +95,44 @@ class _UserProfileState extends State<UserProfile> {
         }
       });
     }
+  }
+
+  Future<void> _loadPreferences() async {
+    final openOnScanPage = await PreferencesHelper.getOpenOnScanPagePref();
+    final showBoycott = await PreferencesHelper.getShowBoycottPref();
+    if (mounted) {
+      setState(() {
+        _openOnScanPage = openOnScanPage;
+        _showBoycott = showBoycott;
+      });
+    }
+  }
+
+  void _showSettingsModal() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          child: SettingsModal(
+            initialOpenOnScanPage: _openOnScanPage,
+            onOpenOnScanPageChanged: (value) {
+              setState(() {
+                _openOnScanPage = value;
+              });
+            },
+            initialShowBoycott: _showBoycott,
+            onShowBoycottChanged: (value) {
+              setState(() {
+                _showBoycott = value;
+              });
+            },
+          ),
+        );
+      },
+    );
   }
 
   Future<void> _handleLogout() async {
@@ -166,6 +208,11 @@ class _UserProfileState extends State<UserProfile> {
         _buildProfileCard(),
         SizedBox(height: 24.h),
         _buildStatsCards(),
+        if ((_user?.nbProductsModified ?? 0) > 0 ||
+            (_user?.nbCheckings ?? 0) > 0) ...[
+          SizedBox(height: 24.h),
+          _buildContributorCards(),
+        ],
         SizedBox(height: 24.h),
         _buildBadgesSection(),
         SizedBox(height: 24.h),
@@ -322,6 +369,154 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
+  Widget _buildContributorCards() {
+    final nbProductsModified = _user?.nbProductsModified ?? 0;
+    final nbCheckings = _user?.nbCheckings ?? 0;
+
+    return _buildCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(12.w),
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFFFFD700), Color(0xFFFFA500)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.star,
+                  size: 48.sp,
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(width: 16.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Contributions',
+                      style: TextStyle(
+                        fontSize: 52.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey[800],
+                      ),
+                    ),
+                    Text(
+                      'Merci pour votre aide précieuse !',
+                      style: TextStyle(
+                        fontSize: 36.sp,
+                        color: Colors.grey[600],
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 24.h),
+          // Contributor stats in a row
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  padding: EdgeInsets.all(20.w),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        const Color(0xFF1A722E).withValues(alpha: 0.1),
+                        const Color(0xFF1A722E).withValues(alpha: 0.05),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(16.r),
+                    border: Border.all(
+                      color: const Color(0xFF1A722E).withValues(alpha: 0.3),
+                      width: 2,
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        nbProductsModified.toString(),
+                        style: TextStyle(
+                          fontSize: 56.sp,
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xFF1A722E),
+                        ),
+                      ),
+                      SizedBox(height: 8.h),
+                      Text(
+                        'Produit${nbProductsModified > 1 ? 's' : ''}',
+                        style: TextStyle(
+                          fontSize: 36.sp,
+                          color: Colors.grey[700],
+                          fontWeight: FontWeight.w500,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(width: 16.w),
+              Expanded(
+                child: Container(
+                  padding: EdgeInsets.all(20.w),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.blue.shade500.withValues(alpha: 0.1),
+                        Colors.blue.shade500.withValues(alpha: 0.05),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(16.r),
+                    border: Border.all(
+                      color: Colors.blue.shade500.withValues(alpha: 0.3),
+                      width: 2,
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        nbCheckings.toString(),
+                        style: TextStyle(
+                          fontSize: 56.sp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue.shade700,
+                        ),
+                      ),
+                      SizedBox(height: 8.h),
+                      Text(
+                        'Contact${nbCheckings > 1 ? 's' : ''}',
+                        style: TextStyle(
+                          fontSize: 36.sp,
+                          color: Colors.grey[700],
+                          fontWeight: FontWeight.w500,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildStatCard({
     required IconData icon,
     required Color iconColor,
@@ -462,6 +657,29 @@ class _UserProfileState extends State<UserProfile> {
             ),
           ),
           SizedBox(height: 32.h),
+
+          // Manage options button
+          ElevatedButton.icon(
+            onPressed: _showSettingsModal,
+            icon: const Icon(Icons.settings),
+            label: Text(
+              'Gérer mes options',
+              style: TextStyle(fontSize: 44.sp),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF1A722E),
+              foregroundColor: Colors.white,
+              padding: EdgeInsets.symmetric(
+                horizontal: 24.w,
+                vertical: 16.h,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+            ),
+          ),
+
+          SizedBox(height: 16.h),
 
           // Logout button
           ElevatedButton.icon(

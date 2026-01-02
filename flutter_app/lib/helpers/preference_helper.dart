@@ -61,6 +61,19 @@ class PreferencesHelper {
     return prefs.getBool('open_on_scan_page') ?? false;
   }
 
+  // Save 'show boycott' preference
+  static Future<void> setShowBoycottPref(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('show_boycott', value);
+  }
+
+  // Load 'show boycott' preference
+  static Future<bool> getShowBoycottPref() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('show_boycott') ??
+        true; // Default to true to show boycott
+  }
+
   // Method to add or remove a code based on success status
   static Future<void> addCodeToPreferences(String? code, bool success) async {
     if (code == null) return;
