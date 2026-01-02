@@ -5,10 +5,14 @@ import 'package:vegan_app/widgets/scaner/info_modal.dart';
 
 class VeganProductInfoCard extends StatelessWidget {
   final Map<dynamic, dynamic>? productInfo;
+  final bool showBoycott;
+  final Function(bool)? onBoycottToggleChanged;
 
   const VeganProductInfoCard({
     super.key,
     required this.productInfo,
+    this.showBoycott = true,
+    this.onBoycottToggleChanged,
   });
 
   // This is a temporary solution to check if a brand is boycott.
@@ -265,16 +269,19 @@ class VeganProductInfoCard extends StatelessWidget {
                     },
                   ),
 
-                if (isBDS) ...[
+                if (isBDS && showBoycott) ...[
                   const SizedBox(width: 8),
                   ElevatedButton(
                     onPressed: () {
                       showDialog(
                         context: context,
-                        builder: (context) => const InfoModal(
+                        builder: (context) => InfoModal(
                           title: 'Boycott',
                           description:
                               "Les produits notés 'Boycott' sont des produits de marques qui ont des actions néfastes pour l'environnement, la santé, le droits des animaux ou les droits humains. Nous vous encourageons à boycotter ces marques pour soutenir des pratiques éthiques et responsables.",
+                          showBoycottToggle: true,
+                          initialBoycottValue: showBoycott,
+                          onBoycottToggleChanged: onBoycottToggleChanged,
                         ),
                       );
                     },
@@ -283,14 +290,29 @@ class VeganProductInfoCard extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
-                    ),
-                    child: const Text(
-                      '🚫 Boycott',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
                       ),
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.info_outline,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                        SizedBox(width: 6),
+                        Text(
+                          'Boycott',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

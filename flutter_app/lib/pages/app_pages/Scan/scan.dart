@@ -36,6 +36,7 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
   late ConfettiController _confettiController;
   final nonVeganCardKey = GlobalKey<NonVeganProductInfoCardState>();
   bool _openOnScanPage = false;
+  bool _showBoycott = true;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -71,6 +72,7 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
 
     _loadScanHistory();
     _loadOpenOnScanPagePref();
+    _loadShowBoycottPref();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _startScanner();
@@ -161,6 +163,13 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
     });
   }
 
+  Future<void> _loadShowBoycottPref() async {
+    final value = await PreferencesHelper.getShowBoycottPref();
+    setState(() {
+      _showBoycott = value;
+    });
+  }
+
   void _showSettingsModal() {
     controller.stop(); // Stop the scanner when opening the modal
     setState(() {
@@ -179,6 +188,12 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
             onOpenOnScanPageChanged: (value) {
               setState(() {
                 _openOnScanPage = value;
+              });
+            },
+            initialShowBoycott: _showBoycott,
+            onShowBoycottChanged: (value) {
+              setState(() {
+                _showBoycott = value;
               });
             },
           ),
@@ -464,7 +479,15 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
               left: 16,
               right: 16,
               child: productInfo?['is_vegan'] == 'true'
-                  ? VeganProductInfoCard(productInfo: productInfo)
+                  ? VeganProductInfoCard(
+                      productInfo: productInfo,
+                      showBoycott: _showBoycott,
+                      onBoycottToggleChanged: (value) {
+                        setState(() {
+                          _showBoycott = value;
+                        });
+                      },
+                    )
                   : (productInfo?['is_vegan'] == 'waiting')
                       ? PendingProductInfoCard(productInfo: productInfo)
                       : productInfo?['is_vegan'] == 'already_scanned'
