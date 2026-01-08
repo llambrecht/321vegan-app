@@ -118,6 +118,38 @@ class PartnersPage extends StatelessWidget {
                         ),
                         _buildPartnerCard(
                           context: context,
+                          brandName: 'Ragnarok',
+                          logoName: 'logo-ragna.png',
+                          discountCode: '321VEGAN20',
+                          discountAmount: '20% de réduction',
+                          websiteUrl:
+                              'https://www.ragnarok-store.fr?sca_ref=10220957.G2u78D4maJ39',
+                          description:
+                              'Marque française d’énergie, regroupe RAGNADRINK (boissons énergisantes) et RAGNABOOST (pastilles énergisantes).',
+                          hasCommission: true,
+                        ),
+                        _buildPartnerCard(
+                          context: context,
+                          brandName: 'Maison Protéine',
+                          logoName: 'logo-maisonprot.png',
+                          discountCode: '321MAISON10',
+                          discountAmount: '10% sur la première commande',
+                          websiteUrl: 'https://maisonproteine.com/fr/',
+                          description:
+                              'Des protéines en poudre véganes, bio, fabriquées en france, avec des ingrédients simples et sains',
+                        ),
+                        _buildPartnerCard(
+                          context: context,
+                          brandName: 'Vegetal Food',
+                          logoName: 'logo-vegetalfood.png',
+                          discountCode: '321VEGAN10',
+                          discountAmount: '10% de réduction (hors promos)',
+                          websiteUrl: 'https://vegetalfood.fr',
+                          description:
+                              'Boutique de produits alimentaires véganes en ligne avec un très large choix !',
+                        ),
+                        _buildPartnerCard(
+                          context: context,
                           brandName: 'Le Papondu',
                           logoName: 'logo-papondu.png',
                           discountCode: 'PAPON10',
@@ -135,16 +167,6 @@ class PartnersPage extends StatelessWidget {
                           websiteUrl: 'https://petit-veganne.com',
                           description:
                               'Alternatives végétales aux fromages à base de noix de cajou bio. Entreprise artisanale française certifiée et labellisée BIO & VEGAN',
-                        ),
-                        _buildPartnerCard(
-                          context: context,
-                          brandName: 'Maison Protéine',
-                          logoName: 'logo-maisonprot.png',
-                          discountCode: '321MAISON10',
-                          discountAmount: '10% sur la première commande',
-                          websiteUrl: 'https://maisonproteine.com/fr/',
-                          description:
-                              'Des protéines en poudre véganes, bio, fabriquées en france, avec des ingrédients simples et sains',
                         ),
                         _buildPartnerCard(
                           context: context,
@@ -175,16 +197,6 @@ class PartnersPage extends StatelessWidget {
                           websiteUrl: 'https://www.officialveganshop.com/',
                           description:
                               'Boutique en ligne entièrement végane avec de très nombreuses références.',
-                        ),
-                        _buildPartnerCard(
-                          context: context,
-                          brandName: 'Vegetal Food',
-                          logoName: 'logo-vegetalfood.png',
-                          discountCode: '321VEGAN10',
-                          discountAmount: '10% de réduction (hors promos)',
-                          websiteUrl: 'https://vegetalfood.fr',
-                          description:
-                              'Boutique de produits alimentaires véganes en ligne avec un très large choix !',
                         ),
                       ],
                     ),

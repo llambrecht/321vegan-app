@@ -4,6 +4,7 @@ import 'package:vegan_app/helpers/preference_helper.dart';
 import 'package:vegan_app/models/vegan_status.dart';
 import 'package:vegan_app/pages/app_pages/Scan/product_info_helper.dart';
 import 'package:vegan_app/pages/app_pages/helpers/product.helper.dart';
+import 'package:vegan_app/services/auth_service.dart';
 
 class HistoryModal extends StatefulWidget {
   final List<Map<String, dynamic>> scanHistory;
@@ -389,68 +390,71 @@ class _HistoryModalState extends State<HistoryModal> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            onPressed: () async {
-                              await ProductHelper.tryAddDocument(
-                                context,
-                                {
-                                  'code': name,
-                                  'name': name,
-                                },
-                                VeganStatus.vegan,
-                              );
-                              _updateHistory();
-                            },
-                            icon: const Icon(Icons.check_circle,
-                                color: Colors.white),
-                            label: Text(
-                              'Vegan',
-                              style: TextStyle(
-                                fontSize: 40.sp,
-                                color: Colors.white, // Make text white
+                        if (AuthService.isLoggedIn) ...[
+                          Expanded(
+                            child: ElevatedButton.icon(
+                              onPressed: () async {
+                                await ProductHelper.tryAddDocument(
+                                  context,
+                                  {
+                                    'code': name,
+                                    'name': name,
+                                  },
+                                  VeganStatus.vegan,
+                                );
+                                _updateHistory();
+                              },
+                              icon: const Icon(Icons.check_circle,
+                                  color: Colors.white),
+                              label: Text(
+                                'Vegan',
+                                style: TextStyle(
+                                  fontSize: 40.sp,
+                                  color: Colors.white, // Make text white
+                                ),
                               ),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green.shade600,
-                              padding: EdgeInsets.symmetric(vertical: 14.h),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.r),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 16.w),
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            onPressed: () async {
-                              await ProductHelper.tryAddDocument(
-                                context,
-                                {
-                                  'code': name,
-                                  'name': name,
-                                },
-                                VeganStatus.nonVegan,
-                              );
-                              _updateHistory();
-                            },
-                            icon: const Icon(Icons.cancel, color: Colors.white),
-                            label: Text(
-                              'Pas Vegan',
-                              style: TextStyle(
-                                fontSize: 40.sp,
-                                color: Colors.white, // Make text white
-                              ),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red.shade600,
-                              padding: EdgeInsets.symmetric(vertical: 14.h),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.r),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.green.shade600,
+                                padding: EdgeInsets.symmetric(vertical: 14.h),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.r),
+                                ),
                               ),
                             ),
                           ),
-                        ),
+                          SizedBox(width: 16.w),
+                          Expanded(
+                            child: ElevatedButton.icon(
+                              onPressed: () async {
+                                await ProductHelper.tryAddDocument(
+                                  context,
+                                  {
+                                    'code': name,
+                                    'name': name,
+                                  },
+                                  VeganStatus.nonVegan,
+                                );
+                                _updateHistory();
+                              },
+                              icon:
+                                  const Icon(Icons.cancel, color: Colors.white),
+                              label: Text(
+                                'Pas Vegan',
+                                style: TextStyle(
+                                  fontSize: 40.sp,
+                                  color: Colors.white, // Make text white
+                                ),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red.shade600,
+                                padding: EdgeInsets.symmetric(vertical: 14.h),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.r),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),
