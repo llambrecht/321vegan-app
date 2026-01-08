@@ -15,7 +15,9 @@ import 'package:vegan_app/widgets/scaner/report_error_button.dart';
 import 'package:vegan_app/widgets/scaner/vegan_product_info_card.dart';
 
 class ScanPage extends StatefulWidget {
-  const ScanPage({super.key});
+  final VoidCallback? onNavigateToProfile;
+
+  const ScanPage({super.key, this.onNavigateToProfile});
 
   @override
   ScanPageState createState() => ScanPageState();
@@ -500,7 +502,10 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
                                   ? NonVeganProductInfoCard(
                                       key: nonVeganCardKey,
                                       productInfo: productInfo,
-                                      confettiController: _confettiController)
+                                      confettiController: _confettiController,
+                                      onNavigateToProfile:
+                                          widget.onNavigateToProfile,
+                                    )
                                   : RejectedProductInfoCard(
                                       productInfo: productInfo),
             )

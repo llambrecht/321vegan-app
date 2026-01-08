@@ -373,7 +373,13 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 ),
               ),
               const SearchPage(),
-              const ScanPage(),
+              ScanPage(
+                onNavigateToProfile: () {
+                  setState(() {
+                    motionTabBarController.index = 4;
+                  });
+                },
+              ),
               ProfilePage(
                 onDateSaved: _onDateSaved,
                 onLoginSuccess: _onLoginSuccess,
