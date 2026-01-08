@@ -1,3 +1,5 @@
+import 'scanned_product.dart';
+
 class User {
   final int id;
   final String email;
@@ -11,6 +13,7 @@ class User {
   final DateTime? veganSince;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  final List<ScannedProduct>? scannedProducts;
 
   User({
     required this.id,
@@ -25,6 +28,7 @@ class User {
     required this.veganSince,
     this.createdAt,
     this.updatedAt,
+    this.scannedProducts,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -48,6 +52,11 @@ class User {
           : null,
       updatedAt: json['updated_at'] != null
           ? DateTime.tryParse(json['updated_at'])
+          : null,
+      scannedProducts: json['scanned_products'] != null
+          ? (json['scanned_products'] as List)
+              .map((item) => ScannedProduct.fromJson(item))
+              .toList()
           : null,
     );
   }

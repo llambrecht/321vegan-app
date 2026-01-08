@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'auth_service.dart';
+import '../models/product_of_interest.dart';
 
 class ApiService {
   static String get _baseUrl =>
@@ -79,6 +80,27 @@ class ApiService {
       return response.statusCode >= 200 && response.statusCode < 300;
     } catch (e) {
       return false;
+    }
+  }
+
+  /// Get all interesting products (products of interest)
+  static Future<List<ProductOfInterest>> getInterestingProducts() async {
+    try {
+      final url = Uri.parse('$_baseUrl/interesting-products');
+
+      final response = await http.get(
+        url,
+        headers: _headers,
+      );
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final List<dynamic> data = json.decode(response.body);
+        return data.map((item) => ProductOfInterest.fromJson(item)).toList();
+      }
+
+      return [];
+    } catch (e) {
+      return [];
     }
   }
 }

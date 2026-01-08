@@ -32,7 +32,6 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   late Timer _timer;
   late ConfettiController _confettiController;
   final TextEditingController _dateController = TextEditingController();
-  bool _showProfileBadge = true;
 
   @override
   void initState() {
@@ -40,7 +39,6 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     initializeDateFormatting('fr_FR', null);
     _timer = Timer.periodic(
         const Duration(minutes: 1), (Timer t) => _updateSavings());
-    _loadProfileBadgeState();
 
     // Initialize with default home tab, then update based on preference
     motionTabBarController = MotionTabBarController(
@@ -87,20 +85,6 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
     // Check for new badges on initial load
     _checkForNewBadges();
-  }
-
-  Future<void> _loadProfileBadgeState() async {
-    final hasVisitedProfile = await PreferencesHelper.getHasVisitedProfile();
-    setState(() {
-      _showProfileBadge = !hasVisitedProfile;
-    });
-  }
-
-  Future<void> _markProfileAsVisited() async {
-    await PreferencesHelper.setHasVisitedProfile(true);
-    setState(() {
-      _showProfileBadge = false;
-    });
   }
 
   void _onDateSaved(DateTime date) {
@@ -394,10 +378,6 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               if (value == 1) {
                 _checkForNewBadges();
               }
-              // Mark profile as visited when the profile tab is selected
-              if (value == 4 && _showProfileBadge) {
-                _markProfileAsVisited();
-              }
             },
             icons: const [
               Icons.percent,
@@ -410,35 +390,6 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           ),
         ),
         // Badge overlay for "NEW" indicator on profile tab
-        if (_showProfileBadge)
-          Positioned(
-            bottom: 200.h,
-            right: 30.w,
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 5.h),
-              decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.circular(15.r),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.3),
-                    spreadRadius: 1,
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Text(
-                'NEW',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 28.sp,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Baloo',
-                ),
-              ),
-            ),
-          ),
       ],
     );
   }
