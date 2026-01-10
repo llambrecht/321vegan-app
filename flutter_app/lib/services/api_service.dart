@@ -94,13 +94,48 @@ class ApiService {
       );
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        final List<dynamic> data = json.decode(response.body);
+        final List<dynamic> data = json.decode(utf8.decode(response.bodyBytes));
         return data.map((item) => ProductOfInterest.fromJson(item)).toList();
       }
 
       return [];
     } catch (e) {
       return [];
+    }
+  }
+
+  /// Post a scan event for a product of interest
+  /// [ean] - The product's barcode
+  /// [latitude] - User's latitude (optional)
+  /// [longitude] - User's longitude (optional)
+  /// Automatically adds the logged-in user's ID if available
+  static Future<bool> postScanEvent({
+    required String ean,
+    double? latitude,
+    double? longitude,
+  }) async {
+    try {
+      final url = Uri.parse('$_baseUrl/scan-events/');
+
+      // Get the current user's ID if logged in
+      final userId = AuthService.currentUser?.id;
+
+      final body = json.encode({
+        'ean': ean,
+        if (latitude != null) 'latitude': latitude,
+        if (longitude != null) 'longitude': longitude,
+        if (userId != null) 'user_id': userId,
+      });
+
+      final response = await http.post(
+        url,
+        headers: _headers,
+        body: body,
+      );
+
+      return response.statusCode >= 200 && response.statusCode < 300;
+    } catch (e) {
+      return false;
     }
   }
 }

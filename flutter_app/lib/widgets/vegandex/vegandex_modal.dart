@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../../models/product_of_interest.dart';
 import '../../../models/scanned_product.dart';
 import '../../../services/api_service.dart';
 import '../../../services/auth_service.dart';
 
 class VegandexModal extends StatefulWidget {
-  const VegandexModal({super.key});
+  final VoidCallback? onNavigateToProfile;
+
+  const VegandexModal({super.key, this.onNavigateToProfile});
 
   @override
   State<VegandexModal> createState() => _VegandexModalState();
@@ -15,14 +19,42 @@ class VegandexModal extends StatefulWidget {
 
 class _VegandexModalState extends State<VegandexModal> {
   List<ProductOfInterest> _products = [];
-  List<ScannedProduct> _scannedProducts = [];
+  Map<String, ScannedProduct> _scannedProducts = {};
   bool _isLoading = true;
+  bool _hasLocationPermission = false;
   final baseUrl = dotenv.env['API_BASE_URL'];
 
   @override
   void initState() {
     super.initState();
+    _checkLocationPermission();
     _loadData();
+  }
+
+  Future<void> _checkLocationPermission() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+
+    if (mounted) {
+      setState(() {
+        _hasLocationPermission = permission == LocationPermission.whileInUse ||
+            permission == LocationPermission.always;
+      });
+    }
+  }
+
+  Future<void> _requestLocationPermission() async {
+    LocationPermission permission = await Geolocator.requestPermission();
+
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      // If denied forever, open app settings
+      if (permission == LocationPermission.deniedForever) {
+        await openAppSettings();
+      }
+    }
+
+    // Re-check permission after request
+    await _checkLocationPermission();
   }
 
   Future<void> _loadData() async {
@@ -31,29 +63,54 @@ class _VegandexModalState extends State<VegandexModal> {
     // Fetch interesting products
     final products = await ApiService.getInterestingProducts();
 
-    // Get scanned products from current user
+    // Get scanned products from current user and build a map
     final user = AuthService.currentUser;
-    final scannedProducts = user?.scannedProducts ?? [];
+    final scannedProductsList = user?.scannedProducts ?? [];
+    final scannedProductsMap = {
+      for (var sp in scannedProductsList) sp.ean: sp,
+    };
 
     if (mounted) {
       setState(() {
         _products = products;
-        _scannedProducts = scannedProducts;
+        _scannedProducts = scannedProductsMap;
         _isLoading = false;
       });
     }
   }
 
   bool _isProductScanned(String ean) {
-    return _scannedProducts.any((scanned) => scanned.ean == ean);
+    return _scannedProducts.containsKey(ean);
   }
 
   int _getScannedCount() {
     return _products.where((product) => _isProductScanned(product.ean)).length;
   }
 
+  void _navigateToProfile() {
+    // Close the modal first
+    Navigator.pop(context);
+
+    // Use the callback if provided, otherwise show a snackbar message
+    if (widget.onNavigateToProfile != null) {
+      widget.onNavigateToProfile!();
+    } else {
+      // Fallback: show a snackbar message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content:
+              Text('Veuillez aller dans l\'onglet Profil pour vous connecter.'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final bool isLoggedIn = AuthService.isLoggedIn;
+    final bool showContent = isLoggedIn && _hasLocationPermission;
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -151,85 +208,243 @@ class _VegandexModalState extends State<VegandexModal> {
                 ),
                 SizedBox(height: 16.h),
                 // Progress
-                Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(20.r),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.verified,
-                        size: 60.sp,
-                        color: Colors.white,
-                      ),
-                      SizedBox(width: 12.w),
-                      Text(
-                        '${_getScannedCount()} / ${_products.length}',
-                        style: TextStyle(
-                          fontSize: 52.sp,
-                          fontWeight: FontWeight.bold,
+                if (showContent)
+                  Container(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(20.r),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.verified,
+                          size: 60.sp,
                           color: Colors.white,
                         ),
-                      ),
-                      SizedBox(width: 12.w),
-                      Text(
-                        'produits trouvés',
-                        style: TextStyle(
-                          fontSize: 40.sp,
-                          color: Colors.white.withValues(alpha: 0.9),
+                        SizedBox(width: 12.w),
+                        Text(
+                          '${_getScannedCount()} / ${_products.length}',
+                          style: TextStyle(
+                            fontSize: 52.sp,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                    ],
+                        SizedBox(width: 12.w),
+                        Text(
+                          'produits trouvés',
+                          style: TextStyle(
+                            fontSize: 40.sp,
+                            color: Colors.white.withValues(alpha: 0.9),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
               ],
             ),
           ),
 
           // Products grid
           Expanded(
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : _products.isEmpty
-                    ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.inbox_outlined,
-                              size: 120.sp,
-                              color: Colors.grey[400],
+            child: !isLoggedIn
+                ? Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(48.w),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.lock_outline,
+                            size: 200.sp,
+                            color: Colors.grey[400],
+                          ),
+                          SizedBox(height: 32.h),
+                          Text(
+                            'Connexion requise',
+                            style: TextStyle(
+                              fontSize: 64.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey[800],
                             ),
-                            SizedBox(height: 16.h),
-                            Text(
-                              'Aucun produit disponible',
-                              style: TextStyle(
-                                fontSize: 48.sp,
-                                color: Colors.grey[600],
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: 16.h),
+                          Text(
+                            'Pour participer au Vegandex et collectionner des produits, vous devez vous connecter ou créer un compte.',
+                            style: TextStyle(
+                              fontSize: 48.sp,
+                              color: Colors.grey[600],
+                              height: 1.4,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: 48.h),
+                          SizedBox(
+                            width: double.infinity,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 24.w),
+                              child: ElevatedButton(
+                                onPressed: _navigateToProfile,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF1A722E),
+                                  padding: EdgeInsets.symmetric(vertical: 16.h),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(Icons.login,
+                                        color: Colors.white, size: 24),
+                                    SizedBox(width: 12.w),
+                                    Text(
+                                      'Se connecter / S\'inscrire',
+                                      style: TextStyle(
+                                        fontSize: 40.sp,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ],
+                          ),
+                          SizedBox(height: 24.h),
+                          Icon(
+                            Icons.catching_pokemon,
+                            size: 160.sp,
+                            color:
+                                const Color(0xFF1A722E).withValues(alpha: 0.3),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : !_hasLocationPermission
+                    ? Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(48.w),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.location_off,
+                                size: 200.sp,
+                                color: Colors.grey[400],
+                              ),
+                              SizedBox(height: 32.h),
+                              Text(
+                                'Géolocalisation requise',
+                                style: TextStyle(
+                                  fontSize: 64.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey[800],
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              SizedBox(height: 16.h),
+                              Text(
+                                'La fonctionnalité Vegandex nécessite l\'accès à votre position pour ajouter des produits à votre collection. Ces données géographiques nous permettront d\'aider les utilisateurices à trouver ces produits ! Veuillez activer la géolocalisation.',
+                                style: TextStyle(
+                                  fontSize: 48.sp,
+                                  color: Colors.grey[600],
+                                  height: 1.4,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              SizedBox(height: 48.h),
+                              SizedBox(
+                                width: double.infinity,
+                                child: Padding(
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 24.w),
+                                  child: ElevatedButton(
+                                    onPressed: _requestLocationPermission,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF1A722E),
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 16.h),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        const Icon(Icons.location_on,
+                                            color: Colors.white, size: 24),
+                                        SizedBox(width: 12.w),
+                                        Text(
+                                          'Activer la géolocalisation',
+                                          style: TextStyle(
+                                            fontSize: 40.sp,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 24.h),
+                              Icon(
+                                Icons.catching_pokemon,
+                                size: 160.sp,
+                                color: const Color(0xFF1A722E)
+                                    .withValues(alpha: 0.3),
+                              ),
+                            ],
+                          ),
                         ),
                       )
-                    : GridView.builder(
-                        padding: EdgeInsets.all(24.w),
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 16.w,
-                          mainAxisSpacing: 16.h,
-                          childAspectRatio: 0.75,
-                        ),
-                        itemCount: _products.length,
-                        itemBuilder: (context, index) {
-                          final product = _products[index];
-                          final isScanned = _isProductScanned(product.ean);
-                          return _buildProductCard(product, isScanned);
-                        },
-                      ),
+                    : _isLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : _products.isEmpty
+                            ? Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.inbox_outlined,
+                                      size: 120.sp,
+                                      color: Colors.grey[400],
+                                    ),
+                                    SizedBox(height: 16.h),
+                                    Text(
+                                      'Aucun produit disponible',
+                                      style: TextStyle(
+                                        fontSize: 48.sp,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : GridView.builder(
+                                padding: EdgeInsets.all(24.w),
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 16.w,
+                                  mainAxisSpacing: 16.h,
+                                  childAspectRatio: 0.75,
+                                ),
+                                itemCount: _products.length,
+                                itemBuilder: (context, index) {
+                                  final product = _products[index];
+                                  final isScanned =
+                                      _isProductScanned(product.ean);
+                                  return _buildProductCard(product, isScanned);
+                                },
+                              ),
           ),
         ],
       ),
@@ -278,7 +493,7 @@ class _VegandexModalState extends State<VegandexModal> {
                       ),
                 child: Image.network(
                   '$baseUrl/${product.image}',
-                  fit: BoxFit.cover,
+                  fit: BoxFit.contain,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
                       color: Colors.grey[200],
@@ -354,7 +569,7 @@ class _VegandexModalState extends State<VegandexModal> {
                         ),
                         SizedBox(width: 8.w),
                         Text(
-                          'Scanné ${_scannedProducts.where((sp) => sp.ean == product.ean).length} fois',
+                          'Scanné ${_scannedProducts[product.ean]?.scanCount ?? 0} fois',
                           style: TextStyle(
                             fontSize: 40.sp,
                             color: isScanned

@@ -597,8 +597,8 @@ class _UserProfileState extends State<UserProfile> {
           children: [
             Container(
               padding: EdgeInsets.all(16.w),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
                   colors: [Color(0xFF4CAF50), Color(0xFF1A722E)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
