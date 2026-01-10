@@ -35,8 +35,12 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app needs access to location to add products to the vegandex</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app needs access to location to add products to the vegandex</string>
 	<key>NSCameraUsageDescription</key>
 	<string>This app needs camera access to scan products barcodes</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
