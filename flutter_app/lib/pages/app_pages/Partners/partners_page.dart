@@ -118,6 +118,18 @@ class PartnersPage extends StatelessWidget {
                         ),
                         _buildPartnerCard(
                           context: context,
+                          brandName: 'Pulse Protein',
+                          logoName: 'logo-pulse.png',
+                          discountCode: 'VEGAN10',
+                          discountAmount: '10% de réduction',
+                          websiteUrl:
+                              'https://pulseprotein.co?sca_ref=10392739.eblIYTrBBL&utm_source=affiliate&utm_medium=affiliate&utm_campaign=influence',
+                          description:
+                              'Marque française de produits protéinés sains et gourmands. Véganes, sans gluten et sans soja.',
+                          hasCommission: true,
+                        ),
+                        _buildPartnerCard(
+                          context: context,
                           brandName: 'Ragnarok',
                           logoName: 'logo-ragna.png',
                           discountCode: '321VEGAN20',
