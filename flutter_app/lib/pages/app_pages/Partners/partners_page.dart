@@ -120,7 +120,7 @@ class PartnersPage extends StatelessWidget {
                           context: context,
                           brandName: 'Pulse Protein',
                           logoName: 'logo-pulse.png',
-                          discountCode: 'VEGAN10',
+                          discountCode: '321VEGAN10',
                           discountAmount: '10% de réduction',
                           websiteUrl:
                               'https://pulseprotein.co?sca_ref=10392739.eblIYTrBBL&utm_source=affiliate&utm_medium=affiliate&utm_campaign=influence',
