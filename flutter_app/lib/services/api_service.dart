@@ -109,7 +109,7 @@ class ApiService {
   /// [latitude] - User's latitude (optional)
   /// [longitude] - User's longitude (optional)
   /// Automatically adds the logged-in user's ID if available
-  static Future<bool> postScanEvent({
+  static Future<Map<String, dynamic>?> postScanEvent({
     required String ean,
     double? latitude,
     double? longitude,
@@ -128,6 +128,35 @@ class ApiService {
       });
 
       final response = await http.post(
+        url,
+        headers: _headers,
+        body: body,
+      );
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return json.decode(utf8.decode(response.bodyBytes))
+            as Map<String, dynamic>;
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Update a scan event to remove location data
+  static Future<bool> updateScanEvent({
+    required int scanEventId,
+  }) async {
+    try {
+      final url = Uri.parse('$_baseUrl/scan-events/$scanEventId');
+
+      final body = json.encode({
+        'latitude': null,
+        'longitude': null,
+        'shop_id': null,
+      });
+
+      final response = await http.put(
         url,
         headers: _headers,
         body: body,

@@ -17,6 +17,7 @@ import 'package:vegan_app/widgets/scaner/card_product.dart';
 import 'package:vegan_app/widgets/scaner/pending_product_info_card.dart';
 import 'package:vegan_app/widgets/scaner/report_error_button.dart';
 import 'package:vegan_app/widgets/scaner/vegan_product_info_card.dart';
+import 'package:vegan_app/widgets/scaner/shop_confirmation_modal.dart';
 import 'package:vegan_app/widgets/vegandex/vegandex_modal.dart';
 import 'package:vegan_app/widgets/vegandex/product_found_modal.dart';
 
@@ -168,6 +169,28 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
     );
   }
 
+  void _showShopConfirmationDialog(
+      String shopName, int scanEventId, ProductOfInterest product) {
+    // Stop scanner while showing modal
+    controller.stop();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return ShopConfirmationModal(
+          shopName: shopName,
+          scanEventId: scanEventId,
+          product: product,
+        );
+      },
+    ).then((_) {
+      // Restart scanner when modal closes
+      controller.start();
+    });
+  }
+
   Future<bool> _checkLocationPermission() async {
     LocationPermission permission = await Geolocator.checkPermission();
 
@@ -249,7 +272,61 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
     final hadProductBefore =
         user?.scannedProducts?.any((sp) => sp.ean == ean) ?? false;
 
-    // Try to get location
+    // Show modal if product found (don't wait for location)
+    final product = _productsOfInterestMap[ean];
+    if (product != null && mounted) {
+      // Stop scanner while showing modal
+      controller.stop();
+
+      // Start fetching location in the background
+      final locationFuture = _getLocationForScanEvent();
+
+      await showDialog(
+        context: context,
+        barrierDismissible: false,
+        barrierColor: Colors.transparent,
+        builder: (context) => ProductFoundModal(
+          product: product,
+          isNewDiscovery: !hadProductBefore,
+        ),
+      );
+
+      // Restart scanner after modal is closed
+      controller.start();
+
+      // Wait for location to be fetched and send scan event
+      final locationData = await locationFuture;
+      final latitude = locationData['latitude'];
+      final longitude = locationData['longitude'];
+
+      // Only send scan event if we have location
+      if (latitude != null && longitude != null) {
+        ApiService.postScanEvent(
+          ean: ean,
+          latitude: latitude,
+          longitude: longitude,
+        ).then((response) {
+          if (response != null && mounted) {
+            // Refresh user data to get updated scanned products
+            if (AuthService.isLoggedIn) {
+              AuthService.getCurrentUser();
+            }
+
+            // Check if a shop was detected
+            final shopName = response['shop_name'] as String?;
+            final scanEventId = response['id'] as int?;
+
+            if (shopName != null && scanEventId != null) {
+              // Show confirmation dialog for shop location
+              _showShopConfirmationDialog(shopName, scanEventId, product);
+            }
+          }
+        });
+      }
+    }
+  }
+
+  Future<Map<String, double?>> _getLocationForScanEvent() async {
     double? latitude;
     double? longitude;
 
@@ -280,46 +357,12 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
       }
     }
 
-    // Only send scan event and show modal if we have location
-    if (latitude != null && longitude != null) {
-      // Send scan event (to not block the UI, we don't await this)
-      ApiService.postScanEvent(
-        ean: ean,
-        latitude: latitude,
-        longitude: longitude,
-      ).then((success) {
-        if (success && mounted) {
-          // Refresh user data to get updated scanned products
-          if (AuthService.isLoggedIn) {
-            AuthService.getCurrentUser();
-          }
-        }
-      });
-
-      // Show modal if product found
-      final product = _productsOfInterestMap[ean];
-      if (product != null && mounted) {
-        // Stop scanner while showing modal
-        controller.stop();
-
-        await showDialog(
-          context: context,
-          barrierDismissible: false,
-          barrierColor: Colors.transparent,
-          builder: (context) => ProductFoundModal(
-            product: product,
-            isNewDiscovery: !hadProductBefore,
-          ),
-        );
-
-        // Restart scanner after modal is closed
-        controller.start();
-      }
-    }
+    return {'latitude': latitude, 'longitude': longitude};
   }
 
   void _showSettingsModal() {
-    controller.stop(); // Stop the scanner when opening the modal
+    // Stop the scanner when opening the modal
+    controller.stop();
     setState(() {
       productInfo = null;
     });
@@ -348,7 +391,7 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
         );
       },
     ).then((_) {
-      controller.start(); // Restart the scanner when the modal is closed
+      controller.start();
     });
   }
 
