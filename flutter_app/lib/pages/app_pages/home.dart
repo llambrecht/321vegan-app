@@ -7,6 +7,7 @@ import 'package:motion_tab_bar_v2/motion-tab-controller.dart';
 import 'package:vegan_app/helpers/preference_helper.dart';
 import 'package:vegan_app/pages/app_pages/Partners/partners_page.dart';
 import 'package:vegan_app/pages/app_pages/Scan/scan.dart';
+import 'package:vegan_app/pages/app_pages/map.dart';
 import 'package:vegan_app/pages/app_pages/profile.dart';
 import 'package:vegan_app/pages/app_pages/search.dart';
 import 'package:vegan_app/helpers/time_counter/time_counter.dart';
@@ -43,7 +44,7 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     // Initialize with default home tab, then update based on preference
     motionTabBarController = MotionTabBarController(
       initialIndex: 1, // Default to home tab
-      length: 5,
+      length: 6,
       vsync: this,
     );
 
@@ -360,10 +361,11 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               ScanPage(
                 onNavigateToProfile: () {
                   setState(() {
-                    motionTabBarController.index = 4;
+                    motionTabBarController.index = 5;
                   });
                 },
               ),
+              const MapPage(),
               ProfilePage(
                 onDateSaved: _onDateSaved,
                 onLoginSuccess: _onLoginSuccess,
@@ -372,7 +374,7 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           ),
           bottomNavigationBar: MotionTabBar(
             controller: motionTabBarController,
-            labels: const ["Promos", "Accueil", "Recherche", "Scan", "Profil"],
+            labels: const ["Promos", "Accueil", "Recherche", "Scan", "Carte", "Profil"],
             initialSelectedTab: "Accueil",
             tabIconColor: Colors.grey,
             tabSelectedColor: Theme.of(context).colorScheme.primary,
@@ -390,6 +392,7 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               Icons.home,
               Icons.search,
               Icons.qr_code_scanner,
+              Icons.map,
               Icons.person_sharp
             ],
             textStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
