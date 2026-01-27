@@ -351,11 +351,9 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
 
       // Wait for location to be fetched and send scan event
       final locationData = await locationFuture;
-      //final latitude = locationData['latitude'];
-      //final longitude = locationData['longitude'];
-      // TODO TEMPORARY TEST : USE REAL LOCATION
-      final latitude = 48.74140293853252;
-      final longitude = 7.375957825257154;
+      final latitude = locationData['latitude'];
+      final longitude = locationData['longitude'];
+
       if (latitude == null || longitude == null) {
         // No location, we dont send
         return;
