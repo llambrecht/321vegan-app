@@ -99,9 +99,7 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
 
   /// Retry pending scans when app starts
   Future<void> _retryPendingScans() async {
-    final successCount = await OfflineScanService.retryPendingScans();
-
-    // Update pending count
+    // First update pending count
     final pendingCount = await OfflineScanService.getPendingCount();
     if (mounted) {
       setState(() {
@@ -109,16 +107,43 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
       });
     }
 
-    if (successCount > 0 && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            '✅ $successCount scan(s) Vegandex synchronisé(s) !',
-          ),
-          backgroundColor: Colors.green,
-          duration: const Duration(seconds: 3),
-        ),
-      );
+    // If there are pending scans, try to sync them
+    if (pendingCount > 0) {
+      final (successCount, shopConfirmations) =
+          await OfflineScanService.retryPendingScans();
+
+      // Update pending count after sync
+      final updatedPendingCount = await OfflineScanService.getPendingCount();
+      if (mounted) {
+        setState(() {
+          _pendingScansCount = updatedPendingCount;
+        });
+      }
+
+      // Show shop confirmation dialogs for successfully synced scans
+      if (successCount > 0 && mounted) {
+        // Refresh user data to get updated scanned products
+        if (AuthService.isLoggedIn) {
+          AuthService.getCurrentUser();
+        }
+
+        // Show shop confirmation dialogs sequentially
+        for (final confirmation in shopConfirmations) {
+          if (!mounted) break;
+
+          final ean = confirmation['ean'] as String;
+          final shopName = confirmation['shop_name'] as String;
+          final scanEventId = confirmation['scan_event_id'] as int;
+
+          // Get the product info from our cached map
+          final product = _productsOfInterestMap[ean];
+          if (product != null) {
+            _showShopConfirmationDialog(shopName, scanEventId, product);
+            // Wait a bit before showing the next dialog
+            await Future.delayed(const Duration(milliseconds: 500));
+          }
+        }
+      }
     }
   }
 
@@ -326,8 +351,11 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
 
       // Wait for location to be fetched and send scan event
       final locationData = await locationFuture;
-      final latitude = locationData['latitude'];
-      final longitude = locationData['longitude'];
+      //final latitude = locationData['latitude'];
+      //final longitude = locationData['longitude'];
+      // TODO TEMPORARY TEST : USE REAL LOCATION
+      final latitude = 48.74140293853252;
+      final longitude = 7.375957825257154;
       if (latitude == null || longitude == null) {
         // No location, we dont send
         return;
@@ -369,17 +397,6 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
             _showShopConfirmationDialog(shopName, scanEventId, product);
           }
         }
-      } else if (!success && mounted) {
-        // Show info that data will be synced later
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              '📱 Données sauvegardées localement. Elles seront synchronisées automatiquement.',
-            ),
-            backgroundColor: Colors.orange,
-            duration: Duration(seconds: 3),
-          ),
-        );
       }
     }
   }
@@ -540,52 +557,6 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
               ),
             ],
           ),
-          // Pending scans indicator at top
-          if (_pendingScansCount > 0)
-            Positioned(
-              top: 40.h,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 24.w,
-                    vertical: 12.h,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.orange.withValues(alpha: 0.95),
-                    borderRadius: BorderRadius.circular(30.r),
-                    border: Border.all(color: Colors.white, width: 2),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.2),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.sync,
-                        color: Colors.white,
-                        size: 48.sp,
-                      ),
-                      SizedBox(width: 12.w),
-                      Text(
-                        '$_pendingScansCount scan(s) en attente',
-                        style: TextStyle(
-                          fontSize: 40.sp,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
           // EAN-8 Warning Box at top
           if (productInfo != null &&
               productInfo?['is_ean8'] == true &&

@@ -33,7 +33,7 @@ class OfflineScanService {
       await prefs.setStringList(_pendingScanEventsKey, pendingEvents);
     } catch (e) {
       // Silently fail if unable to save locally
-      print('❌ Failed to save pending scan event: $e');
+      print('Failed to save pending scan event: $e');
     }
   }
 
@@ -63,7 +63,7 @@ class OfflineScanService {
       failedEvents.add(json.encode(scanEvent));
       await prefs.setStringList(_failedScanEventsKey, failedEvents);
     } catch (e) {
-      print('❌ Failed to save failed scan event: $e');
+      print('Failed to save failed scan event: $e');
     }
   }
 
@@ -78,7 +78,7 @@ class OfflineScanService {
           .map((event) => json.decode(event) as Map<String, dynamic>)
           .toList();
     } catch (e) {
-      print('❌ Failed to get pending scan events: $e');
+      print('Failed to get pending scan events: $e');
       return [];
     }
   }
@@ -94,7 +94,7 @@ class OfflineScanService {
           .map((event) => json.decode(event) as Map<String, dynamic>)
           .toList();
     } catch (e) {
-      print('❌ Failed to get failed scan events: $e');
+      print('Failed to get failed scan events: $e');
       return [];
     }
   }
@@ -111,7 +111,7 @@ class OfflineScanService {
         await prefs.setStringList(_pendingScanEventsKey, pendingEvents);
       }
     } catch (e) {
-      print('❌ Failed to remove pending scan event: $e');
+      print('Failed to remove pending scan event: $e');
     }
   }
 
@@ -127,7 +127,7 @@ class OfflineScanService {
         await prefs.setStringList(_failedScanEventsKey, failedEvents);
       }
     } catch (e) {
-      print('❌ Failed to remove failed scan event: $e');
+      print('Failed to remove failed scan event: $e');
     }
   }
 
@@ -137,7 +137,7 @@ class OfflineScanService {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_pendingScanEventsKey);
     } catch (e) {
-      print('❌ Failed to clear pending scan events: $e');
+      print('Failed to clear pending scan events: $e');
     }
   }
 
@@ -147,7 +147,7 @@ class OfflineScanService {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_failedScanEventsKey);
     } catch (e) {
-      print('❌ Failed to clear failed scan events: $e');
+      print('Failed to clear failed scan events: $e');
     }
   }
 
@@ -173,7 +173,6 @@ class OfflineScanService {
     final hasConnection = !connectivityResult.contains(ConnectivityResult.none);
 
     if (!hasConnection) {
-      print('📡 No internet connection. Scan event saved locally.');
       return (false, null, false);
     }
 
@@ -209,7 +208,6 @@ class OfflineScanService {
         return (false, null, false);
       }
     } catch (e) {
-      print('❌ Error posting scan event: $e');
       await saveFailedScanEvent(
         ean: ean,
         latitude: latitude,
@@ -221,16 +219,18 @@ class OfflineScanService {
   }
 
   /// Retry all pending and failed scan events
-  static Future<int> retryPendingScans() async {
+  /// Returns a tuple: (successCount, List of events that need shop confirmation)
+  /// Each shop confirmation event contains: {ean, shop_name, scan_event_id}
+  static Future<(int, List<Map<String, dynamic>>)> retryPendingScans() async {
     int successCount = 0;
+    List<Map<String, dynamic>> shopConfirmationsNeeded = [];
 
     // Check connectivity first
     final connectivityResult = await Connectivity().checkConnectivity();
     final hasConnection = !connectivityResult.contains(ConnectivityResult.none);
 
     if (!hasConnection) {
-      print('📡 No internet connection. Cannot retry pending scans.');
-      return 0;
+      return (0, <Map<String, dynamic>>[]);
     }
 
     // Retry pending events
@@ -247,10 +247,19 @@ class OfflineScanService {
         if (response != null) {
           await removePendingScanEvent(i);
           successCount++;
-          print('✅ Successfully synced pending scan event for ${event['ean']}');
+
+          // Check if shop confirmation is needed
+          final shopName = response['shop_name'] as String?;
+          final scanEventId = response['id'] as int?;
+          if (shopName != null && scanEventId != null) {
+            shopConfirmationsNeeded.add({
+              'ean': event['ean'],
+              'shop_name': shopName,
+              'scan_event_id': scanEventId,
+            });
+          }
         }
       } catch (e) {
-        print('❌ Failed to retry pending scan event: $e');
         // Move to failed events after too many retries
         await saveFailedScanEvent(
           ean: event['ean'],
@@ -283,7 +292,17 @@ class OfflineScanService {
         if (response != null) {
           await removeFailedScanEvent(i);
           successCount++;
-          print('✅ Successfully synced failed scan event for ${event['ean']}');
+
+          // Check if shop confirmation is needed
+          final shopName = response['shop_name'] as String?;
+          final scanEventId = response['id'] as int?;
+          if (shopName != null && scanEventId != null) {
+            shopConfirmationsNeeded.add({
+              'ean': event['ean'],
+              'shop_name': shopName,
+              'scan_event_id': scanEventId,
+            });
+          }
         } else {
           // Increment retry count
           event['retry_count'] = retryCount + 1;
@@ -311,7 +330,7 @@ class OfflineScanService {
       print('📤 Successfully synced $successCount scan event(s)');
     }
 
-    return successCount;
+    return (successCount, shopConfirmationsNeeded);
   }
 
   /// Get count of pending events
