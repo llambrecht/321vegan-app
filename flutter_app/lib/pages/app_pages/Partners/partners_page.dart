@@ -118,6 +118,17 @@ class PartnersPage extends StatelessWidget {
                         ),
                         _buildPartnerCard(
                           context: context,
+                          brandName: 'Maison Protéine',
+                          logoName: 'logo-maisonprot.png',
+                          discountCode: '321MAISON10',
+                          discountAmount: '10% sur la première commande',
+                          websiteUrl: 'https://maisonproteine.com/fr/',
+                          description:
+                              'Des protéines en poudre véganes, bio, fabriquées en france, avec des ingrédients simples et sains',
+                          hasCommission: true,
+                        ),
+                        _buildPartnerCard(
+                          context: context,
                           brandName: 'Pulse Protein',
                           logoName: 'logo-pulse.png',
                           discountCode: '321VEGAN10',
@@ -142,16 +153,6 @@ class PartnersPage extends StatelessWidget {
                         ),
                         _buildPartnerCard(
                           context: context,
-                          brandName: 'Maison Protéine',
-                          logoName: 'logo-maisonprot.png',
-                          discountCode: '321MAISON10',
-                          discountAmount: '10% sur la première commande',
-                          websiteUrl: 'https://maisonproteine.com/fr/',
-                          description:
-                              'Des protéines en poudre véganes, bio, fabriquées en france, avec des ingrédients simples et sains',
-                        ),
-                        _buildPartnerCard(
-                          context: context,
                           brandName: 'Vegetal Food',
                           logoName: 'logo-vegetalfood.png',
                           discountCode: '321VEGAN10',
@@ -169,16 +170,6 @@ class PartnersPage extends StatelessWidget {
                           websiteUrl: 'https://papondu.fr/acheter/',
                           description:
                               'Alternatives végétales aux oeufs. Ingrédients d\'origine naturelle. Permet de substituer les oeufs dans toutes vos recettes',
-                        ),
-                        _buildPartnerCard(
-                          context: context,
-                          brandName: 'Petit Veganne',
-                          logoName: 'logo-petit-veganne.png',
-                          discountCode: '321PV10',
-                          discountAmount: '10% de réduction',
-                          websiteUrl: 'https://petit-veganne.com',
-                          description:
-                              'Alternatives végétales aux fromages à base de noix de cajou bio. Entreprise artisanale française certifiée et labellisée BIO & VEGAN',
                         ),
                         _buildPartnerCard(
                           context: context,
