@@ -5,8 +5,11 @@ import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../../models/product_of_interest.dart';
 import '../../../models/scanned_product.dart';
+import '../../../models/product_category.dart';
 import '../../../services/api_service.dart';
 import '../../../services/auth_service.dart';
+import 'category_list_view.dart';
+import 'category_products_view.dart';
 
 class VegandexModal extends StatefulWidget {
   final VoidCallback? onNavigateToProfile;
@@ -22,6 +25,7 @@ class _VegandexModalState extends State<VegandexModal> {
   Map<String, ScannedProduct> _scannedProducts = {};
   bool _isLoading = true;
   bool _hasLocationPermission = false;
+  ProductCategory? _selectedCategory;
   final baseUrl = dotenv.env['API_BASE_URL'];
 
   @override
@@ -85,6 +89,18 @@ class _VegandexModalState extends State<VegandexModal> {
 
   int _getScannedCount() {
     return _products.where((product) => _isProductScanned(product.ean)).length;
+  }
+
+  void _onCategorySelected(ProductCategory category) {
+    setState(() {
+      _selectedCategory = category;
+    });
+  }
+
+  void _onBackToCategories() {
+    setState(() {
+      _selectedCategory = null;
+    });
   }
 
   void _navigateToProfile() {
@@ -428,161 +444,18 @@ class _VegandexModalState extends State<VegandexModal> {
                                   ],
                                 ),
                               )
-                            : GridView.builder(
-                                padding: EdgeInsets.all(24.w),
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  crossAxisSpacing: 16.w,
-                                  mainAxisSpacing: 16.h,
-                                  childAspectRatio: 0.75,
-                                ),
-                                itemCount: _products.length,
-                                itemBuilder: (context, index) {
-                                  final product = _products[index];
-                                  final isScanned =
-                                      _isProductScanned(product.ean);
-                                  return _buildProductCard(product, isScanned);
-                                },
-                              ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildProductCard(ProductOfInterest product, bool isScanned) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 15,
-            offset: const Offset(0, 4),
-          ),
-        ],
-        border: Border.all(
-          color: isScanned
-              ? const Color(0xFF1A722E).withValues(alpha: 0.3)
-              : Colors.grey[300]!,
-          width: 2,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Product image
-          Expanded(
-            flex: 3,
-            child: ClipRRect(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(18.r),
-                topRight: Radius.circular(18.r),
-              ),
-              child: ColorFiltered(
-                colorFilter: isScanned
-                    ? const ColorFilter.mode(
-                        Colors.transparent,
-                        BlendMode.multiply,
-                      )
-                    : const ColorFilter.mode(
-                        Colors.grey,
-                        BlendMode.saturation,
-                      ),
-                child: Image.network(
-                  '$baseUrl/${product.image}',
-                  fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: Colors.grey[200],
-                      child: Icon(
-                        Icons.image_not_supported,
-                        size: 80.sp,
-                        color: Colors.grey[400],
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-          ),
-
-          // Product info
-          Expanded(
-            flex: 2,
-            child: Padding(
-              padding: EdgeInsets.all(12.w),
-              child: Container(
-                padding: EdgeInsets.all(16.w),
-                decoration: BoxDecoration(
-                  color: isScanned ? Colors.grey.shade100 : Colors.grey.shade50,
-                  borderRadius: BorderRadius.circular(16.r),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Product name
-                    Text(
-                      product.name,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 40.sp,
-                        fontWeight: FontWeight.w700,
-                        color: isScanned
-                            ? Colors.grey.shade900
-                            : Colors.grey.shade600,
-                        height: 1.2,
-                      ),
-                    ),
-
-                    SizedBox(height: 6.h),
-
-                    // Brand
-                    Text(
-                      product.brandName,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 40.sp,
-                        fontWeight: FontWeight.w500,
-                        color: isScanned
-                            ? Colors.grey.shade700
-                            : Colors.grey.shade400,
-                      ),
-                    ),
-
-                    SizedBox(height: 14.h),
-
-                    // Scan count
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.qr_code_scanner,
-                          size: 40.sp,
-                          color: isScanned
-                              ? Colors.grey.shade600
-                              : Colors.grey.shade400,
-                        ),
-                        SizedBox(width: 8.w),
-                        Text(
-                          'Scanné ${_scannedProducts[product.ean]?.scanCount ?? 0} fois',
-                          style: TextStyle(
-                            fontSize: 40.sp,
-                            color: isScanned
-                                ? Colors.grey.shade600
-                                : Colors.grey.shade400,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
+                            : _selectedCategory == null
+                                ? CategoryListView(
+                                    products: _products,
+                                    scannedProducts: _scannedProducts,
+                                    onCategoryTap: _onCategorySelected,
+                                  )
+                                : CategoryProductsView(
+                                    category: _selectedCategory!,
+                                    allProducts: _products,
+                                    scannedProducts: _scannedProducts,
+                                    onBack: _onBackToCategories,
+                                  ),
           ),
         ],
       ),
