@@ -242,4 +242,52 @@ class PreferencesHelper {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool('random_avatar_enabled') ?? false;
   }
+<<<<<<< HEAD
+=======
+
+  // Partners page notification methods
+  // Update this timestamp when you add new partners
+  static const String _partnersLastUpdateKey = 'partners_last_update';
+  static const String _partnersLastVisitKey = 'partners_last_visit';
+
+  // Set the last update timestamp for partners (call this when adding new partners)
+  static Future<void> setPartnersLastUpdate(DateTime timestamp) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_partnersLastUpdateKey, timestamp.toIso8601String());
+  }
+
+  // Get the last update timestamp for partners
+  static Future<DateTime?> getPartnersLastUpdate() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? timestamp = prefs.getString(_partnersLastUpdateKey);
+    if (timestamp != null) {
+      return DateTime.parse(timestamp);
+    }
+    // Default to a past date if never set (so new users see notification)
+    return DateTime(2026, 1, 31); // Set to current date when deploying
+  }
+
+  // Mark partners page as visited
+  static Future<void> markPartnersAsVisited() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+        _partnersLastVisitKey, DateTime.now().toIso8601String());
+  }
+
+  // Check if there are new partners to see
+  static Future<bool> hasNewPartners() async {
+    final lastUpdate = await getPartnersLastUpdate();
+    final prefs = await SharedPreferences.getInstance();
+    String? lastVisitStr = prefs.getString(_partnersLastVisitKey);
+
+    if (lastVisitStr == null) {
+      // Never visited, show notification
+      return true;
+    }
+
+    final lastVisit = DateTime.parse(lastVisitStr);
+    // Has new content if last update is after last visit
+    return lastUpdate != null && lastUpdate.isAfter(lastVisit);
+  }
+>>>>>>> main
 }

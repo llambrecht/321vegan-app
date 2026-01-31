@@ -86,20 +86,20 @@ class _AboutPageState extends State<AboutPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding:
-          EdgeInsets.only(top: 200.h, left: 24.w, right: 24.w, bottom: 20.h),
-      child: Column(
-        children: [
-          SizedBox(height: 100.h),
-          if (!_isLoggedIn) _buildHeader(),
-          SizedBox(height: 32.h),
-          _buildAuthContent(),
-          if (!_isLoggedIn) ...[
-            SizedBox(height: 32.h),
-            const SocialFeedbackButtons(showCard: false),
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding:
+            EdgeInsets.only(top: 16.h, left: 24.w, right: 24.w, bottom: 20.h),
+        child: Column(
+          children: [
+            if (!_isLoggedIn) _buildHeader(),
+            _buildAuthContent(),
+            if (!_isLoggedIn) ...[
+              SizedBox(height: 32.h),
+              const SocialFeedbackButtons(showCard: false),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
