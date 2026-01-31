@@ -32,7 +32,8 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   late Timer _timer;
   late ConfettiController _confettiController;
   final TextEditingController _dateController = TextEditingController();
-  bool _showProfileBadge = true;
+  bool _hasNewPartners = false;
+  late AnimationController _partnersAnimationController;
 
   @override
   void initState() {
@@ -40,7 +41,6 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     initializeDateFormatting('fr_FR', null);
     _timer = Timer.periodic(
         const Duration(minutes: 1), (Timer t) => _updateSavings());
-    _loadProfileBadgeState();
 
     // Initialize with default home tab, then update based on preference
     motionTabBarController = MotionTabBarController(
@@ -55,7 +55,13 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     _confettiController =
         ConfettiController(duration: const Duration(seconds: 6));
 
+    _partnersAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 1000),
+      vsync: this,
+    )..repeat(reverse: true);
+
     _loadData();
+    _checkNewPartners();
   }
 
   Future<void> _initializeTabController() async {
@@ -73,6 +79,7 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   void dispose() {
     motionTabBarController.dispose();
     _confettiController.dispose();
+    _partnersAnimationController.dispose();
     _timer.cancel();
     _dateController.dispose();
     super.dispose();
@@ -89,20 +96,6 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     _checkForNewBadges();
   }
 
-  Future<void> _loadProfileBadgeState() async {
-    final hasVisitedProfile = await PreferencesHelper.getHasVisitedProfile();
-    setState(() {
-      _showProfileBadge = !hasVisitedProfile;
-    });
-  }
-
-  Future<void> _markProfileAsVisited() async {
-    await PreferencesHelper.setHasVisitedProfile(true);
-    setState(() {
-      _showProfileBadge = false;
-    });
-  }
-
   void _onDateSaved(DateTime date) {
     setState(() {
       targetDate = date;
@@ -113,6 +106,15 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   Future<void> _onLoginSuccess() async {
     // Reload target date from preferences after login
     await loadTargetDate();
+  }
+
+  Future<void> _checkNewPartners() async {
+    final hasNew = await PreferencesHelper.hasNewPartners();
+    if (mounted) {
+      setState(() {
+        _hasNewPartners = hasNew;
+      });
+    }
   }
 
   Future<void> _pickDate() async {
@@ -386,65 +388,80 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               ),
             ],
           ),
-          bottomNavigationBar: MotionTabBar(
-            controller: motionTabBarController,
-            labels: const ["Promos", "Accueil", "Recherche", "Scan", "Profil"],
-            initialSelectedTab: "Accueil",
-            tabIconColor: Colors.grey,
-            tabSelectedColor: Theme.of(context).colorScheme.primary,
-            onTabItemSelected: (int value) {
-              setState(() {
-                motionTabBarController.index = value;
-              });
-              // Check for new badges when Accueil tab is selected
-              if (value == 1) {
-                _checkForNewBadges();
-              }
-              // Mark profile as visited when the profile tab is selected
-              if (value == 4 && _showProfileBadge) {
-                _markProfileAsVisited();
-              }
-            },
-            icons: const [
-              Icons.percent,
-              Icons.home,
-              Icons.search,
-              Icons.qr_code_scanner,
-              Icons.person_sharp
+          bottomNavigationBar: Stack(
+            children: [
+              MotionTabBar(
+                controller: motionTabBarController,
+                labels: const [
+                  "Promos",
+                  "Accueil",
+                  "Recherche",
+                  "Scan",
+                  "Profil"
+                ],
+                initialSelectedTab: "Accueil",
+                tabIconColor: Colors.grey,
+                tabSelectedColor: Theme.of(context).colorScheme.primary,
+                onTabItemSelected: (int value) async {
+                  setState(() {
+                    motionTabBarController.index = value;
+                  });
+                  // Check for new badges when Accueil tab is selected
+                  if (value == 1) {
+                    _checkForNewBadges();
+                  }
+                  // Mark partners as visited when tab is selected
+                  if (value == 0 && _hasNewPartners) {
+                    await PreferencesHelper.markPartnersAsVisited();
+                    await _checkNewPartners();
+                  }
+                },
+                icons: const [
+                  Icons.percent,
+                  Icons.home,
+                  Icons.search,
+                  Icons.qr_code_scanner,
+                  Icons.person_sharp
+                ],
+                textStyle:
+                    TextStyle(color: Theme.of(context).colorScheme.primary),
+              ),
+              // Animated notification badge for partners tab
+              if (_hasNewPartners)
+                Positioned(
+                  left: 100.w,
+                  top: 30.h,
+                  child: AnimatedBuilder(
+                    animation: _partnersAnimationController,
+                    builder: (context, child) {
+                      return Container(
+                        width: 20.w,
+                        height: 20.w,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.red.withValues(
+                            alpha: 0.7 +
+                                (_partnersAnimationController.value * 0.3),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.red.withValues(
+                                alpha: 0.5 * _partnersAnimationController.value,
+                              ),
+                              blurRadius:
+                                  8 * _partnersAnimationController.value,
+                              spreadRadius:
+                                  2 * _partnersAnimationController.value,
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
             ],
-            textStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
           ),
         ),
-        // Badge overlay for "NEW" indicator on profile tab
-        if (_showProfileBadge)
-          Positioned(
-            bottom: 200.h,
-            right: 30.w,
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 5.h),
-              decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.circular(15.r),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.3),
-                    spreadRadius: 1,
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Text(
-                'NEW',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 28.sp,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Baloo',
-                ),
-              ),
-            ),
-          ),
       ],
     );
   }
