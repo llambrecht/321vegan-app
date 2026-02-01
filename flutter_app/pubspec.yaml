@@ -137,11 +137,6 @@ flutter:
     - lib/assets/avatars/mouton.png
     - lib/assets/avatars/cochon.png
     - lib/assets/avatars/vache.png
-    # Categories
-    - lib/assets/categories/Fromage.png
-    - lib/assets/categories/Charcuterie.png
-    - lib/assets/categories/Viande.png
-    - lib/assets/categories/Sandwich.png
     - .env
 
   fonts:

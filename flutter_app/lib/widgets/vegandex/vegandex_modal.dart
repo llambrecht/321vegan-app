@@ -22,6 +22,7 @@ class VegandexModal extends StatefulWidget {
 
 class _VegandexModalState extends State<VegandexModal> {
   List<ProductOfInterest> _products = [];
+  List<ProductCategory> _categories = [];
   Map<String, ScannedProduct> _scannedProducts = {};
   bool _isLoading = true;
   bool _hasLocationPermission = false;
@@ -64,8 +65,14 @@ class _VegandexModalState extends State<VegandexModal> {
   Future<void> _loadData() async {
     setState(() => _isLoading = true);
 
-    // Fetch interesting products
-    final products = await ApiService.getInterestingProducts();
+    // Fetch interesting products and categories in parallel
+    final results = await Future.wait([
+      ApiService.getInterestingProducts(),
+      ApiService.getProductCategories(),
+    ]);
+
+    final products = results[0] as List<ProductOfInterest>;
+    final categories = results[1] as List<ProductCategory>;
 
     // Get scanned products from current user and build a map
     final user = AuthService.currentUser;
@@ -77,6 +84,7 @@ class _VegandexModalState extends State<VegandexModal> {
     if (mounted) {
       setState(() {
         _products = products;
+        _categories = categories;
         _scannedProducts = scannedProductsMap;
         _isLoading = false;
       });
@@ -446,6 +454,7 @@ class _VegandexModalState extends State<VegandexModal> {
                               )
                             : _selectedCategory == null
                                 ? CategoryListView(
+                                    categories: _categories,
                                     products: _products,
                                     scannedProducts: _scannedProducts,
                                     onCategoryTap: _onCategorySelected,

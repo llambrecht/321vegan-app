@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'auth_service.dart';
 import '../models/product_of_interest.dart';
+import '../models/product_category.dart';
 
 class ApiService {
   static String get _baseUrl =>
@@ -165,6 +166,28 @@ class ApiService {
       return response.statusCode >= 200 && response.statusCode < 300;
     } catch (e) {
       return false;
+    }
+  }
+
+  /// Get all product categories
+  static Future<List<ProductCategory>> getProductCategories() async {
+    try {
+      final url = Uri.parse('$_baseUrl/product-categories/');
+
+      final response = await http.get(
+        url,
+        headers: _headers,
+      );
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final List<dynamic> data = json.decode(utf8.decode(response.bodyBytes));
+        return data.map((item) => ProductCategory.fromJson(item)).toList()
+          ..sort((a, b) => a.name.compareTo(b.name));
+      }
+
+      return [];
+    } catch (e) {
+      return [];
     }
   }
 }

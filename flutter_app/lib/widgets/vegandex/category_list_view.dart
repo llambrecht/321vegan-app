@@ -1,31 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../models/product_category.dart';
 import '../../models/product_of_interest.dart';
 
 class CategoryListView extends StatelessWidget {
+  final List<ProductCategory> categories;
   final List<ProductOfInterest> products;
   final Map<String, dynamic> scannedProducts;
   final Function(ProductCategory) onCategoryTap;
 
   const CategoryListView({
     super.key,
+    required this.categories,
     required this.products,
     required this.scannedProducts,
     required this.onCategoryTap,
   });
 
-  List<ProductCategory> _getUniqueCategories() {
-    final Map<int, String> categoriesMap = {};
-    for (var product in products) {
-      categoriesMap[product.categoryId] = product.categoryName;
-    }
-
-    return categoriesMap.entries
-        .map((entry) => ProductCategory(id: entry.key, name: entry.value))
-        .toList()
-      ..sort((a, b) => a.name.compareTo(b.name));
-  }
+  String get baseUrl => dotenv.env['API_BASE_URL'] ?? 'https://api.321vegan.fr';
 
   int _getScannedCountForCategory(int categoryId) {
     return products
@@ -40,8 +33,6 @@ class CategoryListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final categories = _getUniqueCategories();
-
     if (categories.isEmpty) {
       return Center(
         child: Column(
@@ -112,11 +103,19 @@ class CategoryListView extends StatelessWidget {
           borderRadius: BorderRadius.circular(20.r),
           child: Stack(
             children: [
-              Image.asset(
-                'lib/assets/categories/${category.name}.png',
-                fit: BoxFit.cover,
-                width: double.infinity,
-                height: double.infinity,
+              Image.network(
+                '$baseUrl/${category.image}',
+                fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: Colors.grey[200],
+                    child: Icon(
+                      Icons.image_not_supported,
+                      size: 80.sp,
+                      color: Colors.grey[400],
+                    ),
+                  );
+                },
               ),
               // Progress indicator on top left
               Positioned(
