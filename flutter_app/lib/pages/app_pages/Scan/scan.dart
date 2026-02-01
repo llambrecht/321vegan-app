@@ -49,7 +49,6 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
   bool _showBoycott = true;
   List<String> _productsOfInterest = [];
   Map<String, ProductOfInterest> _productsOfInterestMap = {};
-  int _pendingScansCount = 0;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -101,24 +100,11 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
   Future<void> _retryPendingScans() async {
     // First update pending count
     final pendingCount = await OfflineScanService.getPendingCount();
-    if (mounted) {
-      setState(() {
-        _pendingScansCount = pendingCount;
-      });
-    }
 
     // If there are pending scans, try to sync them
     if (pendingCount > 0) {
       final (successCount, shopConfirmations) =
           await OfflineScanService.retryPendingScans();
-
-      // Update pending count after sync
-      final updatedPendingCount = await OfflineScanService.getPendingCount();
-      if (mounted) {
-        setState(() {
-          _pendingScansCount = updatedPendingCount;
-        });
-      }
 
       // Show shop confirmation dialogs for successfully synced scans
       if (successCount > 0 && mounted) {
@@ -370,14 +356,6 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
         longitude: longitude,
         userId: userId,
       );
-
-      // Update pending count
-      final pendingCount = await OfflineScanService.getPendingCount();
-      if (mounted) {
-        setState(() {
-          _pendingScansCount = pendingCount;
-        });
-      }
 
       if (success && response != null && mounted) {
         // Refresh user data to get updated scanned products

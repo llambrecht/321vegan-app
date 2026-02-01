@@ -45,11 +45,8 @@ class CategoryProductsView extends StatelessWidget {
     return Column(
       children: [
         // Header with back button
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
-          decoration: const BoxDecoration(
-            color: Color(0xFF1A722E),
-          ),
+        GestureDetector(
+          onTap: onBack,
           child: Row(
             children: [
               IconButton(
@@ -57,7 +54,7 @@ class CategoryProductsView extends StatelessWidget {
                 icon: Icon(
                   Icons.arrow_back,
                   size: 80.sp,
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
               SizedBox(width: 12.w),
@@ -70,14 +67,17 @@ class CategoryProductsView extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 56.sp,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
                     Text(
                       '${products.length} produit${products.length > 1 ? 's' : ''}',
                       style: TextStyle(
                         fontSize: 40.sp,
-                        color: Colors.white.withValues(alpha: 0.8),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withValues(alpha: 0.8),
                       ),
                     ),
                   ],

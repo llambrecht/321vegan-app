@@ -112,96 +112,48 @@ class CategoryListView extends StatelessWidget {
           borderRadius: BorderRadius.circular(20.r),
           child: Stack(
             children: [
-              // Background gradient (placeholder - you can replace with image later)
-              Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Color(0xFF1A722E),
-                      Color(0xFF2A9F4E),
+              Image.asset(
+                'lib/assets/categories/${category.name}.png',
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: double.infinity,
+              ),
+              // Progress indicator on top left
+              Positioned(
+                top: 12.h,
+                left: 12.w,
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 12.w,
+                    vertical: 6.h,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.9),
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.check_circle,
+                        size: 40.sp,
+                        color: scannedCount == totalCount
+                            ? const Color(0xFF1A722E)
+                            : Colors.grey[600],
+                      ),
+                      SizedBox(width: 6.w),
+                      Text(
+                        '$scannedCount / $totalCount',
+                        style: TextStyle(
+                          fontSize: 36.sp,
+                          fontWeight: FontWeight.bold,
+                          color: scannedCount == totalCount
+                              ? const Color(0xFF1A722E)
+                              : Colors.grey[800],
+                        ),
+                      ),
                     ],
                   ),
-                ),
-              ),
-
-              // Dark overlay for better text visibility
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.black.withValues(alpha: 0.3),
-                      Colors.black.withValues(alpha: 0.6),
-                    ],
-                  ),
-                ),
-              ),
-
-              // Content
-              Padding(
-                padding: EdgeInsets.all(16.w),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Category name
-                    Text(
-                      category.name,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 48.sp,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        shadows: [
-                          Shadow(
-                            color: Colors.black.withValues(alpha: 0.5),
-                            offset: const Offset(0, 2),
-                            blurRadius: 4,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 8.h),
-
-                    // Progress
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 12.w,
-                        vertical: 6.h,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.9),
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.check_circle,
-                            size: 40.sp,
-                            color: scannedCount == totalCount
-                                ? const Color(0xFF1A722E)
-                                : Colors.grey[600],
-                          ),
-                          SizedBox(width: 6.w),
-                          Text(
-                            '$scannedCount / $totalCount',
-                            style: TextStyle(
-                              fontSize: 36.sp,
-                              fontWeight: FontWeight.bold,
-                              color: scannedCount == totalCount
-                                  ? const Color(0xFF1A722E)
-                                  : Colors.grey[800],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
                 ),
               ),
             ],

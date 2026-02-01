@@ -141,7 +141,7 @@ class _VegandexModalState extends State<VegandexModal> {
           Container(
             padding: EdgeInsets.all(24.w),
             decoration: BoxDecoration(
-              color: const Color(0xFF1A722E),
+              color: Theme.of(context).colorScheme.primary,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(28.r),
                 topRight: Radius.circular(28.r),

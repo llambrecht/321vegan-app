@@ -242,8 +242,6 @@ class PreferencesHelper {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool('random_avatar_enabled') ?? false;
   }
-<<<<<<< HEAD
-=======
 
   // Partners page notification methods
   // Update this timestamp when you add new partners
@@ -289,5 +287,4 @@ class PreferencesHelper {
     // Has new content if last update is after last visit
     return lastUpdate != null && lastUpdate.isAfter(lastVisit);
   }
->>>>>>> main
 }
