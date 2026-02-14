@@ -217,7 +217,7 @@ class _VegandexModalState extends State<VegandexModal> {
                               ),
                               SizedBox(height: 12.h),
                               Text(
-                                'Les scans de ces produits en magasin nous permettent de récolter des données géographiques qui seront utilisées pour trouver ces produits à l\'aide d\'une carte interactive !',
+                                'Les scans de ces produits en magasin nous permettent de récolter des données géographiques. Ces données seront utilisées pour vous aider à trouver ces produits à l\'aide d\'une carte interactive !',
                                 style: TextStyle(
                                   fontSize: 42.sp,
                                   color: Colors.grey[700],
