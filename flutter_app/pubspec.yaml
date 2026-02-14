@@ -16,7 +16,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 2.4.5+1
+version: 2.5.5+1
 
 environment:
   sdk: ">=3.6.0 <4.0.0"
@@ -48,6 +48,8 @@ dependencies:
   connectivity_plus: ^6.0.5
   flutter_dotenv: ^5.1.0
   permission_handler: ^11.3.1
+  geolocator: ^14.0.2
+  cached_network_image: ^3.4.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -103,6 +105,8 @@ flutter:
     - lib/assets/intro/scan.gif
     - lib/assets/intro/scan_unknown.gif
     - lib/assets/intro/accueil.gif
+    - lib/assets/badges/500products.png
+    # Partners logos
     - lib/assets/partners/logo-zebra.png
     - lib/assets/partners/logo-vegetalfood.png
     - lib/assets/partners/logo-terroirs.png
@@ -113,6 +117,8 @@ flutter:
     - lib/assets/partners/logo-ovs.png
     - lib/assets/partners/logo-maisonprot.png
     - lib/assets/partners/logo-pulse.png
+    - lib/assets/partners/logo-papondu.png
+    # Badges
     - lib/assets/badges/1an.png
     - lib/assets/badges/2ans.png
     - lib/assets/badges/5ans.png
@@ -123,6 +129,7 @@ flutter:
     - lib/assets/badges/10products.png
     - lib/assets/badges/50products.png
     - lib/assets/badges/100products.png
+    # Avatars
     - lib/assets/avatars/lapin.png
     - lib/assets/avatars/ver.png
     - lib/assets/avatars/poisson.png
@@ -131,8 +138,6 @@ flutter:
     - lib/assets/avatars/mouton.png
     - lib/assets/avatars/cochon.png
     - lib/assets/avatars/vache.png
-    - lib/assets/badges/500products.png
-    - lib/assets/partners/logo-papondu.png
     - .env
 
   fonts:

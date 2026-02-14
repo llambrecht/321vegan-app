@@ -4,15 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vegan_app/helpers/preference_helper.dart';
 import 'package:vegan_app/pages/app_pages/Scan/history_modal.dart';
 import 'package:vegan_app/pages/app_pages/Scan/sent_products_modal.dart';
 import 'package:vegan_app/pages/app_pages/Scan/settings_modal.dart';
 import 'package:vegan_app/pages/app_pages/Scan/product_info_helper.dart';
+import 'package:vegan_app/models/product_of_interest.dart';
+import 'package:vegan_app/services/api_service.dart';
+import 'package:vegan_app/services/auth_service.dart';
+import 'package:vegan_app/services/offline_scan_service.dart';
 import 'package:vegan_app/widgets/scaner/card_product.dart';
 import 'package:vegan_app/widgets/scaner/pending_product_info_card.dart';
 import 'package:vegan_app/widgets/scaner/report_error_button.dart';
 import 'package:vegan_app/widgets/scaner/vegan_product_info_card.dart';
+import 'package:vegan_app/widgets/scaner/shop_confirmation_modal.dart';
+import 'package:vegan_app/widgets/vegandex/vegandex_modal.dart';
+import 'package:vegan_app/widgets/vegandex/product_found_modal.dart';
 
 class ScanPage extends StatefulWidget {
   final VoidCallback? onNavigateToProfile;
@@ -39,6 +48,8 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
   final nonVeganCardKey = GlobalKey<NonVeganProductInfoCardState>();
   bool _openOnScanPage = false;
   bool _showBoycott = true;
+  List<String> _productsOfInterest = [];
+  Map<String, ProductOfInterest> _productsOfInterestMap = {};
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -58,6 +69,8 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
         break;
       case AppLifecycleState.resumed:
         controller.start();
+        // Retry pending scans when app resumes
+        _retryPendingScans();
         break;
       case AppLifecycleState.inactive:
         controller.stop();
@@ -75,10 +88,50 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
     _loadScanHistory();
     _loadOpenOnScanPagePref();
     _loadShowBoycottPref();
+    _loadProductsOfInterest();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkLocationPermission();
       _startScanner();
+      _retryPendingScans();
     });
+  }
+
+  /// Retry pending scans when app starts
+  Future<void> _retryPendingScans() async {
+    // First update pending count
+    final pendingCount = await OfflineScanService.getPendingCount();
+
+    // If there are pending scans, try to sync them
+    if (pendingCount > 0) {
+      final (successCount, shopConfirmations) =
+          await OfflineScanService.retryPendingScans();
+
+      // Show shop confirmation dialogs for successfully synced scans
+      if (successCount > 0 && mounted) {
+        // Refresh user data to get updated scanned products
+        if (AuthService.isLoggedIn) {
+          AuthService.getCurrentUser();
+        }
+
+        // Show shop confirmation dialogs sequentially
+        for (final confirmation in shopConfirmations) {
+          if (!mounted) break;
+
+          final ean = confirmation['ean'] as String;
+          final shopName = confirmation['shop_name'] as String;
+          final scanEventId = confirmation['scan_event_id'] as int;
+
+          // Get the product info from our cached map
+          final product = _productsOfInterestMap[ean];
+          if (product != null) {
+            _showShopConfirmationDialog(shopName, scanEventId, product);
+            // Wait a bit before showing the next dialog
+            await Future.delayed(const Duration(milliseconds: 500));
+          }
+        }
+      }
+    }
   }
 
   Future<bool> _checkCameraPermission({bool showDialogOnDenied = true}) async {
@@ -123,6 +176,92 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
         );
       },
     );
+  }
+
+  void _showLocationPermissionDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Géolocalisation requise'),
+          content: const Text(
+            'Vous avez scanné un produit du Vegandex ! Prochainement, une fonctionnalité permettra d\'afficher une carte pour les trouver. \nPour aider la communauté, '
+            'nous avons besoin de votre localisation lorsque vous scannez ces produits. '
+            'Voulez-vous activer la géolocalisation ?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Plus tard'),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                LocationPermission permission =
+                    await Geolocator.requestPermission();
+                if (permission == LocationPermission.deniedForever) {
+                  openAppSettings();
+                }
+              },
+              child: const Text('Activer'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showShopConfirmationDialog(
+      String shopName, int scanEventId, ProductOfInterest product) {
+    // Stop scanner while showing modal
+    controller.stop();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return ShopConfirmationModal(
+          shopName: shopName,
+          scanEventId: scanEventId,
+          product: product,
+        );
+      },
+    ).then((_) {
+      // Restart scanner when modal closes
+      controller.start();
+    });
+  }
+
+  Future<bool> _checkLocationPermission() async {
+    try {
+      // Try to check current permission with timeout
+      LocationPermission permission = await Geolocator.checkPermission()
+          .timeout(const Duration(seconds: 3));
+
+      // If denied, try to request permission
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission()
+            .timeout(const Duration(seconds: 10));
+      }
+
+      final hasPermission = permission == LocationPermission.whileInUse ||
+          permission == LocationPermission.always;
+
+      // Store the permission state if granted
+      if (hasPermission) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('location_permission_granted', true);
+      }
+
+      return hasPermission;
+    } catch (e) {
+      // If check fails (timeout, service unavailable, etc.), use stored state
+      final prefs = await SharedPreferences.getInstance();
+      final storedPermission =
+          prefs.getBool('location_permission_granted') ?? false;
+      return storedPermission;
+    }
   }
 
   Future<void> _startScanner() async {
@@ -172,8 +311,126 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
     });
   }
 
+  Future<void> _loadProductsOfInterest() async {
+    final products = await ApiService.getInterestingProducts();
+    setState(() {
+      _productsOfInterest = products.map((p) => p.ean).toList();
+      _productsOfInterestMap = {for (var p in products) p.ean: p};
+    });
+  }
+
+  Future<void> _sendScanEventIfInteresting(String ean) async {
+    // Check if this product is in the products of interest
+    if (!_productsOfInterest.contains(ean)) {
+      return;
+    }
+
+    // Store whether this is a new discovery before updating
+    final user = AuthService.currentUser;
+    final hadProductBefore =
+        user?.scannedProducts?.any((sp) => sp.ean == ean) ?? false;
+
+    // Show modal if product found (don't wait for location)
+    final product = _productsOfInterestMap[ean];
+    if (product != null && mounted) {
+      // Stop scanner while showing modal
+      controller.stop();
+
+      // Start fetching location in the background
+      final locationFuture = _getLocationForScanEvent();
+
+      await showDialog(
+        context: context,
+        barrierDismissible: false,
+        barrierColor: Colors.transparent,
+        builder: (context) => ProductFoundModal(
+          product: product,
+          isNewDiscovery: !hadProductBefore,
+        ),
+      );
+
+      // Restart scanner after modal is closed
+      controller.start();
+
+      // Wait for location to be fetched and send scan event
+      final locationData = await locationFuture;
+      final latitude = locationData['latitude'];
+      final longitude = locationData['longitude'];
+
+      if (latitude == null || longitude == null) {
+        // No location, we dont send
+        return;
+      }
+
+      // Get current user ID
+      final userId = AuthService.currentUser?.id;
+
+      // Use offline scan service with automatic retry
+      final (success, response, shouldShowDialog) =
+          await OfflineScanService.postScanEventWithOfflineSupport(
+        ean: ean,
+        latitude: latitude,
+        longitude: longitude,
+        userId: userId,
+      );
+
+      if (success && response != null && mounted) {
+        // Refresh user data to get updated scanned products
+        if (AuthService.isLoggedIn) {
+          AuthService.getCurrentUser();
+        }
+
+        // Check if a shop was detected and we should show dialog
+        if (shouldShowDialog) {
+          final shopName = response['shop_name'] as String?;
+          final scanEventId = response['id'] as int?;
+
+          if (shopName != null && scanEventId != null) {
+            // Show confirmation dialog for shop location
+            _showShopConfirmationDialog(shopName, scanEventId, product);
+          }
+        }
+      }
+    }
+  }
+
+  Future<Map<String, double?>> _getLocationForScanEvent() async {
+    double? latitude;
+    double? longitude;
+
+    try {
+      // Check if we have location permission
+      bool hasPermission = await _checkLocationPermission();
+
+      // Get position if permission granted
+      if (hasPermission) {
+        final position = await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.medium,
+            timeLimit: Duration(seconds: 5),
+          ),
+        );
+        latitude = position.latitude;
+        longitude = position.longitude;
+      } else {
+        // Show dialog to prompt user to enable location
+        if (mounted) {
+          _showLocationPermissionDialog();
+        }
+      }
+    } catch (e) {
+      // Show dialog to prompt user to enable location on error
+      if (mounted) {
+        _showLocationPermissionDialog();
+      }
+    }
+
+    return {'latitude': latitude, 'longitude': longitude};
+  }
+
   void _showSettingsModal() {
-    controller.stop(); // Stop the scanner when opening the modal
+    // Stop the scanner when opening the modal
+    controller.stop();
     setState(() {
       productInfo = null;
     });
@@ -202,7 +459,7 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
         );
       },
     ).then((_) {
-      controller.start(); // Restart the scanner when the modal is closed
+      controller.start();
     });
   }
 
@@ -261,6 +518,9 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
         // Reload the history after adding the barcode
         _loadScanHistory();
       });
+
+      // Send scan event if it's a product of interest (don't wait for it)
+      _sendScanEventIfInteresting(barcodeValue.toString());
 
       setState(() {
         productInfo = null; // Reset product info for the new scan
@@ -407,7 +667,7 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
                         .start(); // Restart the scanner when the modal is closed
                   });
                 },
-                backgroundColor: const Color(0xFF1A722E),
+                backgroundColor: Theme.of(context).colorScheme.primary,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -454,7 +714,7 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
                         .start(); // Restart the scanner when the modal is closed
                   });
                 },
-                backgroundColor: const Color(0xFF1A722E),
+                backgroundColor: Theme.of(context).colorScheme.primary,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -470,6 +730,100 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
                       textAlign: TextAlign.center,
                     ),
                   ],
+                ),
+              ),
+            ),
+          ),
+          // Add the floating button for Vegandex
+          Positioned(
+            top: 200.h,
+            right: 20,
+            child: Container(
+              width: 0.25.sw,
+              height: 0.05.sh,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(40.r),
+                gradient: const LinearGradient(
+                  colors: [
+                    Color(0xFFFFD700), // Gold
+                    Color(0xFFFFAF00), // Darker gold
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                border: Border.all(
+                  color: Colors.white,
+                  width: 2,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFFFFD700).withValues(alpha: 0.5),
+                    blurRadius: 15,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(40.r),
+                  onTap: () {
+                    controller.stop();
+                    setState(() {
+                      productInfo = null;
+                    });
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.9,
+                        child: VegandexModal(
+                          onNavigateToProfile: widget.onNavigateToProfile,
+                        ),
+                      ),
+                    ).then((_) {
+                      controller.start();
+                    });
+                  },
+                  child: Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.catching_pokemon,
+                          color: Colors.white,
+                          size: 40.sp,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black.withValues(alpha: 0.4),
+                              blurRadius: 3,
+                              offset: const Offset(0, 1),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          "Vegandex",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 40.sp,
+                            fontWeight: FontWeight.bold,
+                            shadows: [
+                              Shadow(
+                                color: Colors.black.withValues(alpha: 0.4),
+                                blurRadius: 3,
+                                offset: const Offset(0, 1),
+                              ),
+                            ],
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
