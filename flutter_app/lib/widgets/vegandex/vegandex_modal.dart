@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../models/product_of_interest.dart';
 import '../../../models/scanned_product.dart';
 import '../../../models/product_category.dart';
@@ -37,24 +38,68 @@ class _VegandexModalState extends State<VegandexModal> {
   }
 
   Future<void> _checkLocationPermission() async {
-    LocationPermission permission = await Geolocator.checkPermission();
+    try {
+      // Try to check current permission with timeout
+      final permission = await Geolocator.checkPermission()
+          .timeout(const Duration(seconds: 3));
 
-    if (mounted) {
-      setState(() {
-        _hasLocationPermission = permission == LocationPermission.whileInUse ||
-            permission == LocationPermission.always;
-      });
+      final hasPermission = permission == LocationPermission.whileInUse ||
+          permission == LocationPermission.always;
+
+      // Store the permission state if granted
+      if (hasPermission) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('location_permission_granted', true);
+      }
+
+      if (mounted) {
+        setState(() {
+          _hasLocationPermission = hasPermission;
+        });
+      }
+    } catch (e) {
+      // If check fails (timeout, service unavailable, etc.), use stored state
+      final prefs = await SharedPreferences.getInstance();
+      final storedPermission =
+          prefs.getBool('location_permission_granted') ?? false;
+
+      if (mounted) {
+        setState(() {
+          _hasLocationPermission = storedPermission;
+        });
+      }
     }
   }
 
   Future<void> _requestLocationPermission() async {
-    LocationPermission permission = await Geolocator.requestPermission();
+    try {
+      final permission = await Geolocator.requestPermission()
+          .timeout(const Duration(seconds: 10));
 
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
-      // If denied forever, open app settings
-      if (permission == LocationPermission.deniedForever) {
-        await openAppSettings();
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        // If denied forever, open app settings
+        if (permission == LocationPermission.deniedForever) {
+          await openAppSettings();
+        }
+      } else if (permission == LocationPermission.whileInUse ||
+          permission == LocationPermission.always) {
+        // Store permission state if granted
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('location_permission_granted', true);
+      }
+    } catch (e) {
+      // Permission request timed out or failed
+      // Show message to user
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Impossible de vérifier les permissions. Veuillez vérifier votre connexion et réessayer.',
+            ),
+            duration: Duration(seconds: 3),
+          ),
+        );
       }
     }
 

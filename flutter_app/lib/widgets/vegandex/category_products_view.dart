@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../models/product_category.dart';
 import '../../models/product_of_interest.dart';
 
@@ -171,10 +172,16 @@ class CategoryProductsView extends StatelessWidget {
                         Colors.grey,
                         BlendMode.saturation,
                       ),
-                child: Image.network(
-                  '$baseUrl/${product.image}',
+                child: CachedNetworkImage(
+                  imageUrl: '$baseUrl/${product.image}',
                   fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) {
+                  placeholder: (context, url) => Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.grey[400],
+                    ),
+                  ),
+                  errorWidget: (context, url, error) {
                     return Container(
                       color: Colors.grey[200],
                       child: Icon(

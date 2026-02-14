@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../models/product_of_interest.dart';
 
 class ProductFoundModal extends StatefulWidget {
@@ -128,10 +129,16 @@ class _ProductFoundModalState extends State<ProductFoundModal>
                       child: ClipOval(
                         child: Padding(
                           padding: EdgeInsets.all(16.w),
-                          child: Image.network(
-                            '$baseUrl/${widget.product.image}',
+                          child: CachedNetworkImage(
+                            imageUrl: '$baseUrl/${widget.product.image}',
                             fit: BoxFit.contain,
-                            errorBuilder: (context, error, stackTrace) {
+                            placeholder: (context, url) => Center(
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: const Color(0xFF1A722E),
+                              ),
+                            ),
+                            errorWidget: (context, url, error) {
                               return Icon(
                                 Icons.catching_pokemon,
                                 size: 120.sp,

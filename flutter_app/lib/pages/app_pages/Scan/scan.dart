@@ -5,6 +5,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vegan_app/helpers/preference_helper.dart';
 import 'package:vegan_app/pages/app_pages/Scan/history_modal.dart';
 import 'package:vegan_app/pages/app_pages/Scan/sent_products_modal.dart';
@@ -233,18 +234,34 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
   }
 
   Future<bool> _checkLocationPermission() async {
-    LocationPermission permission = await Geolocator.checkPermission();
+    try {
+      // Try to check current permission with timeout
+      LocationPermission permission = await Geolocator.checkPermission()
+          .timeout(const Duration(seconds: 3));
 
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
+      // If denied, try to request permission
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission()
+            .timeout(const Duration(seconds: 10));
+      }
+
+      final hasPermission = permission == LocationPermission.whileInUse ||
+          permission == LocationPermission.always;
+
+      // Store the permission state if granted
+      if (hasPermission) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('location_permission_granted', true);
+      }
+
+      return hasPermission;
+    } catch (e) {
+      // If check fails (timeout, service unavailable, etc.), use stored state
+      final prefs = await SharedPreferences.getInstance();
+      final storedPermission =
+          prefs.getBool('location_permission_granted') ?? false;
+      return storedPermission;
     }
-
-    if (permission == LocationPermission.whileInUse ||
-        permission == LocationPermission.always) {
-      return true;
-    }
-
-    return false;
   }
 
   Future<void> _startScanner() async {
