@@ -148,7 +148,18 @@ class PartnersPage extends StatelessWidget {
                         'Marque française de produits protéinés sains et gourmands. Véganes, sans gluten et sans soja.',
                     hasCommission: true,
                   ),
-
+                  _buildCategoryTitle('🛍️ Mode & Lifestyle'),
+                  _buildPartnerCard(
+                    context: context,
+                    brandName: 'Zebra Vegan Shop',
+                    logoName: 'logo-zebra.png',
+                    discountCode: '321-ZEBRA5',
+                    discountAmount: '5% de réduction',
+                    websiteUrl: 'https://www.zebraveganshop.com/?ref=8EC73D',
+                    description:
+                        'La boutique en ligne qui regroupe la plus belle sélection de marques de mode vegan. Fabriqués en Europe à partir de matériaux éco-responsables',
+                    hasCommission: true,
+                  ),
                   _buildCategoryTitle("🥚 Alternatives aux oeufs"),
                   _buildPartnerCard(
                     context: context,
@@ -185,18 +196,6 @@ class PartnersPage extends StatelessWidget {
                         'Marque française d’énergie, regroupe RAGNADRINK (boissons énergisantes) et RAGNABOOST (pastilles énergisantes).',
                     hasCommission: true,
                   ),
-                  _buildCategoryTitle('🛍️ Mode & Lifestyle'),
-                  _buildPartnerCard(
-                    context: context,
-                    brandName: 'Zebra Vegan Shop',
-                    logoName: 'logo-zebra.png',
-                    discountCode: '321VEGANZEBRA',
-                    discountAmount: '10% de réduction',
-                    websiteUrl: 'https://www.zebraveganshop.com/',
-                    description:
-                        'La boutique en ligne qui regroupe la plus belle sélection de marques de mode vegan. Fabriqués en Europe à partir de matériaux éco-responsables',
-                  ),
-
                   _buildCategoryTitle('🍽️ Alimentation générale'),
                   _buildPartnerCard(
                     context: context,
