@@ -35,6 +35,373 @@ class _VegandexModalState extends State<VegandexModal> {
     super.initState();
     _checkLocationPermission();
     _loadData();
+    _checkAndShowWelcomePopup();
+  }
+
+  Future<void> _checkAndShowWelcomePopup() async {
+    final prefs = await SharedPreferences.getInstance();
+    final shouldShowPopup =
+        prefs.getBool('vegandex_show_welcome_popup') ?? true;
+
+    if (shouldShowPopup && mounted) {
+      // Wait a bit for the modal to be fully displayed
+      await Future.delayed(const Duration(milliseconds: 200));
+      if (mounted) {
+        _showWelcomeDialog();
+      }
+    }
+  }
+
+  void _showWelcomeDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24.r),
+          ),
+          child: Container(
+            constraints: BoxConstraints(maxHeight: 2000.h),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Theme.of(context).colorScheme.primary,
+                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(24.r),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Header
+                Padding(
+                  padding: EdgeInsets.all(24.w),
+                  child: Column(
+                    children: [
+                      Icon(
+                        Icons.catching_pokemon,
+                        size: 120.sp,
+                        color: Colors.white,
+                      ),
+                      SizedBox(height: 16.h),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Vegandex',
+                            style: TextStyle(
+                              fontSize: 72.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          SizedBox(width: 12.w),
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 12.w, vertical: 4.h),
+                            decoration: BoxDecoration(
+                              color: Colors.orangeAccent,
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                            child: Text(
+                              'BETA',
+                              style: TextStyle(
+                                fontSize: 36.sp,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                letterSpacing: 2,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8.h),
+                      Text(
+                        '🚀 Nouvelle fonctionnalité !',
+                        style: TextStyle(
+                          fontSize: 48.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // Content
+                Flexible(
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(horizontal: 24.w),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // How it works
+                        Container(
+                          padding: EdgeInsets.all(20.w),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16.r),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.help_outline,
+                                    size: 60.sp,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                                  SizedBox(width: 12.w),
+                                  Text(
+                                    'Comment ça marche ?',
+                                    style: TextStyle(
+                                      fontSize: 52.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 16.h),
+                              _buildInfoRow(
+                                Icons.qr_code_scanner,
+                                'Scannez des produits du vegandex',
+                              ),
+                              SizedBox(height: 12.h),
+                              _buildInfoRow(
+                                Icons.collections,
+                                'Collectionnez-les tous !',
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 16.h),
+                        // Map info
+                        Container(
+                          padding: EdgeInsets.all(20.w),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16.r),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.map_outlined,
+                                    size: 60.sp,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                                  SizedBox(width: 12.w),
+                                  Expanded(
+                                    child: Text(
+                                      'À venir (bientôt) !',
+                                      style: TextStyle(
+                                        fontSize: 52.sp,
+                                        fontWeight: FontWeight.bold,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 12.h),
+                              Text(
+                                'Les scans de ces produits en magasin nous permettent de récolter des données géographiques qui seront utilisées pour trouver ces produits à l\'aide d\'une carte interactive !',
+                                style: TextStyle(
+                                  fontSize: 42.sp,
+                                  color: Colors.grey[700],
+                                  height: 1.3,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 16.h),
+                        // Contact info
+                        Container(
+                          padding: EdgeInsets.all(20.w),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16.r),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.feedback_outlined,
+                                    size: 60.sp,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                                  SizedBox(width: 12.w),
+                                  Expanded(
+                                    child: Text(
+                                      'Votre avis compte !',
+                                      style: TextStyle(
+                                        fontSize: 52.sp,
+                                        fontWeight: FontWeight.bold,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 12.h),
+                              Text(
+                                'Un bug ? Une suggestion ? Contactez-nous :',
+                                style: TextStyle(
+                                  fontSize: 42.sp,
+                                  color: Colors.grey[700],
+                                  height: 1.3,
+                                ),
+                              ),
+                              SizedBox(height: 12.h),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.mail_outline,
+                                    size: 44.sp,
+                                    color: Colors.grey[600],
+                                  ),
+                                  SizedBox(width: 8.w),
+                                  Text(
+                                    'contact@321vegan.fr',
+                                    style: TextStyle(
+                                      fontSize: 40.sp,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 8.h),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.camera_alt,
+                                    size: 44.sp,
+                                    color: Colors.grey[600],
+                                  ),
+                                  SizedBox(width: 8.w),
+                                  Text(
+                                    '@321vegan.app',
+                                    style: TextStyle(
+                                      fontSize: 40.sp,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 24.h),
+                      ],
+                    ),
+                  ),
+                ),
+                // Buttons
+                Padding(
+                  padding: EdgeInsets.all(24.w),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            padding: EdgeInsets.symmetric(vertical: 16.h),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.r),
+                            ),
+                            elevation: 0,
+                          ),
+                          child: Text(
+                            'OK',
+                            style: TextStyle(
+                              fontSize: 48.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 12.h),
+                      TextButton(
+                        onPressed: () async {
+                          final prefs = await SharedPreferences.getInstance();
+                          await prefs.setBool(
+                              'vegandex_show_welcome_popup', false);
+                          if (context.mounted) {
+                            Navigator.of(context).pop();
+                          }
+                        },
+                        style: TextButton.styleFrom(
+                          foregroundColor: Colors.white,
+                        ),
+                        child: Text(
+                          'Ne plus jamais montrer',
+                          style: TextStyle(
+                            fontSize: 40.sp,
+                            decoration: TextDecoration.underline,
+                            decorationColor: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildInfoRow(IconData icon, String text) {
+    return Row(
+      children: [
+        Icon(
+          icon,
+          size: 48.sp,
+          color: Theme.of(context).colorScheme.primary,
+        ),
+        SizedBox(width: 12.w),
+        Expanded(
+          child: Text(
+            text,
+            style: TextStyle(
+              fontSize: 42.sp,
+              color: Colors.grey[700],
+              height: 1.3,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   Future<void> _checkLocationPermission() async {
