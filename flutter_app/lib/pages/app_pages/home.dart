@@ -11,6 +11,7 @@ import 'package:vegan_app/pages/app_pages/profile.dart';
 import 'package:vegan_app/pages/app_pages/search.dart';
 import 'package:vegan_app/helpers/time_counter/time_counter.dart';
 import 'package:vegan_app/widgets/homepage/stat_card.dart';
+import 'package:vegan_app/widgets/homepage/draggable_profile_bubble.dart';
 import 'package:confetti/confetti.dart';
 import 'package:vegan_app/widgets/wave_clipper.dart';
 import 'package:intl/intl.dart';
@@ -34,6 +35,7 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   final TextEditingController _dateController = TextEditingController();
   bool _hasNewPartners = false;
   late AnimationController _partnersAnimationController;
+  String? _currentAvatar;
 
   @override
   void initState() {
@@ -62,6 +64,7 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
     _loadData();
     _checkNewPartners();
+    _loadAvatar();
   }
 
   Future<void> _initializeTabController() async {
@@ -106,6 +109,8 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   Future<void> _onLoginSuccess() async {
     // Reload target date from preferences after login
     await loadTargetDate();
+    // Reload avatar after login
+    await _loadAvatar();
   }
 
   Future<void> _checkNewPartners() async {
@@ -113,6 +118,21 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     if (mounted) {
       setState(() {
         _hasNewPartners = hasNew;
+      });
+    }
+  }
+
+  Future<void> _loadAvatar() async {
+    if (AuthService.isLoggedIn) {
+      final avatar = await PreferencesHelper.getAvatar();
+      if (mounted) {
+        setState(() {
+          _currentAvatar = avatar;
+        });
+      }
+    } else {
+      setState(() {
+        _currentAvatar = null;
       });
     }
   }
@@ -179,213 +199,228 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     return Stack(
       children: [
         Scaffold(
-          body: TabBarView(
-            controller: motionTabBarController,
+          body: Stack(
             children: [
-              const PartnersPage(),
-              Center(
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: <Widget>[
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      child: ClipPath(
-                        clipper: WaveClipper(),
-                        child: Container(
-                            color: Theme.of(context).colorScheme.primary,
-                            height: 480.h),
-                      ),
-                    ),
-                    Positioned(
-                      top: 42.h,
-                      left: -72.w,
-                      child: Opacity(
-                        opacity: 1.0,
-                        child: Icon(
-                          Icons.sunny,
-                          size: 889.r,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+              TabBarView(
+                controller: motionTabBarController,
+                children: [
+                  const PartnersPage(),
+                  Center(
+                    child: Stack(
+                      alignment: Alignment.center,
                       children: <Widget>[
-                        SizedBox(height: 200.h),
-                        Text(
-                          "Vous êtes végane depuis",
-                          style: TextStyle(
-                              fontSize: 90.sp,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                              fontFamily: 'Baloo'),
+                        Positioned(
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          child: ClipPath(
+                            clipper: WaveClipper(),
+                            child: Container(
+                                color: Theme.of(context).colorScheme.primary,
+                                height: 480.h),
+                          ),
                         ),
-                        Center(
-                          child: TimeCounter(targetDate: targetDate),
-                        ),
-                        buildStatCard(
-                          context,
-                          'Animaux épargnés',
-                          animalUnit,
-                          '',
-                          Icons.favorite,
-                          const Color.fromARGB(247, 255, 103, 153),
-                          Colors.pinkAccent,
-                          info:
-                              "L'industrie de l'élevage cause d'immenses souffrances aux animaux en les considérant comme des objets. Choisir le véganisme, c’est refuser cette exploitation. Ici, on souligne l’effet positif que chacun peut avoir pour un monde plus juste et durable.",
-                        ),
-                        buildStatCard(
-                          context,
-                          'CO₂ non émis',
-                          co2Unit,
-                          'KG',
-                          Icons.arrow_downward_sharp,
-                          const Color.fromARGB(255, 255, 133, 133),
-                          Colors.redAccent,
-                          info:
-                              "L'alimentation végétale a aussi un impact sur l'environnement et permet de réduire considérablement son empreinte carbone. La quantité de CO2 économisée vient du fait que l'élevage est l'une des principales sources d'émission de gaz à effet de serre, de déforestation, de pollution de l'air et de pollution de l'eau.",
-                        ),
-                        buildStatCard(
-                          context,
-                          'Forêt préservée',
-                          forestUnit,
-                          'm²',
-                          Icons.forest_sharp,
-                          const Color.fromARGB(127, 105, 240, 175),
-                          const Color.fromARGB(197, 36, 139, 87),
-                          info:
-                              "L'élevage est l'une des principales causes de déforestation. Il faut en effet énormément de place pour cultiver les céréales (notamment soja et maïs) destinés à nourrir les animaux d'élevage. Cette déforestation a des conséquences désastreuses sur la biodiversité et les communautés locales. Adopter une alimentation végétale c'est réduire la pression sur les forêts et à encourager une agriculture plus durable.",
-                        ),
-                        buildStatCard(
-                          context,
-                          'Eau économisée',
-                          waterUnit,
-                          'm³',
-                          Icons.water_drop,
-                          const Color.fromARGB(255, 97, 166, 250),
-                          Colors.blueAccent,
-                          info:
-                              "En choisissant d'être végétalien, vous aidez à économiser de précieuses ressources en eau. La production de produits animaux nécessite une gigantesque quantité d'eau, notamment pour l'irrigation des cultures pour les animaux d'élevage. Et cela sans parler de la polution de l'eau due aux déjections qu'ils produisent.",
-                        ),
-                      ],
-                    ),
-                    if (targetDate == null)
-                      Positioned(
-                        bottom: 100.h,
-                        child: ElevatedButton(
-                          onPressed: launchCounter,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).primaryColor,
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 32.w, vertical: 12.h),
-                            textStyle: TextStyle(
-                              fontSize: 20.sp,
-                              fontFamily: 'Baloo',
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30.r),
+                        Positioned(
+                          top: 42.h,
+                          left: -72.w,
+                          child: Opacity(
+                            opacity: 1.0,
+                            child: Icon(
+                              Icons.sunny,
+                              size: 889.r,
+                              color: Colors.white,
                             ),
                           ),
-                          child: Text('Démarrer le compteur',
-                              style: TextStyle(fontSize: 60.sp)),
                         ),
-                      )
-                    else
-                      Positioned(
-                        bottom: 120.h,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 32.w, vertical: 12.h),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(30.r),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.1),
-                                spreadRadius: 1,
-                                blurRadius: 3,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                DateFormat.yMd('fr_FR').format(targetDate!),
-                                style: TextStyle(
-                                  fontSize: 50.sp,
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            SizedBox(height: 200.h),
+                            Text(
+                              "Vous êtes végane depuis",
+                              style: TextStyle(
+                                  fontSize: 90.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                  fontFamily: 'Baloo'),
+                            ),
+                            Center(
+                              child: TimeCounter(targetDate: targetDate),
+                            ),
+                            buildStatCard(
+                              context,
+                              'Animaux épargnés',
+                              animalUnit,
+                              '',
+                              Icons.favorite,
+                              const Color.fromARGB(247, 255, 103, 153),
+                              Colors.pinkAccent,
+                              info:
+                                  "L'industrie de l'élevage cause d'immenses souffrances aux animaux en les considérant comme des objets. Choisir le véganisme, c’est refuser cette exploitation. Ici, on souligne l’effet positif que chacun peut avoir pour un monde plus juste et durable.",
+                            ),
+                            buildStatCard(
+                              context,
+                              'CO₂ non émis',
+                              co2Unit,
+                              'KG',
+                              Icons.arrow_downward_sharp,
+                              const Color.fromARGB(255, 255, 133, 133),
+                              Colors.redAccent,
+                              info:
+                                  "L'alimentation végétale a aussi un impact sur l'environnement et permet de réduire considérablement son empreinte carbone. La quantité de CO2 économisée vient du fait que l'élevage est l'une des principales sources d'émission de gaz à effet de serre, de déforestation, de pollution de l'air et de pollution de l'eau.",
+                            ),
+                            buildStatCard(
+                              context,
+                              'Forêt préservée',
+                              forestUnit,
+                              'm²',
+                              Icons.forest_sharp,
+                              const Color.fromARGB(127, 105, 240, 175),
+                              const Color.fromARGB(197, 36, 139, 87),
+                              info:
+                                  "L'élevage est l'une des principales causes de déforestation. Il faut en effet énormément de place pour cultiver les céréales (notamment soja et maïs) destinés à nourrir les animaux d'élevage. Cette déforestation a des conséquences désastreuses sur la biodiversité et les communautés locales. Adopter une alimentation végétale c'est réduire la pression sur les forêts et à encourager une agriculture plus durable.",
+                            ),
+                            buildStatCard(
+                              context,
+                              'Eau économisée',
+                              waterUnit,
+                              'm³',
+                              Icons.water_drop,
+                              const Color.fromARGB(255, 97, 166, 250),
+                              Colors.blueAccent,
+                              info:
+                                  "En choisissant d'être végétalien, vous aidez à économiser de précieuses ressources en eau. La production de produits animaux nécessite une gigantesque quantité d'eau, notamment pour l'irrigation des cultures pour les animaux d'élevage. Et cela sans parler de la polution de l'eau due aux déjections qu'ils produisent.",
+                            ),
+                          ],
+                        ),
+                        if (targetDate == null)
+                          Positioned(
+                            bottom: 100.h,
+                            child: ElevatedButton(
+                              onPressed: launchCounter,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Theme.of(context).primaryColor,
+                                foregroundColor: Colors.white,
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 32.w, vertical: 12.h),
+                                textStyle: TextStyle(
+                                  fontSize: 20.sp,
                                   fontFamily: 'Baloo',
-                                  color: Colors.black87,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.r),
                                 ),
                               ),
-                              SizedBox(width: 20.w),
-                              GestureDetector(
-                                onTap: _pickDate,
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 20.w, vertical: 8.h),
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context).primaryColor,
-                                    borderRadius: BorderRadius.circular(20.r),
+                              child: Text('Démarrer le compteur',
+                                  style: TextStyle(fontSize: 60.sp)),
+                            ),
+                          )
+                        else
+                          Positioned(
+                            bottom: 120.h,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 32.w, vertical: 12.h),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(30.r),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.1),
+                                    spreadRadius: 1,
+                                    blurRadius: 3,
+                                    offset: const Offset(0, 2),
                                   ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        "Modifier",
-                                        style: TextStyle(
-                                          fontSize: 45.sp,
-                                          fontFamily: 'Baloo',
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                      SizedBox(width: 8.w),
-                                      Icon(
-                                        Icons.calendar_today,
-                                        color: Colors.white,
-                                        size: 40.sp,
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                ],
                               ),
-                            ],
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    DateFormat.yMd('fr_FR').format(targetDate!),
+                                    style: TextStyle(
+                                      fontSize: 50.sp,
+                                      fontFamily: 'Baloo',
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                  SizedBox(width: 20.w),
+                                  GestureDetector(
+                                    onTap: _pickDate,
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 20.w, vertical: 8.h),
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context).primaryColor,
+                                        borderRadius:
+                                            BorderRadius.circular(20.r),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            "Modifier",
+                                            style: TextStyle(
+                                              fontSize: 45.sp,
+                                              fontFamily: 'Baloo',
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          SizedBox(width: 8.w),
+                                          Icon(
+                                            Icons.calendar_today,
+                                            color: Colors.white,
+                                            size: 40.sp,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
+                        ConfettiWidget(
+                          numberOfParticles: 20,
+                          maxBlastForce: 50.r,
+                          confettiController: _confettiController,
+                          blastDirectionality: BlastDirectionality.explosive,
+                          shouldLoop: false,
+                          colors: const [
+                            Colors.red,
+                            Colors.blue,
+                            Colors.green,
+                            Colors.yellow,
+                          ],
                         ),
-                      ),
-                    ConfettiWidget(
-                      numberOfParticles: 20,
-                      maxBlastForce: 50.r,
-                      confettiController: _confettiController,
-                      blastDirectionality: BlastDirectionality.explosive,
-                      shouldLoop: false,
-                      colors: const [
-                        Colors.red,
-                        Colors.blue,
-                        Colors.green,
-                        Colors.yellow,
                       ],
                     ),
-                  ],
+                  ),
+                  const SearchPage(),
+                  ScanPage(
+                    onNavigateToProfile: () {
+                      setState(() {
+                        motionTabBarController.index = 4;
+                      });
+                    },
+                  ),
+                  ProfilePage(
+                    onDateSaved: _onDateSaved,
+                    onLoginSuccess: _onLoginSuccess,
+                  ),
+                ],
+              ),
+              // Draggable profile bubble. only when logged in and on home tab
+              if (AuthService.isLoggedIn && motionTabBarController.index == 1)
+                DraggableProfileBubble(
+                  avatar: _currentAvatar,
+                  onTap: () {
+                    setState(() {
+                      motionTabBarController.index = 4;
+                    });
+                  },
                 ),
-              ),
-              const SearchPage(),
-              ScanPage(
-                onNavigateToProfile: () {
-                  setState(() {
-                    motionTabBarController.index = 4;
-                  });
-                },
-              ),
-              ProfilePage(
-                onDateSaved: _onDateSaved,
-                onLoginSuccess: _onLoginSuccess,
-              ),
             ],
           ),
           bottomNavigationBar: Stack(
@@ -409,6 +444,8 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   // Check for new badges when Accueil tab is selected
                   if (value == 1) {
                     _checkForNewBadges();
+                    // Reload avatar when returning to home tab
+                    _loadAvatar();
                   }
                   // Mark partners as visited when tab is selected
                   if (value == 0 && _hasNewPartners) {

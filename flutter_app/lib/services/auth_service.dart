@@ -87,7 +87,7 @@ class AuthService {
         debugPrint('❌ Failed to refresh token on app launch');
       }
     } else {
-      debugPrint('Token still valid (${minutesUntilExpiry} minutes remaining)');
+      debugPrint('Token still valid ($minutesUntilExpiry minutes remaining)');
     }
   }
 
@@ -319,9 +319,9 @@ class AuthService {
                   onPressed: () => Navigator.of(dialogContext).pop(false),
                 ),
                 TextButton(
-                  child: const Text('Supprimer'),
                   style: TextButton.styleFrom(foregroundColor: Colors.red),
                   onPressed: () => Navigator.of(dialogContext).pop(true),
+                  child: const Text('Supprimer'),
                 ),
               ],
             );

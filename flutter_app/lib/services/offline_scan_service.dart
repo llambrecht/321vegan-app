@@ -32,7 +32,6 @@ class OfflineScanService {
       pendingEvents.add(json.encode(scanEvent));
       await prefs.setStringList(_pendingScanEventsKey, pendingEvents);
     } catch (e) {
-      // Silently fail if unable to save locally
       print('Failed to save pending scan event: $e');
     }
   }

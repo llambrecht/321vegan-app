@@ -138,6 +138,7 @@ flutter:
     - lib/assets/avatars/mouton.png
     - lib/assets/avatars/cochon.png
     - lib/assets/avatars/vache.png
+    - lib/assets/avatars/chat.png
     - .env
 
   fonts:

@@ -1,4 +1,5 @@
 import 'dart:convert'; // Import for JSON encoding/decoding
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/auth_service.dart';
 
@@ -241,6 +242,24 @@ class PreferencesHelper {
   static Future<bool> getRandomAvatarEnabled() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool('random_avatar_enabled') ?? false;
+  }
+
+  // Profile bubble position methods
+  static Future<void> saveProfileBubblePosition(Offset position) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('profile_bubble_x', position.dx);
+    await prefs.setDouble('profile_bubble_y', position.dy);
+  }
+
+  static Future<Offset?> getProfileBubblePosition() async {
+    final prefs = await SharedPreferences.getInstance();
+    final x = prefs.getDouble('profile_bubble_x');
+    final y = prefs.getDouble('profile_bubble_y');
+
+    if (x != null && y != null) {
+      return Offset(x, y);
+    }
+    return null;
   }
 
   // Partners page notification methods

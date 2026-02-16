@@ -33,7 +33,8 @@ class _EditProfileModalState extends State<EditProfileModal> {
     'poule.png',
     'mouton.png',
     'cochon.png',
-    'vache.png'
+    'vache.png',
+    'chat.png'
   ];
 
   @override
@@ -182,7 +183,7 @@ class _EditProfileModalState extends State<EditProfileModal> {
             ),
           ),
           Text(
-            'Illustrations @violetteviette.tattoo.dessin & @kodasmarket.art',
+            'Illustrations par @violetteviette.tattoo.dessin & @kodasmarket.art & @ancielouille',
             textAlign: TextAlign.left,
             style: TextStyle(
               fontSize: 32.sp,
@@ -194,7 +195,7 @@ class _EditProfileModalState extends State<EditProfileModal> {
 
           // Avatar grid
           SizedBox(
-            height: 600.h,
+            height: 900.h,
             child: GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
