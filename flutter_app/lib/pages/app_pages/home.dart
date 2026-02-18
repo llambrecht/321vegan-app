@@ -18,6 +18,9 @@ import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:vegan_app/services/auth_service.dart';
 import 'package:vegan_app/services/badge_service.dart';
+import 'package:vegan_app/helpers/theme_helper.dart';
+import 'package:vegan_app/models/seasonal_theme.dart';
+import 'package:vegan_app/widgets/theme/seasonal_icon.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -36,6 +39,7 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   bool _hasNewPartners = false;
   late AnimationController _partnersAnimationController;
   String? _currentAvatar;
+  SeasonalTheme? _currentTheme;
 
   @override
   void initState() {
@@ -65,6 +69,7 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     _loadData();
     _checkNewPartners();
     _loadAvatar();
+    _loadTheme();
   }
 
   Future<void> _initializeTabController() async {
@@ -133,6 +138,15 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     } else {
       setState(() {
         _currentAvatar = null;
+      });
+    }
+  }
+
+  Future<void> _loadTheme() async {
+    final theme = await ThemeHelper.getCurrentTheme();
+    if (mounted) {
+      setState(() {
+        _currentTheme = theme;
       });
     }
   }
@@ -216,7 +230,8 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                           child: ClipPath(
                             clipper: WaveClipper(),
                             child: Container(
-                                color: Theme.of(context).colorScheme.primary,
+                                color: _currentTheme?.waveColor ??
+                                    Theme.of(context).colorScheme.primary,
                                 height: 480.h),
                           ),
                         ),
@@ -225,11 +240,13 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                           left: -72.w,
                           child: Opacity(
                             opacity: 1.0,
-                            child: Icon(
-                              Icons.sunny,
-                              size: 889.r,
-                              color: Colors.white,
-                            ),
+                            child: _currentTheme != null
+                                ? SeasonalIcon(theme: _currentTheme!)
+                                : Icon(
+                                    Icons.sunny,
+                                    size: 889.r,
+                                    color: Colors.white,
+                                  ),
                           ),
                         ),
                         Column(
@@ -387,12 +404,13 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                           confettiController: _confettiController,
                           blastDirectionality: BlastDirectionality.explosive,
                           shouldLoop: false,
-                          colors: const [
-                            Colors.red,
-                            Colors.blue,
-                            Colors.green,
-                            Colors.yellow,
-                          ],
+                          colors: _currentTheme?.confettiColors ??
+                              const [
+                                Colors.red,
+                                Colors.blue,
+                                Colors.green,
+                                Colors.yellow,
+                              ],
                         ),
                       ],
                     ),
@@ -446,6 +464,8 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     _checkForNewBadges();
                     // Reload avatar when returning to home tab
                     _loadAvatar();
+                    // Reload theme when returning to home tab
+                    _loadTheme();
                   }
                   // Mark partners as visited when tab is selected
                   if (value == 0 && _hasNewPartners) {

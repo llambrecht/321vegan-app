@@ -6,6 +6,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'services/auth_service.dart';
+import 'helpers/theme_helper.dart';
+import 'models/seasonal_theme.dart';
+import 'themes/default_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,8 +19,36 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+
+  static _MyAppState? of(BuildContext context) {
+    return context.findAncestorStateOfType<_MyAppState>();
+  }
+}
+
+class _MyAppState extends State<MyApp> {
+  SeasonalTheme? _currentTheme;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTheme();
+  }
+
+  Future<void> _loadTheme() async {
+    final theme = await ThemeHelper.getCurrentTheme();
+    setState(() {
+      _currentTheme = theme;
+    });
+  }
+
+  Future<void> updateTheme() async {
+    await _loadTheme();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +60,11 @@ class MyApp extends StatelessWidget {
         oniOS: () => UpgraderAppcastStore(appcastURL: appcastURL),
       ),
     );
+
+    // Use default theme while loading
+    final themeData =
+        _currentTheme?.toThemeData() ?? defaultTheme.toThemeData();
+
     return ScreenUtilInit(
       designSize: const Size(1170, 2532),
       builder: (context, child) => MediaQuery(
@@ -37,12 +73,7 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           title: '321 Vegan',
           debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            scaffoldBackgroundColor: Colors.white,
-            colorScheme:
-                ColorScheme.fromSeed(seedColor: const Color(0xFF166534)),
-            useMaterial3: true,
-          ),
+          theme: themeData,
           home: UpgradeAlert(
             upgrader: upgrader,
             child: const FirstLaunchChecker(),

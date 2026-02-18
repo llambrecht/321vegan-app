@@ -12,6 +12,7 @@ import '../../helpers/preference_helper.dart';
 import './edit_profile_modal.dart';
 import '../shared/social_feedback_buttons.dart';
 import '../vegandex/vegandex_modal.dart';
+import '../theme/theme_selector_modal.dart';
 
 class UserProfile extends StatefulWidget {
   final VoidCallback? onLogout;
@@ -218,6 +219,8 @@ class _UserProfileState extends State<UserProfile> {
         _buildVegandexCard(),
         SizedBox(height: 24.h),
         _buildBadgesSection(),
+        SizedBox(height: 24.h),
+        _buildThemeCard(),
         SizedBox(height: 24.h),
         _buildSettingsCard(),
         SizedBox(height: 24.h),
@@ -556,6 +559,71 @@ class _UserProfileState extends State<UserProfile> {
                   SizedBox(height: 4.h),
                   Text(
                     'Personnalisez votre expérience',
+                    style: TextStyle(
+                      fontSize: 36.sp,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.arrow_forward_ios,
+              size: 48.sp,
+              color: Colors.grey[400],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showThemeSelector() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => SizedBox(
+        height: MediaQuery.of(context).size.height * 0.85,
+        child: const ThemeSelectorModal(),
+      ),
+    );
+  }
+
+  Widget _buildThemeCard() {
+    return GestureDetector(
+      onTap: _showThemeSelector,
+      child: _buildCard(
+        child: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(16.w),
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.palette,
+                size: 56.sp,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+            SizedBox(width: 20.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Thèmes',
+                    style: TextStyle(
+                      fontSize: 52.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[800],
+                    ),
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    'Choisissez votre thème saisonnier',
                     style: TextStyle(
                       fontSize: 36.sp,
                       color: Colors.grey[600],
