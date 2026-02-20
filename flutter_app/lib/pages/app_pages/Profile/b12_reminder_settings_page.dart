@@ -130,6 +130,7 @@ class _B12ReminderSettingsPageState extends State<B12ReminderSettingsPage> {
                   _buildNextNotificationCard(),
                   SizedBox(height: 32.h),
                   _buildSaveButton(),
+                  SizedBox(height: 120.h),
                 ],
               ),
             ),

@@ -2,9 +2,8 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <!-- Notification permissions for Android 13+ -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
-    <!-- Permissions for exact alarms (scheduled notifications) -->
+    <!-- Permission for scheduled notifications (B12 reminders) -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
-    <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <!-- Wake lock to ensure notifications work when device is sleeping -->
     <uses-permission android:name="android.permission.WAKE_LOCK"/>

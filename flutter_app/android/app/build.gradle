@@ -22,9 +22,9 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
-def flutterVersionCode = "101"
+def flutterVersionCode = "104"
 
-def flutterVersionName = "3.0.2"
+def flutterVersionName = "3.0.3"
 
 
 android {
@@ -60,7 +60,10 @@ android {
 
     buildTypes {
         release {
+            minifyEnabled true
+            shrinkResources true
             signingConfig = signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }

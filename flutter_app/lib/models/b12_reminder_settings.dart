@@ -13,7 +13,7 @@ class B12ReminderSettings {
 
   B12ReminderSettings({
     this.enabled = false,
-    this.frequency = ReminderFrequency.weekly,
+    this.frequency = ReminderFrequency.daily,
     this.hour = 9,
     this.minute = 0,
     this.dayOfWeek = 1, // Default to Monday

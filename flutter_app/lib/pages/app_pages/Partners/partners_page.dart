@@ -189,6 +189,8 @@ class _PartnersPageState extends State<PartnersPage> {
       }
     }
 
+    widgets.add(SizedBox(height: 45.h));
+
     return widgets;
   }
 
