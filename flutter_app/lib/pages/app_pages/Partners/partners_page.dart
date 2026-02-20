@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -230,24 +231,22 @@ class _PartnersPageState extends State<PartnersPage> {
                 height: 250.w,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12.r),
-                  child: Image.network(
-                    logoUrl,
+                  child: CachedNetworkImage(
+                    imageUrl: logoUrl,
                     fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Icon(
-                        Icons.store,
-                        size: 100.w,
-                        color: Colors.grey[600],
-                      );
-                    },
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Center(
-                        child: CircularProgressIndicator(
-                          value: loadingProgress.expectedTotalBytes != null
-                              ? loadingProgress.cumulativeBytesLoaded /
-                                  loadingProgress.expectedTotalBytes!
-                              : null,
+                    placeholder: (context, url) => Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.grey[400],
+                      ),
+                    ),
+                    errorWidget: (context, url, error) {
+                      return Container(
+                        color: Colors.grey[200],
+                        child: Icon(
+                          Icons.image_not_supported,
+                          size: 80.sp,
+                          color: Colors.grey[400],
                         ),
                       );
                     },

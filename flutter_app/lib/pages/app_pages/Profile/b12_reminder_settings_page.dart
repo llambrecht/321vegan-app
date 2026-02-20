@@ -41,6 +41,15 @@ class _B12ReminderSettingsPageState extends State<B12ReminderSettingsPage> {
     setState(() => _isSaving = true);
 
     try {
+      // Validate settings before saving
+      if (_settings.enabled &&
+          (_settings.frequency == ReminderFrequency.weekly ||
+              _settings.frequency == ReminderFrequency.biweekly) &&
+          _settings.dayOfWeek == null) {
+        throw Exception(
+            'Veuillez sélectionner un jour de la semaine pour ce type de rappel');
+      }
+
       await B12ReminderService.scheduleReminder(_settings);
       final nextTime = await B12ReminderService.getNextNotificationTime();
 
@@ -132,183 +141,203 @@ class _B12ReminderSettingsPageState extends State<B12ReminderSettingsPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        height: MediaQuery.of(context).size.height * 0.75,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
-        ),
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.all(24.w),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
-              ),
-              child: Column(
-                children: [
-                  Container(
-                    width: 60.w,
-                    height: 6.h,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(3.r),
-                    ),
-                  ),
-                  SizedBox(height: 20.h),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.medication_rounded,
-                        size: 64.sp,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      SizedBox(width: 16.w),
-                      Text(
-                        'Vitamine B12',
-                        style: TextStyle(
-                          fontSize: 56.sp,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey[800],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: SingleChildScrollView(
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.8,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        builder: (context, scrollController) => Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
+          ),
+          child: Column(
+            children: [
+              Container(
                 padding: EdgeInsets.all(24.w),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                  borderRadius:
+                      BorderRadius.vertical(top: Radius.circular(28.r)),
+                ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildInfoSection(
-                      'Pourquoi prendre un complément ?',
-                      Text(
-                        'La complémentation en vitamine B12 est essentielle car cette vitamine est absente de l\'alimentation végétale. Sans complémentation, une carence arrivera tôt ou tard et peut avoir des conséquences graves.',
-                        style: TextStyle(
-                          fontSize: 42.sp,
-                          color: Colors.grey[700],
-                          height: 1.5,
-                        ),
+                    Container(
+                      width: 60.w,
+                      height: 6.h,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(3.r),
                       ),
-                      Icons.info_outline,
                     ),
-                    SizedBox(height: 24.h),
-                    _buildInfoSection(
-                      'Dosage recommandé, au choix :',
-                      Text.rich(
-                        TextSpan(
+                    SizedBox(height: 20.h),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.medication_rounded,
+                          size: 64.sp,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        SizedBox(width: 16.w),
+                        Text(
+                          'Vitamine B12',
                           style: TextStyle(
-                            fontSize: 42.sp,
-                            color: Colors.grey[700],
-                            height: 1.5,
+                            fontSize: 56.sp,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey[800],
                           ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  controller: scrollController,
+                  padding: EdgeInsets.all(24.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(20.w),
+                        decoration: BoxDecoration(
+                          color: Colors.blue[50],
+                          borderRadius: BorderRadius.circular(16.r),
+                          border: Border.all(
+                            color: Colors.blue[200]!,
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            const TextSpan(
-                              text: '• Par jour : 25 µg\n'
-                                  '• Par semaine : 2000 µg (en une prise)\n'
-                                  '• Tous les 15 jours : 5000 µg (en une prise)\n',
+                            Icon(
+                              Icons.check_circle,
+                              color: Colors.blue[700],
+                              size: 48.sp,
                             ),
-                            TextSpan(
-                              text:
-                                  'Pour les enfants : de 6 à 24 mois doses divisées par 4, de 2 à 12 ans doses divisées par 2.',
-                              style: TextStyle(
-                                fontStyle: FontStyle.italic,
-                                fontSize: 40.sp,
+                            SizedBox(width: 16.w),
+                            Expanded(
+                              child: Text(
+                                'Informations validées par Astrid Prévost, diététicienne spécialisée en nutrition végétale. \nInstagram @astrid_nutrition_militante',
+                                style: TextStyle(
+                                  fontSize: 38.sp,
+                                  color: Colors.blue[900],
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
                           ],
                         ),
                       ),
-                      Icons.ads_click_outlined,
-                    ),
-                    SizedBox(height: 24.h),
-                    _buildInfoSection(
-                      'Où trouver la B12 ?',
-                      Text(
-                        'Il existe différentes marques de complément alimentaires. Pour une prise quotidienne, la Veg1 est très populaire et contient d\'autres vitamines. Vous pouvez aussi vous en faire prescrire par votre médecin afin d\'avoir une prise en charge par la sécurité sociale.',
-                        style: TextStyle(
-                          fontSize: 42.sp,
-                          color: Colors.grey[700],
-                          height: 1.5,
-                        ),
-                      ),
-                      Icons.pin_drop,
-                    ),
-                    SizedBox(height: 32.h),
-                    Container(
-                      padding: EdgeInsets.all(20.w),
-                      decoration: BoxDecoration(
-                        color: Colors.blue[50],
-                        borderRadius: BorderRadius.circular(16.r),
-                        border: Border.all(
-                          color: Colors.blue[200]!,
-                          width: 1,
-                        ),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.check_circle,
-                            color: Colors.blue[700],
-                            size: 48.sp,
+                      SizedBox(height: 16.h),
+                      Container(
+                        padding: EdgeInsets.all(20.w),
+                        decoration: BoxDecoration(
+                          color: Colors.orange[50],
+                          borderRadius: BorderRadius.circular(16.r),
+                          border: Border.all(
+                            color: Colors.orange[200]!,
+                            width: 1,
                           ),
-                          SizedBox(width: 16.w),
-                          Expanded(
-                            child: Text(
-                              'Informations validées par Astrid Prévost, diététicienne spécialisée en nutrition végétale. \nInstagram @astrid_nutrition_militante',
-                              style: TextStyle(
-                                fontSize: 38.sp,
-                                color: Colors.blue[900],
-                                fontWeight: FontWeight.w500,
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.warning_amber_rounded,
+                              color: Colors.orange[700],
+                              size: 48.sp,
+                            ),
+                            SizedBox(width: 16.w),
+                            Expanded(
+                              child: Text(
+                                'Ces informations sont à titre indicatif et ne se substituent pas à un avis médical.',
+                                style: TextStyle(
+                                  fontSize: 38.sp,
+                                  color: Colors.orange[900],
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 32.h),
-                    Container(
-                      padding: EdgeInsets.all(20.w),
-                      decoration: BoxDecoration(
-                        color: Colors.orange[50],
-                        borderRadius: BorderRadius.circular(16.r),
-                        border: Border.all(
-                          color: Colors.orange[200]!,
-                          width: 1,
+                          ],
                         ),
                       ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.warning_amber_rounded,
-                            color: Colors.orange[700],
-                            size: 48.sp,
+                      SizedBox(height: 24.h),
+                      _buildInfoSection(
+                        'Pourquoi prendre un complément ?',
+                        Text(
+                          'La complémentation en vitamine B12 est essentielle car cette vitamine est absente de l\'alimentation végétale. Sans complémentation, une carence arrivera tôt ou tard et peut avoir des conséquences graves.',
+                          style: TextStyle(
+                            fontSize: 42.sp,
+                            color: Colors.grey[700],
+                            height: 1.5,
                           ),
-                          SizedBox(width: 16.w),
-                          Expanded(
-                            child: Text(
-                              'Ces informations sont à titre indicatif et ne se substituent pas à un avis médical.',
-                              style: TextStyle(
-                                fontSize: 38.sp,
-                                color: Colors.orange[900],
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
+                        Icons.info_outline,
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 24.h),
+                      _buildInfoSection(
+                        'Dosages recommandés :',
+                        Text.rich(
+                          TextSpan(
+                            style: TextStyle(
+                              fontSize: 42.sp,
+                              color: Colors.grey[700],
+                              height: 1.5,
+                            ),
+                            children: [
+                              const TextSpan(
+                                text: '• Par jour : 25 µg\n'
+                                    '• Par semaine : 2000 µg (en une prise)\n'
+                                    '• Tous les 15 jours : 5000 µg (en une prise)\n',
+                              ),
+                              TextSpan(
+                                text:
+                                    'Pour les enfants : de 6 à 24 mois doses divisées par 4, de 2 à 12 ans doses divisées par 2.',
+                                style: TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                  fontSize: 40.sp,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Icons.ads_click_outlined,
+                      ),
+                      SizedBox(height: 24.h),
+                      _buildInfoSection(
+                        'Pour une bonne absorption :',
+                        Text(
+                          '• La prise quotidienne permet une meilleure absorption et, hormis les adultes en bonne santé, toutes les catégories de population devraient la privilégier.\n•Pour une absorption optimale, le mieux est de prendre sa B12 pendant ou après un repas.\n•La spiruline ne contient pas de B12 et en limite l\'absorption. Si vous en prenez le matin : prenez votre B12 le soir, et inversement.',
+                          style: TextStyle(
+                            fontSize: 42.sp,
+                            color: Colors.grey[700],
+                            height: 1.5,
+                          ),
+                        ),
+                        Icons.pin_drop,
+                      ),
+                      SizedBox(height: 24.h),
+                      _buildInfoSection(
+                        'Où trouver la B12 ?',
+                        Text(
+                          'Pour une prise quotidienne, la Veg1 est très populaire et contient d\'autres vitamines. Pour une prescription médicale remboursable, vous pouvez demander les ampoules de Gerda à votre médecin (attention, la forme en comprimés contient du lactose).',
+                          style: TextStyle(
+                            fontSize: 42.sp,
+                            color: Colors.grey[700],
+                            height: 1.5,
+                          ),
+                        ),
+                        Icons.pin_drop,
+                      ),
+                      SizedBox(height: 50.h),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -390,7 +419,7 @@ class _B12ReminderSettingsPageState extends State<B12ReminderSettingsPage> {
                 onPressed: _showB12InfoModal,
                 icon: Icon(Icons.search, size: 48.sp),
                 label: Text(
-                  'Info sur la B12',
+                  'Infos sur la B12',
                   style: TextStyle(fontSize: 42.sp),
                 ),
                 style: OutlinedButton.styleFrom(

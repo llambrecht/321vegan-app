@@ -16,7 +16,7 @@ class B12ReminderSettings {
     this.frequency = ReminderFrequency.weekly,
     this.hour = 9,
     this.minute = 0,
-    this.dayOfWeek,
+    this.dayOfWeek = 1, // Default to Monday
   });
 
   // Convert to JSON for storage
@@ -86,14 +86,19 @@ class B12ReminderSettings {
     ReminderFrequency? frequency,
     int? hour,
     int? minute,
-    int? dayOfWeek,
+    Object? dayOfWeek = _undefined,
   }) {
     return B12ReminderSettings(
       enabled: enabled ?? this.enabled,
       frequency: frequency ?? this.frequency,
       hour: hour ?? this.hour,
       minute: minute ?? this.minute,
-      dayOfWeek: dayOfWeek ?? this.dayOfWeek,
+      dayOfWeek: identical(dayOfWeek, _undefined)
+          ? this.dayOfWeek
+          : (dayOfWeek as int?),
     );
   }
 }
+
+// Sentinel value for optional parameters in copyWith
+const Object _undefined = Object();

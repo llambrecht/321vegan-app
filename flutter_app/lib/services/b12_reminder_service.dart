@@ -51,6 +51,9 @@ class B12ReminderService {
       return;
     }
 
+    // Show a test notification to ensure the channel is properly initialized
+    await _notificationService.showTestNotification();
+
     const title = '💊 Rappel B12';
     const body = 'N\'oubliez pas de prendre votre vitamine B12 !';
 

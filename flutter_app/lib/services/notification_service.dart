@@ -17,29 +17,87 @@ class NotificationService {
   Future<void> initialize() async {
     if (_isInitialized) return;
 
-    // Initialize timezone database
-    tz.initializeTimeZones();
-    tz.setLocalLocation(tz.getLocation('Europe/Paris'));
+    try {
+      // Initialize timezone database
+      tz.initializeTimeZones();
+      tz.setLocalLocation(tz.getLocation('Europe/Paris'));
 
-    const androidSettings =
-        AndroidInitializationSettings('@mipmap/launcher_icon');
-    const iosSettings = DarwinInitializationSettings(
-      requestAlertPermission: false,
-      requestBadgePermission: false,
-      requestSoundPermission: false,
-    );
+      // Use default icon (app icon) for Android
+      const androidSettings =
+          AndroidInitializationSettings('@mipmap/ic_launcher');
+      const iosSettings = DarwinInitializationSettings(
+        requestAlertPermission: false,
+        requestBadgePermission: false,
+        requestSoundPermission: false,
+      );
 
-    const initSettings = InitializationSettings(
-      android: androidSettings,
-      iOS: iosSettings,
-    );
+      const initSettings = InitializationSettings(
+        android: androidSettings,
+        iOS: iosSettings,
+      );
 
-    await _notifications.initialize(
-      initSettings,
-      onDidReceiveNotificationResponse: _onNotificationTap,
-    );
+      await _notifications.initialize(
+        initSettings,
+        onDidReceiveNotificationResponse: _onNotificationTap,
+      );
 
-    _isInitialized = true;
+      // Explicitly create notification channel for Android
+      await _createNotificationChannel();
+
+      _isInitialized = true;
+
+      if (kDebugMode) {
+        print('Notification service initialized successfully');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error initializing notification service: $e');
+      }
+      // Try to recover by canceling all notifications
+      try {
+        await _notifications.cancelAll();
+        if (kDebugMode) {
+          print('Cleared all notifications after initialization error');
+        }
+      } catch (clearError) {
+        if (kDebugMode) {
+          print('Failed to clear notifications: $clearError');
+        }
+      }
+      _isInitialized = true; // Mark as initialized even with errors
+    }
+  }
+
+  /// Create notification channel for Android
+  Future<void> _createNotificationChannel() async {
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      final androidPlugin =
+          _notifications.resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>();
+
+      if (androidPlugin != null) {
+        const androidChannel = AndroidNotificationChannel(
+          'b12_reminders',
+          'Rappels B12',
+          description:
+              'Notifications pour les rappels de supplémentation en B12',
+          importance: Importance.high,
+          playSound: true,
+          enableVibration: true,
+          showBadge: true,
+        );
+
+        await androidPlugin.createNotificationChannel(androidChannel);
+
+        if (kDebugMode) {
+          print('Notification channel created for Android');
+
+          // Verify the channel was created
+          final channels = await androidPlugin.getNotificationChannels();
+          print('Available channels: ${channels?.map((c) => c.id).toList()}');
+        }
+      }
+    }
   }
 
   /// Handle notification tap
@@ -58,7 +116,27 @@ class NotificationService {
               AndroidFlutterLocalNotificationsPlugin>();
 
       if (androidPlugin != null) {
+        // Request notification permission
         final granted = await androidPlugin.requestNotificationsPermission();
+        if (kDebugMode) {
+          print('Notification permission granted: $granted');
+        }
+
+        // Request exact alarm permission for Android 12+
+        final canScheduleExact =
+            await androidPlugin.canScheduleExactNotifications();
+        if (kDebugMode) {
+          print('Can schedule exact alarms: $canScheduleExact');
+        }
+
+        if (canScheduleExact == false) {
+          final exactAlarmGranted =
+              await androidPlugin.requestExactAlarmsPermission();
+          if (kDebugMode) {
+            print('Exact alarm permission granted: $exactAlarmGranted');
+          }
+        }
+
         return granted ?? false;
       }
       return true; // Older Android versions
@@ -84,10 +162,19 @@ class NotificationService {
       'b12_reminders',
       'Rappels B12',
       channelDescription:
-          'Notifications pour les rappels de supplémentation en B12',
+          'Notifications pour les rappels de complémentation en B12',
       importance: Importance.high,
       priority: Priority.high,
-      icon: '@mipmap/launcher_icon',
+      // Small white icon for status bar
+      icon: 'ic_notification',
+      // Large colored icon showing the app's logo
+      largeIcon: DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
+      playSound: true,
+      enableVibration: true,
+      channelShowBadge: true,
+      visibility: NotificationVisibility.public,
+      ongoing: false,
+      autoCancel: true,
     );
 
     const iosDetails = DarwinNotificationDetails(
@@ -100,6 +187,30 @@ class NotificationService {
       android: androidDetails,
       iOS: iosDetails,
     );
+  }
+
+  /// Show an immediate test notification
+  Future<void> showTestNotification() async {
+    const title = '💊 Rappel B12';
+    const body = 'Votre rappel a été configuré avec succès !';
+
+    if (kDebugMode) {
+      print('Showing immediate test notification');
+    }
+
+    final details = _getNotificationDetails();
+
+    await _notifications.show(
+      9999,
+      title,
+      body,
+      details,
+      payload: 'test_notification',
+    );
+
+    if (kDebugMode) {
+      print('Test notification shown');
+    }
   }
 
   /// Check if notifications are enabled
@@ -167,6 +278,10 @@ class NotificationService {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
 
+    if (kDebugMode) {
+      print('Scheduling daily notification for: $scheduledDate');
+    }
+
     final details = _getNotificationDetails();
 
     await _notifications.zonedSchedule(
@@ -181,6 +296,11 @@ class NotificationService {
       matchDateTimeComponents: DateTimeComponents.time,
       payload: payload,
     );
+
+    if (kDebugMode) {
+      final pending = await getPendingNotifications();
+      print('Pending notifications after scheduling: ${pending.length}');
+    }
   }
 
   /// Schedule a weekly notification
