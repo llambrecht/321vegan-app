@@ -2,6 +2,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:flutter/foundation.dart';
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -20,7 +21,11 @@ class NotificationService {
     try {
       // Initialize timezone database
       tz.initializeTimeZones();
-      tz.setLocalLocation(tz.getLocation('Europe/Paris'));
+
+      // Get the device's local timezone
+      final String timezoneName =
+          await FlutterNativeTimezone.getLocalTimezone();
+      tz.setLocalLocation(tz.getLocation(timezoneName));
 
       // Use default icon (app icon) for Android
       const androidSettings =
