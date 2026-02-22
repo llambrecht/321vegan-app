@@ -86,7 +86,6 @@ class B12ReminderService {
       case ReminderFrequency.biweekly:
         if (settings.dayOfWeek != null) {
           // For biweekly, we need to schedule two alternating weekly notifications
-          // We'll use a different approach: schedule the next occurrence
           await _scheduleBiweeklyNotification(
             id: _notificationId,
             title: title,
