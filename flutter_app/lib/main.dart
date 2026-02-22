@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'services/auth_service.dart';
 import 'services/notification_service.dart';
+import 'services/products_of_interest_cache.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,6 +16,10 @@ void main() async {
   await DatabaseHelper.instance.cosmeticsDatabase;
   await AuthService.init();
   await NotificationService().initialize();
+
+  // Pre-load products of interest cache at app startup (when likely to have internet)
+  ProductsOfInterestCache.initializeAtStartup();
+
   runApp(const MyApp());
 }
 
