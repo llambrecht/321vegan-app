@@ -1,22 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:vegan_app/pages/app_pages/helpers/product.helper.dart';
 
-class ReportErrorButton extends StatelessWidget {
+class InfoDialogButton extends StatelessWidget {
   final String barcode;
+  final String buttonLabel;
+  final String dialogTitle;
+  final String commentTitle;
+  final String commentHint;
+  final Color buttonColor;
 
-  const ReportErrorButton({super.key, required this.barcode});
+  const InfoDialogButton({
+    super.key,
+    required this.barcode,
+    required this.buttonLabel,
+    required this.dialogTitle,
+    required this.commentTitle,
+    required this.commentHint,
+    required this.buttonColor
+  });
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
-      icon: const Icon(Icons.report_problem, color: Colors.orange),
-      label: const Text(
-        "Signaler une erreur",
-        style: TextStyle(color: Colors.orange),
+      icon: Icon(Icons.report_problem, color: buttonColor),
+      label: Text(
+        buttonLabel,
+        style: TextStyle(color: buttonColor),
       ),
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.white,
-        side: const BorderSide(color: Colors.orange),
+        side: BorderSide(color: buttonColor),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
@@ -34,7 +47,7 @@ class ReportErrorButton extends StatelessWidget {
             return StatefulBuilder(
               builder: (context, setState) {
                 return AlertDialog(
-                  title: const Text("Signaler une erreur"),
+                  title: Text(dialogTitle),
                   content: SingleChildScrollView(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -50,13 +63,13 @@ class ReportErrorButton extends StatelessWidget {
                         ),
                         const SizedBox(height: 12),
                         RichText(
-                          text: const TextSpan(
-                            text: "Détails de l'erreur ",
-                            style: TextStyle(
+                          text: TextSpan(
+                            text: commentTitle,
+                            style: const TextStyle(
                               color: Colors.black,
                               fontSize: 16,
                             ),
-                            children: [
+                            children: const [
                               TextSpan(
                                 text: "*",
                                 style: TextStyle(
@@ -74,7 +87,7 @@ class ReportErrorButton extends StatelessWidget {
                           maxLength: 800,
                           decoration: InputDecoration(
                             hintText:
-                                "Décrivez le problème rencontré avec ce produit",
+                                commentHint,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -169,6 +182,42 @@ class ReportErrorButton extends StatelessWidget {
           },
         );
       },
+    );
+  }
+}
+
+class ReportErrorButton extends StatelessWidget {
+  final String barcode;
+
+  const ReportErrorButton({super.key, required this.barcode});
+
+  @override
+  Widget build(BuildContext context) {
+    return InfoDialogButton(
+      barcode: barcode,
+      buttonLabel: "Signaler une erreur",
+      dialogTitle: "Signaler une erreur",
+      commentTitle: "Quel est ce produit ? ",
+      commentHint: "Décrivez le problème rencontré avec ce produit",
+      buttonColor: Colors.orange,
+    );
+  }
+}
+
+class SendInfoButton extends StatelessWidget {
+  final String barcode;
+
+  const SendInfoButton({super.key, required this.barcode});
+
+  @override
+  Widget build(BuildContext context) {
+    return InfoDialogButton(
+      barcode: barcode,
+      buttonLabel: "Envoyer des infos",
+      dialogTitle: "Envoyer une info",
+      commentTitle: "Quel est ce produit? ",
+      commentHint: "Décrivez le produit",
+      buttonColor: Colors.blue,
     );
   }
 }
