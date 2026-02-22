@@ -263,25 +263,12 @@ class PreferencesHelper {
   }
 
   // Partners page notification methods
-  // Update this timestamp when you add new partners
-  static const String _partnersLastUpdateKey = 'partners_last_update';
   static const String _partnersLastVisitKey = 'partners_last_visit';
-
-  // Set the last update timestamp for partners (call this when adding new partners)
-  static Future<void> setPartnersLastUpdate(DateTime timestamp) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_partnersLastUpdateKey, timestamp.toIso8601String());
-  }
 
   // Get the last update timestamp for partners
   static Future<DateTime?> getPartnersLastUpdate() async {
-    final prefs = await SharedPreferences.getInstance();
-    String? timestamp = prefs.getString(_partnersLastUpdateKey);
-    if (timestamp != null) {
-      return DateTime.parse(timestamp);
-    }
-    // Default to a past date if never set (so new users see notification)
-    return DateTime(2026, 1, 31); // Set to current date when deploying
+    // Change this date when new partners added
+    return DateTime(2026, 2, 22);
   }
 
   // Mark partners page as visited
