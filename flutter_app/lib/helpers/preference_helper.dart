@@ -306,4 +306,19 @@ class PreferencesHelper {
     // Has new content if last update is after last visit
     return lastUpdate != null && lastUpdate.isAfter(lastVisit);
   }
+
+  // B12 popup notification methods
+  static const String _b12PopupShownKey = 'b12_popup_shown';
+
+  // Mark B12 popup as shown
+  static Future<void> markB12PopupAsShown() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_b12PopupShownKey, true);
+  }
+
+  // Check if B12 popup has been shown
+  static Future<bool> hasB12PopupBeenShown() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_b12PopupShownKey) ?? false;
+  }
 }

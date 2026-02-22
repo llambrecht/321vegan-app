@@ -9,6 +9,7 @@ import '../../../models/scanned_product.dart';
 import '../../../models/product_category.dart';
 import '../../../services/api_service.dart';
 import '../../../services/auth_service.dart';
+import '../../../services/products_of_interest_cache.dart';
 import 'category_list_view.dart';
 import 'category_products_view.dart';
 
@@ -477,9 +478,10 @@ class _VegandexModalState extends State<VegandexModal> {
   Future<void> _loadData() async {
     setState(() => _isLoading = true);
 
-    // Fetch interesting products and categories in parallel
+    // Fetch products from cache (instant) and categories in parallel
+    // Cache will auto-update in background
     final results = await Future.wait([
-      ApiService.getInterestingProducts(),
+      ProductsOfInterestCache.loadProductsOfInterest(),
       ApiService.getProductCategories(),
     ]);
 
