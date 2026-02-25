@@ -247,7 +247,6 @@ class _UserProfileState extends State<UserProfile> {
         _buildProfileCard(),
         SizedBox(height: 24.h),
         _buildStatsCards(),
-        SizedBox(height: 24.h),
         if ((_user?.nbProductsModified ?? 0) > 0 ||
             (_user?.nbCheckings ?? 0) > 0) ...[
           SizedBox(height: 24.h),
@@ -259,8 +258,6 @@ class _UserProfileState extends State<UserProfile> {
         _buildB12HistoryCard(),
         SizedBox(height: 24.h),
         _buildBadgesSection(),
-        SizedBox(height: 24.h),
-        _buildThemeCard(),
         SizedBox(height: 24.h),
         _buildSettingsCard(),
         SizedBox(height: 24.h),
@@ -425,6 +422,77 @@ class _UserProfileState extends State<UserProfile> {
                     ),
                   ),
                 ),
+
+                // Theme selection
+                SizedBox(height: 24.h),
+                GestureDetector(
+                  onTap: _showThemeSelector,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withValues(alpha: 0.8),
+                          Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withValues(alpha: 0.6),
+                          Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withValues(alpha: 0.8),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(12.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withValues(alpha: 0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.palette,
+                          size: 48.sp,
+                          color: Colors.white,
+                        ),
+                        SizedBox(width: 12.w),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Thèmes',
+                                style: TextStyle(
+                                  fontSize: 44.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          size: 40.sp,
+                          color: Colors.white70,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -485,7 +553,7 @@ class _UserProfileState extends State<UserProfile> {
         Expanded(
           child: _buildStatCard(
             icon: Icons.calendar_today,
-            iconColor: Theme.of(context).primaryColor,
+            iconColor: Theme.of(context).colorScheme.primary,
             title: 'Végane depuis',
             value: _user?.veganSince != null
                 ? DateFormat.yMMMd('fr_FR').format(_user!.veganSince!)
@@ -914,13 +982,16 @@ class _UserProfileState extends State<UserProfile> {
             Container(
               padding: EdgeInsets.all(16.w),
               decoration: BoxDecoration(
-                color: const Color(0xFF1A722E).withValues(alpha: 0.1),
+                color: Theme.of(context)
+                    .colorScheme
+                    .primary
+                    .withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.settings,
                 size: 56.sp,
-                color: const Color(0xFF1A722E),
+                color: Theme.of(context).colorScheme.primary,
               ),
             ),
             SizedBox(width: 20.w),
@@ -970,59 +1041,6 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
-  Widget _buildThemeCard() {
-    return GestureDetector(
-      onTap: _showThemeSelector,
-      child: _buildCard(
-        child: Row(
-          children: [
-            Container(
-              padding: EdgeInsets.all(16.w),
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.palette,
-                size: 56.sp,
-                color: Theme.of(context).primaryColor,
-              ),
-            ),
-            SizedBox(width: 20.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Thèmes',
-                    style: TextStyle(
-                      fontSize: 52.sp,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey[800],
-                    ),
-                  ),
-                  SizedBox(height: 4.h),
-                  Text(
-                    'Choisissez votre thème saisonnier',
-                    style: TextStyle(
-                      fontSize: 36.sp,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              Icons.arrow_forward_ios,
-              size: 48.sp,
-              color: Colors.grey[400],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   void _showVegandexModal() {
     showModalBottomSheet(
       context: context,
@@ -1045,9 +1063,12 @@ class _UserProfileState extends State<UserProfile> {
           children: [
             Container(
               padding: EdgeInsets.all(16.w),
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Color(0xFF4CAF50), Color(0xFF1A722E)],
+                  colors: [
+                    Theme.of(context).colorScheme.primary,
+                    Theme.of(context).colorScheme.primary.withAlpha(150),
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),

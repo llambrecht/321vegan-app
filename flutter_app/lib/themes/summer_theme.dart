@@ -4,18 +4,17 @@ import '../models/seasonal_theme.dart';
 const SeasonalTheme summerTheme = SeasonalTheme(
   name: 'Été',
   season: Season.summer,
-  primaryColor: Color(0xFF166534), // Vert vif (couleur actuelle)
-  secondaryColor: Color(0xFFFCD34D), // Jaune doré
-  accentColor: Color(0xFF60A5FA), // Bleu ciel
-  waveColor: Color(0xFF22C55E), // Vert plus vif pour la vague
-  waveAccentColor: Color(0xFF4ADE80), // Vert lumineux
-  seasonalIcon: Icons.sunny, // Icône de soleil (actuelle)
-  iconBackgroundColor: Color(0xFFFEF9C3), // Jaune très pâle
+  primaryColor: Color(0xFF166534),
+  secondaryColor: Color(0xFFFCD34D),
+  accentColor: Color(0xFF60A5FA),
+  waveColor: Color(0xFF22C55E),
+  seasonalIcon: Icons.sunny,
+  iconBackgroundColor: Color(0xFFFEF9C3),
   particleColors: [
-    Color(0xFFFCD34D), // Jaune
-    Color(0xFFFCA311), // Orange vif
-    Color(0xFF60A5FA), // Bleu
-    Color(0xFFFBBF24), // Jaune doré
+    Color(0xFFFCD34D),
+    Color(0xFFFCA311),
+    Color(0xFF60A5FA),
+    Color(0xFFFBBF24),
   ],
   confettiColors: [
     Color(0xFFFCD34D),
@@ -28,7 +27,7 @@ const SeasonalTheme summerTheme = SeasonalTheme(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
     colors: [
-      Color(0xFFFEF3C7), // Jaune très pâle
+      Color(0xFFFEF3C7),
       Colors.white,
     ],
   ),

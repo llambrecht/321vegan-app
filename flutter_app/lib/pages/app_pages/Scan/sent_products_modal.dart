@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_launcher_icons/xml_templates.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vegan_app/helpers/preference_helper.dart';
 import 'package:vegan_app/pages/app_pages/Scan/product_info_helper.dart';
@@ -116,9 +117,9 @@ class _SentProductsModalState extends State<SentProductsModal> {
           // Header
           Container(
             padding: EdgeInsets.all(20.w),
-            decoration: const BoxDecoration(
-              color: Color(0xFF1A722E),
-              borderRadius: BorderRadius.only(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primary,
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(20.0),
                 topRight: Radius.circular(20.0),
               ),

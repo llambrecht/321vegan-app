@@ -280,7 +280,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   'Se connecter',
                   style: TextStyle(
                     fontSize: 40.sp,
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(context).colorScheme.primary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

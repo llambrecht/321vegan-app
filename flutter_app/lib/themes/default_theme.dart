@@ -4,13 +4,12 @@ import '../models/seasonal_theme.dart';
 const SeasonalTheme defaultTheme = SeasonalTheme(
   name: 'Défaut',
   season: Season.defaultTheme,
-  primaryColor: Color(0xFF166534), // Vert original
-  secondaryColor: Color(0xFF22C55E), // Vert secondaire
-  accentColor: Color(0xFF86EFAC), // Vert clair
-  waveColor: Color(0xFF166534), // Vert original pour la vague
-  waveAccentColor: Color(0xFF22C55E), // Vert plus clair
-  seasonalIcon: Icons.sunny, // Icône de soleil (comme avant)
-  iconBackgroundColor: Color(0xFFF0FDF4), // Vert très pâle
+  primaryColor: Color(0xFF166534),
+  secondaryColor: Color(0xFF22C55E),
+  accentColor: Color(0xFF86EFAC),
+  waveColor: Color(0xFF166534),
+  seasonalIcon: Icons.sunny,
+  iconBackgroundColor: Color(0xFFF0FDF4),
   particleColors: [
     Color(0xFF22C55E),
     Color(0xFF86EFAC),
@@ -28,7 +27,7 @@ const SeasonalTheme defaultTheme = SeasonalTheme(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
     colors: [
-      Color(0xFFF0FDF4), // Vert très pâle
+      Color(0xFFF0FDF4),
       Colors.white,
     ],
   ),

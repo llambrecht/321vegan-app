@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../models/seasonal_theme.dart';
 import '../../helpers/theme_helper.dart';
-import 'theme_preview_card.dart';
 import '../../main.dart';
 
 class ThemeSelectorModal extends StatefulWidget {
@@ -36,7 +35,6 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal> {
   }
 
   Future<void> _saveThemeSettings() async {
-    // Show loading indicator
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -50,19 +48,15 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal> {
       await ThemeHelper.saveThemePreference(_selectedSeason);
     }
 
-    // Update the theme in the app
     if (mounted) {
       final myAppState = MyApp.of(context);
       if (myAppState != null) {
         await myAppState.updateTheme();
       }
 
-      // Close loading dialog
       Navigator.of(context).pop();
-      // Close the modal
       Navigator.of(context).pop(true);
 
-      // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -84,177 +78,472 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal> {
 
     final currentSeason = ThemeHelper.getCurrentSeason();
     final allThemes = ThemeHelper.getAllThemes();
+    final activeTheme = _isAutoTheme
+        ? ThemeHelper.getThemeBySeason(currentSeason)
+        : ThemeHelper.getThemeBySeason(_selectedSeason ?? Season.defaultTheme);
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
+        color: Colors.grey[50],
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         children: [
-          // Handle bar
+          // Header with active theme gradient
           Container(
-            margin: EdgeInsets.only(top: 20.h),
-            width: 100.w,
-            height: 8.h,
             decoration: BoxDecoration(
-              color: Colors.grey.shade300,
-              borderRadius: BorderRadius.circular(4.r),
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 10,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
-          ),
-          SizedBox(height: 30.h),
-          // Title
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 32.w),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Column(
               children: [
-                Text(
-                  'Choisir un thème',
-                  style: TextStyle(
-                    fontSize: 90.sp,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Baloo',
+                // Handle bar
+                Container(
+                  margin: EdgeInsets.only(top: 16.h),
+                  width: 60.w,
+                  height: 6.h,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(3.r),
                   ),
                 ),
-                IconButton(
-                  icon: Icon(Icons.close, size: 80.r),
-                  onPressed: () => Navigator.pop(context),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(28.w, 24.h, 16.w, 24.h),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(14.w),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              activeTheme.waveColor,
+                              activeTheme.primaryColor,
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(16.r),
+                        ),
+                        child: Icon(
+                          Icons.palette,
+                          size: 52.sp,
+                          color: Colors.white,
+                        ),
+                      ),
+                      SizedBox(width: 16.w),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Thèmes',
+                              style: TextStyle(
+                                fontSize: 56.sp,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey[800],
+                              ),
+                            ),
+                            Text(
+                              'Personnalisez l\'apparence',
+                              style: TextStyle(
+                                fontSize: 36.sp,
+                                color: Colors.grey[500],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: Container(
+                          padding: EdgeInsets.all(8.w),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[100],
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.close,
+                            size: 48.sp,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
-          SizedBox(height: 20.h),
-          // Auto theme toggle
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 32.w),
-            child: Container(
-              padding: EdgeInsets.all(24.w),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade50,
-                borderRadius: BorderRadius.circular(20.r),
-                border: Border.all(color: Colors.grey.shade200),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Thème automatique',
-                          style: TextStyle(
-                            fontSize: 60.sp,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Baloo',
-                          ),
-                        ),
-                        SizedBox(height: 8.h),
-                        Text(
-                          'Change selon la saison en cours',
-                          style: TextStyle(
-                            fontSize: 45.sp,
-                            color: Colors.grey.shade600,
-                            fontFamily: 'Baloo',
-                          ),
-                        ),
-                        if (_isAutoTheme)
-                          Padding(
-                            padding: EdgeInsets.only(top: 8.h),
-                            child: Text(
-                              'Saison actuelle : ${ThemeHelper.getThemeDisplayName(currentSeason)}',
-                              style: TextStyle(
-                                fontSize: 45.sp,
-                                color:
-                                    ThemeHelper.getThemeBySeason(currentSeason)
-                                        .primaryColor,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'Baloo',
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                  Switch(
-                    value: _isAutoTheme,
-                    onChanged: (value) {
-                      setState(() {
-                        _isAutoTheme = value;
-                      });
-                    },
-                    activeColor: Theme.of(context).primaryColor,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(height: 30.h),
-          // Theme list
-          Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.zero,
-              itemCount: allThemes.length,
-              itemBuilder: (context, index) {
-                final theme = allThemes[index];
-                final isSelected =
-                    !_isAutoTheme && _selectedSeason == theme.season;
-                final isCurrentSeason = theme.season == currentSeason;
 
-                return Stack(
-                  children: [
-                    Opacity(
-                      opacity: _isAutoTheme && !isCurrentSeason ? 0.5 : 1.0,
-                      child: ThemePreviewCard(
-                        theme: theme,
-                        isSelected: _isAutoTheme ? isCurrentSeason : isSelected,
-                        onTap: _isAutoTheme
-                            ? () {}
-                            : () {
-                                setState(() {
-                                  _selectedSeason = theme.season;
-                                });
-                              },
-                      ),
+          // Content
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
+              children: [
+                // Auto theme toggle card
+                _buildAutoThemeToggle(currentSeason),
+
+                SizedBox(height: 24.h),
+
+                // Section title
+                Padding(
+                  padding: EdgeInsets.only(left: 4.w, bottom: 16.h),
+                  child: Text(
+                    'Choisir un thème',
+                    style: TextStyle(
+                      fontSize: 44.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[700],
                     ),
-                    if (_isAutoTheme && !isCurrentSeason)
-                      Positioned.fill(
-                        child: Container(
-                          color: Colors.white.withValues(alpha: 0.7),
-                        ),
-                      ),
-                  ],
-                );
-              },
+                  ),
+                ),
+
+                // Themes grid
+                ...allThemes.map((theme) {
+                  final isSelected =
+                      !_isAutoTheme && _selectedSeason == theme.season;
+                  final isCurrentSeason = theme.season == currentSeason;
+                  final isActive = _isAutoTheme ? isCurrentSeason : isSelected;
+                  final isDisabled = _isAutoTheme && !isCurrentSeason;
+
+                  return Padding(
+                    padding: EdgeInsets.only(bottom: 16.h),
+                    child: _buildThemeCard(
+                      theme,
+                      isActive: isActive,
+                      isDisabled: isDisabled,
+                      isCurrentSeason: isCurrentSeason,
+                    ),
+                  );
+                }),
+
+                SizedBox(height: 16.h),
+              ],
             ),
           ),
+
           // Apply button
-          Padding(
-            padding: EdgeInsets.all(32.w),
+          Container(
+            padding: EdgeInsets.fromLTRB(24.w, 16.h, 24.w, 32.h),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.06),
+                  blurRadius: 10,
+                  offset: const Offset(0, -2),
+                ),
+              ],
+            ),
             child: SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: _saveThemeSettings,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).primaryColor,
+                  backgroundColor: activeTheme.primaryColor,
                   foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(vertical: 50.h),
+                  padding: EdgeInsets.symmetric(vertical: 20.h),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25.r),
+                    borderRadius: BorderRadius.circular(16.r),
                   ),
-                  elevation: 4,
+                  elevation: 0,
                 ),
                 child: Text(
-                  'Appliquer le thème',
+                  'Appliquer',
                   style: TextStyle(
-                    fontSize: 60.sp,
+                    fontSize: 48.sp,
                     fontWeight: FontWeight.bold,
-                    fontFamily: 'Baloo',
                   ),
                 ),
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAutoThemeToggle(Season currentSeason) {
+    final currentTheme = ThemeHelper.getThemeBySeason(currentSeason);
+
+    return Container(
+      padding: EdgeInsets.all(20.w),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
+        border: Border.all(
+          color: _isAutoTheme
+              ? currentTheme.primaryColor.withValues(alpha: 0.3)
+              : Colors.grey[200]!,
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: EdgeInsets.all(12.w),
+            decoration: BoxDecoration(
+              color: _isAutoTheme
+                  ? currentTheme.primaryColor.withValues(alpha: 0.1)
+                  : Colors.grey[100],
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.auto_awesome,
+              size: 48.sp,
+              color:
+                  _isAutoTheme ? currentTheme.primaryColor : Colors.grey[400],
+            ),
+          ),
+          SizedBox(width: 16.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Thème automatique',
+                  style: TextStyle(
+                    fontSize: 44.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey[800],
+                  ),
+                ),
+                SizedBox(height: 2.h),
+                Text(
+                  _isAutoTheme
+                      ? 'Saison : ${ThemeHelper.getThemeDisplayName(currentSeason)}'
+                      : 'Change selon la saison',
+                  style: TextStyle(
+                    fontSize: 36.sp,
+                    color: _isAutoTheme
+                        ? currentTheme.primaryColor
+                        : Colors.grey[500],
+                    fontWeight:
+                        _isAutoTheme ? FontWeight.w600 : FontWeight.normal,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Switch(
+            value: _isAutoTheme,
+            onChanged: (value) {
+              setState(() {
+                _isAutoTheme = value;
+              });
+            },
+            activeTrackColor: currentTheme.primaryColor,
+            activeThumbColor: Colors.white,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildThemeCard(
+    SeasonalTheme theme, {
+    required bool isActive,
+    required bool isDisabled,
+    required bool isCurrentSeason,
+  }) {
+    final isDefault = theme.season == Season.defaultTheme;
+    final gradientStart =
+        isDefault ? const Color(0xFF9E9E9E) : theme.waveColor;
+    final gradientEnd =
+        isDefault ? const Color(0xFF616161) : theme.primaryColor;
+    final shadowColor = isDefault ? Colors.grey : theme.primaryColor;
+    final checkColor = isDefault ? Colors.grey[700]! : theme.primaryColor;
+
+    return GestureDetector(
+      onTap: isDisabled
+          ? null
+          : () {
+              if (!_isAutoTheme) {
+                setState(() {
+                  _selectedSeason = theme.season;
+                });
+              }
+            },
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 200),
+        opacity: isDisabled ? 0.4 : 1.0,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          height: 260.h,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.r),
+            border: Border.all(
+              color: isActive ? Colors.white : Colors.transparent,
+              width: isActive ? 3 : 0,
+            ),
+            boxShadow: [
+              if (isActive)
+                BoxShadow(
+                  color: shadowColor.withValues(alpha: 0.4),
+                  blurRadius: 20,
+                  offset: const Offset(0, 6),
+                  spreadRadius: 2,
+                ),
+              BoxShadow(
+                color: shadowColor.withValues(alpha: 0.15),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(isActive ? 17.r : 20.r),
+            child: Stack(
+              children: [
+                // Full gradient background
+                Positioned.fill(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [gradientStart, gradientEnd],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                    ),
+                  ),
+                ),
+                // Large seasonal icon in background
+                Positioned(
+                  right: -60.w,
+                  top: -40.h,
+                  child: Icon(
+                    theme.seasonalIcon,
+                    size: 600.r,
+                    color: Colors.white.withValues(alpha: 0.15),
+                  ),
+                ),
+                // Content overlay
+                Positioned.fill(
+                  child: Padding(
+                    padding: EdgeInsets.all(20.w),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Top row: badges
+                        Row(
+                          children: [
+                            if (_isAutoTheme && isCurrentSeason)
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 12.w, vertical: 5.h),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.25),
+                                  borderRadius: BorderRadius.circular(10.r),
+                                ),
+                                child: Text(
+                                  'Saison actuelle',
+                                  style: TextStyle(
+                                    fontSize: 30.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            const Spacer(),
+                            // Selection indicator
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              width: 48.w,
+                              height: 48.w,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: isActive
+                                    ? Colors.white
+                                    : Colors.white.withValues(alpha: 0.25),
+                                border: Border.all(
+                                  color: Colors.white
+                                      .withValues(alpha: isActive ? 1.0 : 0.5),
+                                  width: 2,
+                                ),
+                              ),
+                              child: isActive
+                                  ? Icon(
+                                      Icons.check,
+                                      size: 32.sp,
+                                      color: checkColor,
+                                    )
+                                  : null,
+                            ),
+                          ],
+                        ),
+                        // Bottom: name + color dots
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              theme.name,
+                              style: TextStyle(
+                                fontSize: 56.sp,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                shadows: [
+                                  Shadow(
+                                    color: Colors.black.withValues(alpha: 0.2),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 1),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 8.h),
+                            Row(
+                              children: [
+                                _buildColorDot(theme.primaryColor),
+                                SizedBox(width: 8.w),
+                                _buildColorDot(theme.secondaryColor),
+                                SizedBox(width: 8.w),
+                                _buildColorDot(theme.accentColor),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildColorDot(Color color) {
+    return Container(
+      width: 24.w,
+      height: 24.w,
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: Colors.white,
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.3),
+            blurRadius: 3,
+            offset: const Offset(0, 1),
           ),
         ],
       ),

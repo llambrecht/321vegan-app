@@ -813,8 +813,9 @@ class _VegandexModalState extends State<VegandexModal> {
                                     child: ElevatedButton(
                                       onPressed: _requestLocationPermission,
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            const Color(0xFF1A722E),
+                                        backgroundColor: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
                                         padding: EdgeInsets.symmetric(
                                             vertical: 16.h),
                                         shape: RoundedRectangleBorder(

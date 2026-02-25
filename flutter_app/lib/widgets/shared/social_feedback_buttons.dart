@@ -61,7 +61,7 @@ class SocialFeedbackButtons extends StatelessWidget {
         ElevatedButton(
           onPressed: () => _rateApp(context),
           style: ElevatedButton.styleFrom(
-            backgroundColor: Theme.of(context).primaryColor,
+            backgroundColor: Theme.of(context).colorScheme.primary,
             foregroundColor: Colors.white,
             padding: EdgeInsets.symmetric(
               horizontal: 24.w,

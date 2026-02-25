@@ -50,17 +50,17 @@ class _SeasonalIconState extends State<SeasonalIcon>
         );
         break;
       case Season.spring:
-        // Gentle rotation and pulsing for spring (flower blooming)
-        _rotationAnimation = Tween<double>(begin: -0.1, end: 0.1).animate(
+        //  Bouncy hop for spring
+        _rotationAnimation = Tween<double>(begin: -0.08, end: 0.08).animate(
           CurvedAnimation(
             parent: _animationController,
             curve: Curves.easeInOut,
           ),
         );
-        _scaleAnimation = Tween<double>(begin: 0.95, end: 1.05).animate(
+        _scaleAnimation = Tween<double>(begin: 0.28, end: 0.38).animate(
           CurvedAnimation(
             parent: _animationController,
-            curve: Curves.easeInOut,
+            curve: Curves.elasticOut,
           ),
         );
         break;
@@ -81,13 +81,13 @@ class _SeasonalIconState extends State<SeasonalIcon>
         break;
       case Season.autumn:
         // Gentle swaying for autumn leaves
-        _rotationAnimation = Tween<double>(begin: -0.2, end: 0.2).animate(
+        _rotationAnimation = Tween<double>(begin: -0.5, end: 0.7).animate(
           CurvedAnimation(
             parent: _animationController,
             curve: Curves.easeInOut,
           ),
         );
-        _scaleAnimation = Tween<double>(begin: 0.9, end: 1.0).animate(
+        _scaleAnimation = Tween<double>(begin: 0.6, end: 0.6).animate(
           CurvedAnimation(
             parent: _animationController,
             curve: Curves.easeInOut,
@@ -133,14 +133,20 @@ class _SeasonalIconState extends State<SeasonalIcon>
     return AnimatedBuilder(
       animation: _animationController,
       builder: (context, child) {
-        return Transform.rotate(
-          angle: _rotationAnimation.value,
-          child: Transform.scale(
-            scale: _scaleAnimation.value,
-            child: Icon(
-              widget.theme.seasonalIcon,
-              size: 889.r,
-              color: Colors.white,
+        return Transform.translate(
+          offset: Offset(
+            widget.theme.iconLeftPosition.w,
+            widget.theme.iconTopPosition.h,
+          ),
+          child: Transform.rotate(
+            angle: _rotationAnimation.value,
+            child: Transform.scale(
+              scale: _scaleAnimation.value,
+              child: Icon(
+                widget.theme.seasonalIcon,
+                size: 889.r,
+                color: Colors.white,
+              ),
             ),
           ),
         );
