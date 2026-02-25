@@ -13,6 +13,8 @@ import './edit_profile_modal.dart';
 import '../shared/social_feedback_buttons.dart';
 import '../vegandex/vegandex_modal.dart';
 import '../theme/theme_selector_modal.dart';
+import '../../pages/app_pages/Profile/b12_reminder_settings_page.dart';
+import '../../services/b12_reminder_service.dart';
 
 class UserProfile extends StatefulWidget {
   final VoidCallback? onLogout;
@@ -34,6 +36,7 @@ class _UserProfileState extends State<UserProfile> {
   String? _selectedAvatar;
   bool _openOnScanPage = false;
   bool _showBoycott = true;
+  List<DateTime> _b12History = [];
 
   final List<String> _availableAvatars = [
     'lapin.png',
@@ -43,7 +46,8 @@ class _UserProfileState extends State<UserProfile> {
     'poule.png',
     'mouton.png',
     'cochon.png',
-    'vache.png'
+    'vache.png',
+    'chat.png',
   ];
 
   @override
@@ -51,6 +55,39 @@ class _UserProfileState extends State<UserProfile> {
     super.initState();
     _loadUserInfo();
     _loadPreferences();
+    _loadB12History();
+  }
+
+  Future<void> _loadB12History() async {
+    final history = await B12ReminderService.getB12IntakeHistory();
+    if (mounted) {
+      setState(() {
+        _b12History = history;
+      });
+    }
+  }
+
+  bool get _b12TakenToday {
+    if (_b12History.isEmpty) return false;
+    final today = DateTime.now();
+    final last = _b12History.first;
+    return last.year == today.year &&
+        last.month == today.month &&
+        last.day == today.day;
+  }
+
+  Future<void> _markB12AsTaken() async {
+    await B12ReminderService.recordB12Intake();
+    await _loadB12History();
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('B12 prise enregistrée !'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
   String _getRandomAvatar(String? currentAvatar) {
@@ -210,6 +247,7 @@ class _UserProfileState extends State<UserProfile> {
         _buildProfileCard(),
         SizedBox(height: 24.h),
         _buildStatsCards(),
+        SizedBox(height: 24.h),
         if ((_user?.nbProductsModified ?? 0) > 0 ||
             (_user?.nbCheckings ?? 0) > 0) ...[
           SizedBox(height: 24.h),
@@ -217,6 +255,8 @@ class _UserProfileState extends State<UserProfile> {
         ],
         SizedBox(height: 24.h),
         _buildVegandexCard(),
+        SizedBox(height: 24.h),
+        _buildB12HistoryCard(),
         SizedBox(height: 24.h),
         _buildBadgesSection(),
         SizedBox(height: 24.h),
@@ -236,46 +276,77 @@ class _UserProfileState extends State<UserProfile> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Profile avatar
-          GestureDetector(
-            onTap: _openEditProfileModal,
-            child: SizedBox(
-              width: 400.w,
-              height: 480.w,
-              child: ClipOval(
-                child: _selectedAvatar != null
-                    ? Padding(
-                        padding: EdgeInsets.all(16.w),
-                        child: Image.asset(
-                          'lib/assets/avatars/$_selectedAvatar',
-                          fit: BoxFit.contain,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Icon(
-                              Icons.person,
-                              size: 64.sp,
-                              color: Colors.green,
-                            );
-                          },
-                        ),
-                      )
-                    : Image.asset(
-                        'lib/assets/avatars/cochon.png',
-                        fit: BoxFit.contain,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Icon(
-                            Icons.person,
-                            size: 64.sp,
-                            color: Colors.green,
-                          );
-                        },
-                      ),
+          // Profile avatar with edit badge
+          Stack(
+            children: [
+              GestureDetector(
+                onTap: _openEditProfileModal,
+                child: SizedBox(
+                  width: 400.w,
+                  height: 480.w,
+                  child: ClipOval(
+                    child: _selectedAvatar != null
+                        ? Padding(
+                            padding: EdgeInsets.all(16.w),
+                            child: Image.asset(
+                              'lib/assets/avatars/$_selectedAvatar',
+                              fit: BoxFit.contain,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Icon(
+                                  Icons.person,
+                                  size: 64.sp,
+                                  color: Colors.green,
+                                );
+                              },
+                            ),
+                          )
+                        : Image.asset(
+                            'lib/assets/avatars/cochon.png',
+                            fit: BoxFit.contain,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Icon(
+                                Icons.person,
+                                size: 64.sp,
+                                color: Colors.green,
+                              );
+                            },
+                          ),
+                  ),
+                ),
               ),
-            ),
+              // Edit badge overlay
+              Positioned(
+                top: 0,
+                right: 0,
+                child: GestureDetector(
+                  onTap: _openEditProfileModal,
+                  child: Container(
+                    padding: EdgeInsets.all(12.w),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.2),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Icon(
+                      Icons.edit,
+                      size: 48.sp,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
 
           SizedBox(width: 24.w),
 
-          // User info
+          // User info with B12 reminder
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -295,17 +366,66 @@ class _UserProfileState extends State<UserProfile> {
                     color: Colors.grey[600],
                   ),
                 ),
-              ],
-            ),
-          ),
 
-          // Edit button
-          IconButton(
-            onPressed: _openEditProfileModal,
-            icon: Icon(
-              Icons.edit,
-              size: 80.sp,
-              color: Theme.of(context).colorScheme.primary,
+                // B12 Reminder with golden background
+                SizedBox(height: 30.h),
+                GestureDetector(
+                  onTap: _navigateToB12Settings,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color(0xFFFFD700), // Gold
+                          Color(0xFFFFE44D), // Lighter gold
+                          Color(0xFFFFD700), // Gold
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(12.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFFFFD700).withValues(alpha: 0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.alarm,
+                          size: 48.sp,
+                          color: Colors.grey[800],
+                        ),
+                        SizedBox(width: 12.w),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Rappel B12',
+                                style: TextStyle(
+                                  fontSize: 44.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey[800],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          size: 40.sp,
+                          color: Colors.grey[700],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -521,6 +641,266 @@ class _UserProfileState extends State<UserProfile> {
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  void _navigateToB12Settings() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const B12ReminderSettingsPage(),
+      ),
+    );
+  }
+
+  Widget _buildB12HistoryCard() {
+    final formatter = DateFormat('EEEE d MMMM yyyy', 'fr_FR');
+    final lastTaken = _b12History.isNotEmpty ? _b12History.first : null;
+    final takenToday = _b12TakenToday;
+
+    return _buildCard(
+      child: Column(
+        children: [
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: _b12History.isNotEmpty ? () => _showB12HistoryModal() : null,
+            child: Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(16.w),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primary
+                        .withValues(alpha: 0.15),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Text(
+                    '💊',
+                    style: TextStyle(fontSize: 48.sp),
+                  ),
+                ),
+                SizedBox(width: 20.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Historique B12',
+                        style: TextStyle(
+                          fontSize: 52.sp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey[800],
+                        ),
+                      ),
+                      SizedBox(height: 4.h),
+                      if (lastTaken != null)
+                        Text(
+                          'Dernière prise : ${formatter.format(lastTaken)}',
+                          style: TextStyle(
+                            fontSize: 36.sp,
+                            color: Colors.grey[600],
+                          ),
+                        )
+                      else
+                        Text(
+                          'Aucune prise enregistrée',
+                          style: TextStyle(
+                            fontSize: 36.sp,
+                            color: Colors.grey[500],
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                if (_b12History.isNotEmpty)
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    size: 40.sp,
+                    color: Colors.grey[400],
+                  ),
+              ],
+            ),
+          ),
+          SizedBox(height: 16.h),
+          SizedBox(
+            width: double.infinity,
+            child: takenToday
+                ? Container(
+                    padding: EdgeInsets.symmetric(vertical: 16.h),
+                    decoration: BoxDecoration(
+                      color: Colors.green.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(
+                        color: Colors.green.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.check_circle,
+                          size: 44.sp,
+                          color: Colors.green[700],
+                        ),
+                        SizedBox(width: 10.w),
+                        Text(
+                          'B12 prise aujourd\'hui',
+                          style: TextStyle(
+                            fontSize: 40.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.green[700],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : ElevatedButton.icon(
+                    onPressed: _markB12AsTaken,
+                    icon: Icon(Icons.check, size: 70.sp),
+                    label: Text(
+                      'B12 prise aujourd\'hui !',
+                      style: TextStyle(fontSize: 40.sp),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(vertical: 16.h),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                    ),
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showB12HistoryModal() {
+    final formatter = DateFormat('EEEE d MMMM yyyy', 'fr_FR');
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => GestureDetector(
+        onTap: () => Navigator.pop(context),
+        behavior: HitTestBehavior.opaque,
+        child: DraggableScrollableSheet(
+          initialChildSize: 0.6,
+          minChildSize: 0.3,
+          maxChildSize: 0.9,
+          builder: (context, scrollController) => GestureDetector(
+            onTap: () {},
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
+              ),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(24.w),
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 60.w,
+                          height: 6.h,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius: BorderRadius.circular(3.r),
+                          ),
+                        ),
+                        SizedBox(height: 20.h),
+                        Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(16.w),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withValues(alpha: 0.15),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Text(
+                                '💊',
+                                style: TextStyle(fontSize: 48.sp),
+                              ),
+                            ),
+                            SizedBox(width: 16.w),
+                            Text(
+                              'Historique B12',
+                              style: TextStyle(
+                                fontSize: 56.sp,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey[800],
+                              ),
+                            ),
+                            const Spacer(),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 16.w, vertical: 8.h),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(20.r),
+                              ),
+                              child: Text(
+                                '${_b12History.length} prise${_b12History.length > 1 ? 's' : ''}',
+                                style: TextStyle(
+                                  fontSize: 36.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(height: 1, color: Colors.grey[200]),
+                  Expanded(
+                    child: ListView.builder(
+                      controller: scrollController,
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 24.w, vertical: 16.h),
+                      itemCount: _b12History.length,
+                      itemBuilder: (context, index) {
+                        final date = _b12History[index];
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: 12.h),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.check_circle,
+                                size: 44.sp,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                              SizedBox(width: 16.w),
+                              Text(
+                                formatter.format(date),
+                                style: TextStyle(
+                                  fontSize: 40.sp,
+                                  color: Colors.grey[700],
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

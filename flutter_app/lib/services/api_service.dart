@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:vegan_app/models/partners/partners.dart';
 import 'auth_service.dart';
 import '../models/product_of_interest.dart';
 import '../models/product_category.dart';
@@ -183,6 +184,31 @@ class ApiService {
         final List<dynamic> data = json.decode(utf8.decode(response.bodyBytes));
         return data.map((item) => ProductCategory.fromJson(item)).toList()
           ..sort((a, b) => a.name.compareTo(b.name));
+      }
+
+      return [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  // Get all partners
+  static Future<List<Partners>> getPartners() async {
+    try {
+      final url =
+          Uri.parse('$_baseUrl/partners/search?is_active=true&page_size=100');
+
+      final response = await http.get(
+        url,
+        headers: _headers,
+      );
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final Map<String, dynamic> data =
+            json.decode(utf8.decode(response.bodyBytes));
+        return (data['items'] as List<dynamic>)
+            .map((item) => Partners.fromJson(item))
+            .toList();
       }
 
       return [];

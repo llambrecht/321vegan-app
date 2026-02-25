@@ -1,16 +1,55 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:vegan_app/models/partners/partners.dart';
+import 'package:vegan_app/services/api_service.dart';
 
-// HOW TO SHOW "NEW CONTENT" NOTIFICATION:
-// When you add new partners or update this page, call this in initState or build:
-// PreferencesHelper.setPartnersLastUpdate(DateTime.now());
-//
-// This will show an animated red dot on the "Promos" tab icon until the user visits the page.
-// Users who have already visited will see the notification again after you update.
-
-class PartnersPage extends StatelessWidget {
+class PartnersPage extends StatefulWidget {
   const PartnersPage({super.key});
+
+  @override
+  State<PartnersPage> createState() => _PartnersPageState();
+}
+
+class _PartnersPageState extends State<PartnersPage> {
+  List<Partners> _partners = [];
+  bool _isLoading = false;
+  String get _baseUrl =>
+      dotenv.env['API_BASE_URL'] ?? 'https://api.321vegan.fr';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPartnersInfo();
+  }
+
+  Future<void> _loadPartnersInfo() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final result = await ApiService.getPartners();
+    setState(() {
+      _partners = result;
+      _isLoading = false;
+    });
+  }
+
+  Map<int, List<Partners>> _groupPartnersByCategory() {
+    final Map<int, List<Partners>> grouped = {};
+
+    for (final partner in _partners) {
+      final categoryId = partner.category.id;
+      if (!grouped.containsKey(categoryId)) {
+        grouped[categoryId] = [];
+      }
+      grouped[categoryId]!.add(partner);
+    }
+
+    return grouped;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,145 +135,63 @@ class PartnersPage extends StatelessWidget {
 
             // Content
             Expanded(
-              child: ListView(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-                children: [
-                  // Cosmétiques & Entretien
-                  _buildCategoryTitle('🧴 Cosmétiques & Entretien'),
-                  _buildPartnerCard(
-                    context: context,
-                    brandName: 'Comme Avant',
-                    logoName: 'logo-comme-avant.png',
-                    discountCode: 'VEGAN10',
-                    discountAmount: '10% de réduction (1/ personne)',
-                    websiteUrl: 'https://www.comme-avant.bio/?ae=1379',
-                    description:
-                        'Des cosmétiques et produits d\'entretiens 100% vegan, éthiques, fabriqués à la main en France par une entreprise engagée. Vend aussi quelques vêtements durables',
-                    hasCommission: true,
-                  ),
-                  // Nutrition & Suppléments
-                  _buildCategoryTitle('🥗 Nutrition & Suppléments'),
-                  _buildPartnerCard(
-                    context: context,
-                    brandName: 'Maison Protéine',
-                    logoName: 'logo-maisonprot.png',
-                    discountCode: '321MAISON10',
-                    discountAmount: '10% sur la première commande',
-                    websiteUrl: 'https://maisonproteine.com/fr/',
-                    description:
-                        'Des protéines en poudre véganes, bio, fabriquées en france, avec des ingrédients simples et sains',
-                    hasCommission: true,
-                  ),
-                  _buildPartnerCard(
-                    context: context,
-                    brandName: 'Reify',
-                    logoName: 'logo-reify.webp',
-                    discountCode: '321VEGAN',
-                    discountAmount: '10% de réduction',
-                    websiteUrl: 'https://reifynutrition.com/discount/321vegan',
-                    description:
-                        'Barres salées protéinées. Un snack français audacieux : salé, sain et plein de bons nutriments.',
-                    hasCommission: true,
-                  ),
-                  _buildPartnerCard(
-                    context: context,
-                    brandName: 'Pulse Protein',
-                    logoName: 'logo-pulse.png',
-                    discountCode: '321VEGAN10',
-                    discountAmount: '10% de réduction',
-                    websiteUrl:
-                        'https://pulseprotein.co?sca_ref=10392739.eblIYTrBBL&utm_source=affiliate&utm_medium=affiliate&utm_campaign=influence',
-                    description:
-                        'Marque française de produits protéinés sains et gourmands. Véganes, sans gluten et sans soja.',
-                    hasCommission: true,
-                  ),
-                  _buildCategoryTitle('🛍️ Mode & Lifestyle'),
-                  _buildPartnerCard(
-                    context: context,
-                    brandName: 'Zebra Vegan Shop',
-                    logoName: 'logo-zebra.png',
-                    discountCode: '321-ZEBRA5',
-                    discountAmount: '5% de réduction',
-                    websiteUrl: 'https://www.zebraveganshop.com/?ref=8EC73D',
-                    description:
-                        'La boutique en ligne qui regroupe la plus belle sélection de marques de mode vegan. Fabriqués en Europe à partir de matériaux éco-responsables',
-                    hasCommission: true,
-                  ),
-                  _buildCategoryTitle("🥚 Alternatives aux oeufs"),
-                  _buildPartnerCard(
-                    context: context,
-                    brandName: 'Yumgo',
-                    logoName: 'logo-yumgo.webp',
-                    discountCode: '321VEGAN10',
-                    discountAmount: '10% de réduction',
-                    websiteUrl: 'https://yumgo.fr/discount/321VEGAN10',
-                    description:
-                        'Alternatives végétales aux oeufs. Même texture, même gourmandise et sans allergènes. Fabriqué en France à partir d\'ingrédients simples et naturels.',
-                    hasCommission: true,
-                  ),
-                  _buildPartnerCard(
-                    context: context,
-                    brandName: 'Le Papondu',
-                    logoName: 'logo-papondu.png',
-                    discountCode: 'PAPON10',
-                    discountAmount: '10% sur la première commande',
-                    websiteUrl: 'https://papondu.fr/acheter/',
-                    description:
-                        'Alternatives végétales aux oeufs. Ingrédients d\'origine naturelle. Permet de substituer les oeufs dans toutes vos recettes',
-                  ),
-
-                  _buildCategoryTitle("🥤 Boissons énergisantes"),
-                  _buildPartnerCard(
-                    context: context,
-                    brandName: 'Ragnarok',
-                    logoName: 'logo-ragna.png',
-                    discountCode: '321VEGAN20',
-                    discountAmount: '20% de réduction',
-                    websiteUrl:
-                        'https://www.ragnarok-store.fr?sca_ref=10220957.G2u78D4maJ39',
-                    description:
-                        'Marque française d’énergie, regroupe RAGNADRINK (boissons énergisantes) et RAGNABOOST (pastilles énergisantes).',
-                    hasCommission: true,
-                  ),
-                  _buildCategoryTitle('🍽️ Alimentation générale'),
-                  _buildPartnerCard(
-                    context: context,
-                    brandName: 'Official Vegan Shop ',
-                    logoName: 'logo-ovs.png',
-                    discountCode: '321VEGANOVS',
-                    discountAmount: '5% de réduction (hors promos)',
-                    websiteUrl: 'https://www.officialveganshop.com/',
-                    description:
-                        'Boutique en ligne entièrement végane avec de très nombreuses références.',
-                  ),
-                  _buildPartnerCard(
-                    context: context,
-                    brandName: 'Terroirs Véganes',
-                    logoName: 'logo-terroirs.png',
-                    discountCode: '321VEGAN10',
-                    discountAmount: '10% de réduction (hors promos)',
-                    websiteUrl: 'https://www.terroirs-veganes.fr',
-                    description:
-                        'Des produits du terroir, innovants, essentiellement français. Véganes militantes, Lisa & Florence sont également les fondatrices du sanctuaire la Pondation de Félicie',
-                  ),
-
-                  _buildPartnerCard(
-                    context: context,
-                    brandName: 'Vegetal Food',
-                    logoName: 'logo-vegetalfood.png',
-                    discountCode: '321VEGAN10',
-                    discountAmount: '10% de réduction (hors promos)',
-                    websiteUrl: 'https://vegetalfood.fr',
-                    description:
-                        'Boutique de produits alimentaires véganes en ligne avec un très large choix !',
-                  ),
-                ],
-              ),
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _partners.isEmpty
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.card_giftcard,
+                                size: 200.sp,
+                                color: Colors.grey[400],
+                              ),
+                              SizedBox(height: 32.h),
+                              Text(
+                                'Aucun partenaire disponible',
+                                style: TextStyle(
+                                  fontSize: 52.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey[800],
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : ListView(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 16.w, vertical: 12.h),
+                          children: _buildPartnersList(),
+                        ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  List<Widget> _buildPartnersList() {
+    final grouped = _groupPartnersByCategory();
+    final List<Widget> widgets = [];
+
+    // Sort categories by id
+    final sortedCategoryIds = grouped.keys.toList()..sort();
+
+    for (final categoryId in sortedCategoryIds) {
+      final partners = grouped[categoryId]!;
+      final categoryName = partners.first.category.name;
+
+      widgets.add(_buildCategoryTitle(categoryName));
+
+      for (final partner in partners) {
+        widgets.add(_buildPartnerCard(partner: partner));
+      }
+    }
+
+    widgets.add(SizedBox(height: 45.h));
+
+    return widgets;
   }
 
   Widget _buildCategoryTitle(String title) {
@@ -252,15 +209,11 @@ class PartnersPage extends StatelessWidget {
   }
 
   Widget _buildPartnerCard({
-    required BuildContext context,
-    required String brandName,
-    required String logoName,
-    required String discountCode,
-    required String discountAmount,
-    required String websiteUrl,
-    required String description,
-    bool hasCommission = false,
+    required Partners partner,
   }) {
+    // Construct the logo URL from the API base URL and logo path
+    final logoUrl = '$_baseUrl/${partner.logoPath}';
+
     return Card(
       margin: EdgeInsets.all(16.h),
       elevation: 5,
@@ -269,7 +222,7 @@ class PartnersPage extends StatelessWidget {
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(16.r),
-        onTap: () => _launchWebsite(context, websiteUrl),
+        onTap: () => _launchWebsite(context, partner.url),
         child: Padding(
           padding: EdgeInsets.all(20.w),
           child: Row(
@@ -280,14 +233,23 @@ class PartnersPage extends StatelessWidget {
                 height: 250.w,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12.r),
-                  child: Image.asset(
-                    'lib/assets/partners/$logoName',
+                  child: CachedNetworkImage(
+                    imageUrl: logoUrl,
                     fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Icon(
-                        Icons.store,
-                        size: 100.w,
-                        color: Colors.grey[600],
+                    placeholder: (context, url) => Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.grey[400],
+                      ),
+                    ),
+                    errorWidget: (context, url, error) {
+                      return Container(
+                        color: Colors.grey[200],
+                        child: Icon(
+                          Icons.image_not_supported,
+                          size: 80.sp,
+                          color: Colors.grey[400],
+                        ),
                       );
                     },
                   ),
@@ -306,7 +268,7 @@ class PartnersPage extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            brandName,
+                            partner.name,
                             style: TextStyle(
                               fontSize: 52.sp,
                               fontWeight: FontWeight.bold,
@@ -314,7 +276,7 @@ class PartnersPage extends StatelessWidget {
                             ),
                           ),
                         ),
-                        if (hasCommission)
+                        if (partner.isAffiliate)
                           Icon(
                             Icons.star,
                             color: Colors.amber,
@@ -323,22 +285,11 @@ class PartnersPage extends StatelessWidget {
                       ],
                     ),
 
-                    SizedBox(height: 4.h),
-
-                    // Description
-                    Text(
-                      description,
-                      style: TextStyle(
-                        fontSize: 38.sp,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-
                     SizedBox(height: 8.h),
 
                     // Discount amount
                     Text(
-                      discountAmount,
+                      partner.discountText,
                       style: TextStyle(
                         fontSize: 40.sp,
                         fontWeight: FontWeight.bold,
@@ -359,7 +310,7 @@ class PartnersPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20.r),
                       ),
                       child: Text(
-                        'Code: $discountCode',
+                        'Code: ${partner.discountCode}',
                         style: TextStyle(
                           fontSize: 36.sp,
                           color: Colors.white,

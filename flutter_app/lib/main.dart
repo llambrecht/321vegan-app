@@ -9,6 +9,11 @@ import 'services/auth_service.dart';
 import 'helpers/theme_helper.dart';
 import 'models/seasonal_theme.dart';
 import 'themes/default_theme.dart';
+import 'services/notification_service.dart';
+import 'services/products_of_interest_cache.dart';
+
+/// Global navigator key for showing dialogs from notification handlers
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,6 +21,11 @@ void main() async {
   await DatabaseHelper.instance.database;
   await DatabaseHelper.instance.cosmeticsDatabase;
   await AuthService.init();
+  await NotificationService().initialize();
+
+  // Pre-load products of interest cache at app startup (when likely to have internet)
+  ProductsOfInterestCache.initializeAtStartup();
+
   runApp(const MyApp());
 }
 
@@ -71,6 +81,7 @@ class _MyAppState extends State<MyApp> {
         data: MediaQuery.of(context)
             .copyWith(textScaler: const TextScaler.linear(1.0)),
         child: MaterialApp(
+          navigatorKey: navigatorKey,
           title: '321 Vegan',
           debugShowCheckedModeBanner: false,
           theme: themeData,

@@ -12,12 +12,12 @@ import 'package:vegan_app/pages/app_pages/Scan/sent_products_modal.dart';
 import 'package:vegan_app/pages/app_pages/Scan/settings_modal.dart';
 import 'package:vegan_app/pages/app_pages/Scan/product_info_helper.dart';
 import 'package:vegan_app/models/product_of_interest.dart';
-import 'package:vegan_app/services/api_service.dart';
 import 'package:vegan_app/services/auth_service.dart';
 import 'package:vegan_app/services/offline_scan_service.dart';
+import 'package:vegan_app/services/products_of_interest_cache.dart';
 import 'package:vegan_app/widgets/scaner/card_product.dart';
 import 'package:vegan_app/widgets/scaner/pending_product_info_card.dart';
-import 'package:vegan_app/widgets/scaner/report_error_button.dart';
+import 'package:vegan_app/widgets/scaner/info_dialog_button.dart';
 import 'package:vegan_app/widgets/scaner/vegan_product_info_card.dart';
 import 'package:vegan_app/widgets/scaner/shop_confirmation_modal.dart';
 import 'package:vegan_app/widgets/vegandex/vegandex_modal.dart';
@@ -88,6 +88,7 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
     _loadScanHistory();
     _loadOpenOnScanPagePref();
     _loadShowBoycottPref();
+    // Load products from already-populated cache (populated at app startup)
     _loadProductsOfInterest();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -312,7 +313,8 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
   }
 
   Future<void> _loadProductsOfInterest() async {
-    final products = await ApiService.getInterestingProducts();
+    // Load from cache instantly, updates in background automatically
+    final products = await ProductsOfInterestCache.loadProductsOfInterest();
     setState(() {
       _productsOfInterest = products.map((p) => p.ean).toList();
       _productsOfInterestMap = {for (var p in products) p.ean: p};
@@ -876,7 +878,9 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
               left: 0,
               right: 0,
               child: Center(
-                child: ReportErrorButton(barcode: productInfo?['code'] ?? ''),
+                child: productInfo?['is_vegan'] == "not_found"
+                  ? SendInfoButton(barcode: productInfo?['code'] ?? '')
+                  : ReportErrorButton(barcode: productInfo?['code'] ?? ''),
               ),
             ),
           Positioned.fill(
