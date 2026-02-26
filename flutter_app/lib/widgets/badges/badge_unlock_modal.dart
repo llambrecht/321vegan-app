@@ -107,12 +107,15 @@ class _BadgeUnlockModalState extends State<BadgeUnlockModal>
                         shape: BoxShape.circle,
                         color: Colors.white,
                         border: Border.all(
-                          color: Colors.green[700]!,
+                          color: Theme.of(context).colorScheme.primary,
                           width: 4,
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.green.withValues(alpha: 0.5),
+                            color: Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withValues(alpha: 0.5),
                             blurRadius: 30,
                             spreadRadius: 10,
                           ),
@@ -170,7 +173,7 @@ class _BadgeUnlockModalState extends State<BadgeUnlockModal>
                         Navigator.of(context).pop();
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green[700],
+                        backgroundColor: Theme.of(context).colorScheme.primary,
                         foregroundColor: Colors.white,
                         padding: EdgeInsets.symmetric(
                           horizontal: 48.w,

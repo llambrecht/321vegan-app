@@ -82,7 +82,7 @@ class _UserProfileState extends State<UserProfile> {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('B12 prise enregistrée !'),
+          content: Text('Bien reçu !'),
           backgroundColor: Colors.green,
           duration: Duration(seconds: 2),
         ),

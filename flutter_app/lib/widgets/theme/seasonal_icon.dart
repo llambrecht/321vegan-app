@@ -102,7 +102,7 @@ class _SeasonalIconState extends State<SeasonalIcon>
             curve: Curves.easeInOut,
           ),
         );
-        _scaleAnimation = Tween<double>(begin: 0.95, end: 1.05).animate(
+        _scaleAnimation = Tween<double>(begin: 0.85, end: 0.95).animate(
           CurvedAnimation(
             parent: _animationController,
             curve: Curves.easeInOut,

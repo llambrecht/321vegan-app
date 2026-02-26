@@ -122,7 +122,8 @@ class NotificationService {
   /// Handle notification tap or action button press
   void _onNotificationTap(NotificationResponse response) {
     if (kDebugMode) {
-      print('Notification tapped: ${response.payload}, actionId: ${response.actionId}');
+      print(
+          'Notification tapped: ${response.payload}, actionId: ${response.actionId}');
     }
 
     // Handle "B12 prise" action button (from notification tray, no UI)
@@ -174,7 +175,7 @@ class NotificationService {
               Navigator.of(dialogContext).pop();
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('B12 prise enregistrée !'),
+                  content: Text('Bien reçu !'),
                   backgroundColor: Colors.green,
                   duration: Duration(seconds: 2),
                 ),
@@ -363,7 +364,8 @@ class NotificationService {
     String? payload,
     bool isB12 = false,
   }) async {
-    final details = isB12 ? _getB12NotificationDetails() : _getNotificationDetails();
+    final details =
+        isB12 ? _getB12NotificationDetails() : _getNotificationDetails();
 
     await _notifications.zonedSchedule(
       id,
@@ -408,7 +410,8 @@ class NotificationService {
       print('Scheduling daily notification for: $scheduledDate');
     }
 
-    final details = isB12 ? _getB12NotificationDetails() : _getNotificationDetails();
+    final details =
+        isB12 ? _getB12NotificationDetails() : _getNotificationDetails();
 
     await _notifications.zonedSchedule(
       id,
@@ -468,7 +471,8 @@ class NotificationService {
       minute,
     ).add(Duration(days: daysUntilTarget));
 
-    final details = isB12 ? _getB12NotificationDetails() : _getNotificationDetails();
+    final details =
+        isB12 ? _getB12NotificationDetails() : _getNotificationDetails();
 
     await _notifications.zonedSchedule(
       id,
