@@ -757,7 +757,7 @@ class _UserProfileState extends State<UserProfile> {
                     onPressed: _markB12AsTaken,
                     icon: Icon(Icons.check, size: 70.sp),
                     label: Text(
-                      'B12 prise aujourd\'hui !',
+                      'Marquer comme prise aujourd\'hui',
                       style: TextStyle(fontSize: 40.sp),
                     ),
                     style: ElevatedButton.styleFrom(
