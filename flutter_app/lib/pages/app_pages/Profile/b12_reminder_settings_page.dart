@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import '../../../models/b12_reminder_settings.dart';
 import '../../../services/b12_reminder_service.dart';
+import '../../../services/notification_service.dart';
 
 class B12ReminderSettingsPage extends StatefulWidget {
   const B12ReminderSettingsPage({super.key});
@@ -58,6 +59,7 @@ class _B12ReminderSettingsPageState extends State<B12ReminderSettingsPage> {
       }
 
       await B12ReminderService.scheduleReminder(_settings);
+      await NotificationService().showTestNotification();
       final nextTime = await B12ReminderService.getNextNotificationTime();
 
       setState(() {

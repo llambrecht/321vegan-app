@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'services/auth_service.dart';
+import 'services/b12_reminder_service.dart';
 import 'helpers/theme_helper.dart';
 import 'models/seasonal_theme.dart';
 import 'themes/default_theme.dart';
@@ -29,36 +30,23 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+/// One-time migration: cancel the old daily-repeating biweekly notification
+/// (scheduled with matchDateTimeComponents: time) and replace it with a
+/// correct one-shot notification.
+Future<void> _migrateBiweeklyReminderIfNeeded() async {
+  final prefs = await SharedPreferences.getInstance();
+  if (prefs.getBool('biweekly_migration_v1') == true) return;
 
-  @override
-  State<MyApp> createState() => _MyAppState();
-
-  static _MyAppState? of(BuildContext context) {
-    return context.findAncestorStateOfType<_MyAppState>();
+  final settings = await B12ReminderService.getSettings();
+  if (settings.enabled && settings.frequency == ReminderFrequency.biweekly) {
+    await B12ReminderService.scheduleReminder(settings);
   }
+
+  await prefs.setBool('biweekly_migration_v1', true);
 }
 
-class _MyAppState extends State<MyApp> {
-  SeasonalTheme? _currentTheme;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadTheme();
-  }
-
-  Future<void> _loadTheme() async {
-    final theme = await ThemeHelper.getCurrentTheme();
-    setState(() {
-      _currentTheme = theme;
-    });
-  }
-
-  Future<void> updateTheme() async {
-    await _loadTheme();
-  }
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -70,11 +58,6 @@ class _MyAppState extends State<MyApp> {
         oniOS: () => UpgraderAppcastStore(appcastURL: appcastURL),
       ),
     );
-
-    // Use default theme while loading
-    final themeData =
-        _currentTheme?.toThemeData() ?? defaultTheme.toThemeData();
-
     return ScreenUtilInit(
       designSize: const Size(1170, 2532),
       builder: (context, child) => MediaQuery(
@@ -84,7 +67,12 @@ class _MyAppState extends State<MyApp> {
           navigatorKey: navigatorKey,
           title: '321 Vegan',
           debugShowCheckedModeBanner: false,
-          theme: themeData,
+          theme: ThemeData(
+            scaffoldBackgroundColor: Colors.white,
+            colorScheme:
+                ColorScheme.fromSeed(seedColor: const Color(0xFF166534)),
+            useMaterial3: true,
+          ),
           home: UpgradeAlert(
             upgrader: upgrader,
             child: const FirstLaunchChecker(),

@@ -52,9 +52,6 @@ class B12ReminderService {
       return;
     }
 
-    // Show a test notification to ensure the channel is properly initialized
-    await _notificationService.showTestNotification();
-
     const title = '💊 Rappel B12';
     const body = 'N\'oubliez pas de prendre votre vitamine B12 !';
 
@@ -178,7 +175,7 @@ class B12ReminderService {
       final candidateDay = DateTime(candidateDate.year, candidateDate.month, candidateDate.day);
       final daysDiff = candidateDay.difference(startDay).inDays;
       // If the number of weeks since start is odd, shift by 7 days
-      final weeksDiff = (daysDiff / 7).round();
+      final weeksDiff = daysDiff ~/ 7;
       if (weeksDiff % 2 != 0) {
         candidateDate = candidateDate.add(const Duration(days: 7));
       }
@@ -228,6 +225,23 @@ class B12ReminderService {
     // If biweekly, reschedule the next one
     final settings = await getSettings();
     if (settings.enabled && settings.frequency == ReminderFrequency.biweekly) {
+      await scheduleReminder(settings);
+    }
+  }
+
+  /// Check if the biweekly notification has passed without being acknowledged
+  /// and reschedule if needed. Call this on app resume.
+  static Future<void> checkAndRescheduleIfNeeded() async {
+    final settings = await getSettings();
+    if (!settings.enabled || settings.frequency != ReminderFrequency.biweekly) {
+      return;
+    }
+
+    final prefs = await SharedPreferences.getInstance();
+    final nextMillis = prefs.getInt('b12_next_notification_date');
+    if (nextMillis == null ||
+        DateTime.fromMillisecondsSinceEpoch(nextMillis)
+            .isBefore(DateTime.now())) {
       await scheduleReminder(settings);
     }
   }
@@ -372,7 +386,7 @@ class B12ReminderService {
           );
           final candidateDay = DateTime(candidate.year, candidate.month, candidate.day);
           final daysDiff = candidateDay.difference(startDay).inDays;
-          final weeksDiff = (daysDiff / 7).round();
+          final weeksDiff = daysDiff ~/ 7;
           if (weeksDiff % 2 != 0) {
             candidate = candidate.add(const Duration(days: 7));
           }
