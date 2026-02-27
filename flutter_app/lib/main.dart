@@ -1,17 +1,17 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:upgrader/upgrader.dart';
 import 'package:vegan_app/helpers/database_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:vegan_app/models/b12_reminder_settings.dart';
 import 'helpers/first_time_launch.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'services/auth_service.dart';
 import 'services/b12_reminder_service.dart';
-import 'helpers/theme_helper.dart';
-import 'models/seasonal_theme.dart';
-import 'themes/default_theme.dart';
 import 'services/notification_service.dart';
 import 'services/products_of_interest_cache.dart';
+import 'helpers/theme_helper.dart';
 
 /// Global navigator key for showing dialogs from notification handlers
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -23,6 +23,7 @@ void main() async {
   await DatabaseHelper.instance.cosmeticsDatabase;
   await AuthService.init();
   await NotificationService().initialize();
+  await _migrateBiweeklyReminderIfNeeded();
 
   // Pre-load products of interest cache at app startup (when likely to have internet)
   ProductsOfInterestCache.initializeAtStartup();
@@ -48,6 +49,38 @@ Future<void> _migrateBiweeklyReminderIfNeeded() async {
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  static MyAppState? of(BuildContext context) {
+    return context.findAncestorStateOfType<MyAppState>();
+  }
+
+  @override
+  State<MyApp> createState() => MyAppState();
+}
+
+class MyAppState extends State<MyApp> {
+  ThemeData _currentTheme = ThemeData(
+    scaffoldBackgroundColor: Colors.white,
+    colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF166534)),
+    useMaterial3: true,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTheme();
+  }
+
+  Future<void> _loadTheme() async {
+    final seasonalTheme = await ThemeHelper.getCurrentTheme();
+    setState(() {
+      _currentTheme = seasonalTheme.toThemeData();
+    });
+  }
+
+  Future<void> updateTheme() async {
+    await _loadTheme();
+  }
+
   @override
   Widget build(BuildContext context) {
     const appcastURL =
@@ -67,12 +100,7 @@ class MyApp extends StatefulWidget {
           navigatorKey: navigatorKey,
           title: '321 Vegan',
           debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            scaffoldBackgroundColor: Colors.white,
-            colorScheme:
-                ColorScheme.fromSeed(seedColor: const Color(0xFF166534)),
-            useMaterial3: true,
-          ),
+          theme: _currentTheme,
           home: UpgradeAlert(
             upgrader: upgrader,
             child: const FirstLaunchChecker(),

@@ -45,8 +45,7 @@ class _B12ReminderSettingsPageState extends State<B12ReminderSettingsPage> {
       // Validate settings before saving
       if (_settings.enabled &&
           _settings.frequency == ReminderFrequency.twiceWeekly &&
-          (_settings.daysOfWeek == null ||
-              _settings.daysOfWeek!.length != 2)) {
+          (_settings.daysOfWeek == null || _settings.daysOfWeek!.length != 2)) {
         throw Exception(
             'Veuillez sélectionner exactement 2 jours de la semaine');
       }
@@ -165,7 +164,10 @@ class _B12ReminderSettingsPageState extends State<B12ReminderSettingsPage> {
               Container(
                 padding: EdgeInsets.all(24.w),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                  color: Theme.of(context)
+                      .colorScheme
+                      .primary
+                      .withValues(alpha: 0.1),
                   borderRadius:
                       BorderRadius.vertical(top: Radius.circular(28.r)),
                 ),

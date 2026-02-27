@@ -21,22 +21,35 @@ class ThemeHelper {
     ];
   }
 
-  // Detect current season based on date
-  // TODO : Better season detect (days of season, not just month)
+  // Detect current season based on astronomical dates
   static Season getCurrentSeason() {
     final now = DateTime.now();
     final month = now.month;
     final day = now.day;
 
-    if (month >= 3 && month <= 5) {
+    // Spring: March 20 – June 20
+    if ((month == 3 && day >= 20) ||
+        month == 4 ||
+        month == 5 ||
+        (month == 6 && day <= 20)) {
       return Season.spring;
-    } else if (month >= 6 && month <= 8) {
-      return Season.summer;
-    } else if (month >= 9 && month <= 11) {
-      return Season.autumn;
-    } else {
-      return Season.winter;
     }
+    // Summer: June 21 – September 21
+    if ((month == 6 && day >= 21) ||
+        month == 7 ||
+        month == 8 ||
+        (month == 9 && day <= 21)) {
+      return Season.summer;
+    }
+    // Autumn: September 22 – December 20
+    if ((month == 9 && day >= 22) ||
+        month == 10 ||
+        month == 11 ||
+        (month == 12 && day <= 20)) {
+      return Season.autumn;
+    }
+    // Winter: December 21 – March 19
+    return Season.winter;
   }
 
   // Get theme by season

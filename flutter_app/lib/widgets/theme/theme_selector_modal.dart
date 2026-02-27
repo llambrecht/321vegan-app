@@ -360,8 +360,7 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal> {
     required bool isCurrentSeason,
   }) {
     final isDefault = theme.season == Season.defaultTheme;
-    final gradientStart =
-        isDefault ? const Color(0xFF9E9E9E) : theme.waveColor;
+    final gradientStart = isDefault ? const Color(0xFF9E9E9E) : theme.waveColor;
     final gradientEnd =
         isDefault ? const Color(0xFF616161) : theme.primaryColor;
     final shadowColor = isDefault ? Colors.grey : theme.primaryColor;
