@@ -1,5 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- In-app billing permission for Google Play purchases -->
+    <uses-permission android:name="com.android.vending.BILLING"/>
     <!-- Notification permissions for Android 13+ -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <!-- Permission for scheduled notifications (B12 reminders) -->

@@ -14,7 +14,9 @@ import '../shared/social_feedback_buttons.dart';
 import '../vegandex/vegandex_modal.dart';
 import '../theme/theme_selector_modal.dart';
 import '../../pages/app_pages/Profile/b12_reminder_settings_page.dart';
+import '../../pages/app_pages/Profile/subscription_page.dart';
 import '../../services/b12_reminder_service.dart';
+import '../../services/subscription_service.dart';
 
 class UserProfile extends StatefulWidget {
   final VoidCallback? onLogout;
@@ -475,6 +477,76 @@ class _UserProfileState extends State<UserProfile> {
                             children: [
                               Text(
                                 'Thèmes',
+                                style: TextStyle(
+                                  fontSize: 44.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          size: 40.sp,
+                          color: Colors.white70,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // Subscription / Support button
+                SizedBox(height: 24.h),
+                GestureDetector(
+                  onTap: _openSubscriptionPage,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: SubscriptionService.isSubscribed
+                            ? [
+                                Colors.amber.shade600,
+                                Colors.orange.shade600,
+                              ]
+                            : [
+                                Colors.pink.shade400,
+                                Colors.deepPurple.shade400,
+                              ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(12.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: (SubscriptionService.isSubscribed
+                                  ? Colors.amber
+                                  : Colors.pink)
+                              .withValues(alpha: 0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 16.w, vertical: 12.h),
+                    child: Row(
+                      children: [
+                        Icon(
+                          SubscriptionService.isSubscribed
+                              ? Icons.military_tech
+                              : Icons.favorite,
+                          size: 48.sp,
+                          color: Colors.white,
+                        ),
+                        SizedBox(width: 12.w),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                SubscriptionService.isSubscribed
+                                    ? 'Abonnement actif'
+                                    : 'Soutenir 321 Vegan',
                                 style: TextStyle(
                                   fontSize: 44.sp,
                                   fontWeight: FontWeight.bold,
@@ -1027,6 +1099,15 @@ class _UserProfileState extends State<UserProfile> {
         ),
       ),
     );
+  }
+
+  void _openSubscriptionPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SubscriptionPage()),
+    ).then((_) {
+      if (mounted) setState(() {});
+    });
   }
 
   void _showThemeSelector() {

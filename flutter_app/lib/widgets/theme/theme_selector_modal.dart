@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../models/seasonal_theme.dart';
 import '../../helpers/theme_helper.dart';
 import '../../main.dart';
+import '../../services/subscription_service.dart';
+import '../../pages/app_pages/Profile/subscription_page.dart';
 
 class ThemeSelectorModal extends StatefulWidget {
   const ThemeSelectorModal({super.key});
@@ -70,12 +72,21 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal> {
     }
   }
 
+  void _openSubscriptionPage() {
+    Navigator.pop(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SubscriptionPage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
+    final isSubscribed = SubscriptionService.isSubscribed;
     final currentSeason = ThemeHelper.getCurrentSeason();
     final allThemes = ThemeHelper.getAllThemes();
     final activeTheme = _isAutoTheme
@@ -187,10 +198,11 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal> {
             child: ListView(
               padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
               children: [
-                // Auto theme toggle card
-                _buildAutoThemeToggle(currentSeason),
-
-                SizedBox(height: 24.h),
+                // Auto theme toggle card (only for subscribers)
+                if (isSubscribed) ...[
+                  _buildAutoThemeToggle(currentSeason),
+                  SizedBox(height: 24.h),
+                ],
 
                 // Section title
                 Padding(
@@ -207,11 +219,14 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal> {
 
                 // Themes grid
                 ...allThemes.map((theme) {
+                  final isDefault = theme.season == Season.defaultTheme;
+                  final isLocked = !isDefault && !isSubscribed;
                   final isSelected =
                       !_isAutoTheme && _selectedSeason == theme.season;
                   final isCurrentSeason = theme.season == currentSeason;
                   final isActive = _isAutoTheme ? isCurrentSeason : isSelected;
-                  final isDisabled = _isAutoTheme && !isCurrentSeason;
+                  final isDisabled =
+                      (_isAutoTheme && !isCurrentSeason) || isLocked;
 
                   return Padding(
                     padding: EdgeInsets.only(bottom: 16.h),
@@ -220,6 +235,7 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal> {
                       isActive: isActive,
                       isDisabled: isDisabled,
                       isCurrentSeason: isCurrentSeason,
+                      isLocked: isLocked,
                     ),
                   );
                 }),
@@ -358,6 +374,7 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal> {
     required bool isActive,
     required bool isDisabled,
     required bool isCurrentSeason,
+    bool isLocked = false,
   }) {
     final isDefault = theme.season == Season.defaultTheme;
     final gradientStart = isDefault ? const Color(0xFF9E9E9E) : theme.waveColor;
@@ -367,18 +384,20 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal> {
     final checkColor = isDefault ? Colors.grey[700]! : theme.primaryColor;
 
     return GestureDetector(
-      onTap: isDisabled
-          ? null
-          : () {
-              if (!_isAutoTheme) {
-                setState(() {
-                  _selectedSeason = theme.season;
-                });
-              }
-            },
+      onTap: isLocked
+          ? _openSubscriptionPage
+          : isDisabled
+              ? null
+              : () {
+                  if (!_isAutoTheme) {
+                    setState(() {
+                      _selectedSeason = theme.season;
+                    });
+                  }
+                },
       child: AnimatedOpacity(
         duration: const Duration(milliseconds: 200),
-        opacity: isDisabled ? 0.4 : 1.0,
+        opacity: (isDisabled && !isLocked) ? 0.4 : isLocked ? 0.7 : 1.0,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           height: 260.h,
@@ -458,50 +477,90 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal> {
                                 ),
                               ),
                             const Spacer(),
-                            // Selection indicator
-                            AnimatedContainer(
-                              duration: const Duration(milliseconds: 200),
-                              width: 48.w,
-                              height: 48.w,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: isActive
-                                    ? Colors.white
-                                    : Colors.white.withValues(alpha: 0.25),
-                                border: Border.all(
-                                  color: Colors.white
-                                      .withValues(alpha: isActive ? 1.0 : 0.5),
-                                  width: 2,
+                            // Lock icon or selection indicator
+                            if (isLocked)
+                              Container(
+                                padding: EdgeInsets.all(8.w),
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withValues(alpha: 0.3),
+                                  shape: BoxShape.circle,
                                 ),
+                                child: Icon(
+                                  Icons.lock,
+                                  size: 36.sp,
+                                  color: Colors.white,
+                                ),
+                              )
+                            else
+                              AnimatedContainer(
+                                duration: const Duration(milliseconds: 200),
+                                width: 48.w,
+                                height: 48.w,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: isActive
+                                      ? Colors.white
+                                      : Colors.white.withValues(alpha: 0.25),
+                                  border: Border.all(
+                                    color: Colors.white.withValues(
+                                        alpha: isActive ? 1.0 : 0.5),
+                                    width: 2,
+                                  ),
+                                ),
+                                child: isActive
+                                    ? Icon(
+                                        Icons.check,
+                                        size: 32.sp,
+                                        color: checkColor,
+                                      )
+                                    : null,
                               ),
-                              child: isActive
-                                  ? Icon(
-                                      Icons.check,
-                                      size: 32.sp,
-                                      color: checkColor,
-                                    )
-                                  : null,
-                            ),
                           ],
                         ),
                         // Bottom: name + color dots
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              theme.name,
-                              style: TextStyle(
-                                fontSize: 56.sp,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                shadows: [
-                                  Shadow(
-                                    color: Colors.black.withValues(alpha: 0.2),
-                                    blurRadius: 4,
-                                    offset: const Offset(0, 1),
+                            Row(
+                              children: [
+                                Text(
+                                  theme.name,
+                                  style: TextStyle(
+                                    fontSize: 56.sp,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    shadows: [
+                                      Shadow(
+                                        color:
+                                            Colors.black.withValues(alpha: 0.2),
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 1),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                if (isLocked) ...[
+                                  SizedBox(width: 10.w),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 10.w, vertical: 4.h),
+                                    decoration: BoxDecoration(
+                                      color:
+                                          Colors.white.withValues(alpha: 0.25),
+                                      borderRadius:
+                                          BorderRadius.circular(8.r),
+                                    ),
+                                    child: Text(
+                                      'Premium',
+                                      style: TextStyle(
+                                        fontSize: 28.sp,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                                   ),
                                 ],
-                              ),
+                              ],
                             ),
                             SizedBox(height: 8.h),
                             Row(

@@ -1,10 +1,14 @@
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vegan_app/models/partners/partners.dart';
 import 'auth_service.dart';
+import 'dio_client.dart';
 import '../models/product_of_interest.dart';
 import '../models/product_category.dart';
+import '../models/subscription.dart';
 
 class ApiService {
   static String get _baseUrl =>
@@ -215,5 +219,69 @@ class ApiService {
     } catch (e) {
       return [];
     }
+  }
+
+  /// Get the current user's subscription status
+  /// Returns null if no subscription or on error
+  static Future<Subscription?> getSubscriptionStatus() async {
+    try {
+      final dio = await DioClient.getDio();
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('access_token');
+
+      final response = await dio.get(
+        '/subscriptions/me',
+        options: Options(
+          headers: {'Authorization': 'Bearer $token'},
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        return Subscription.fromJson(response.data);
+      }
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        return null;
+      }
+      rethrow;
+    }
+    return null;
+  }
+
+  /// Verify a purchase receipt with the backend
+  /// Returns the subscription if verification succeeded, null otherwise
+  static Future<Subscription?> verifySubscription({
+    required String platform,
+    required String productId,
+    String? transactionId,
+    String? purchaseToken,
+  }) async {
+    final dio = await DioClient.getDio();
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+
+    final Map<String, dynamic> data = {
+      'platform': platform,
+      'product_id': productId,
+    };
+
+    if (platform == 'apple' && transactionId != null) {
+      data['transaction_id'] = transactionId;
+    } else if (purchaseToken != null) {
+      data['purchase_token'] = purchaseToken;
+    }
+
+    final response = await dio.post(
+      '/subscriptions/verify',
+      data: data,
+      options: Options(
+        headers: {'Authorization': 'Bearer $token'},
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      return Subscription.fromJson(response.data);
+    }
+    return null;
   }
 }

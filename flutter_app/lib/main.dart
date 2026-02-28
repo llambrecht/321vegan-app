@@ -11,6 +11,7 @@ import 'services/auth_service.dart';
 import 'services/b12_reminder_service.dart';
 import 'services/notification_service.dart';
 import 'services/products_of_interest_cache.dart';
+import 'services/subscription_service.dart';
 import 'helpers/theme_helper.dart';
 
 /// Global navigator key for showing dialogs from notification handlers
@@ -22,6 +23,7 @@ void main() async {
   await DatabaseHelper.instance.database;
   await DatabaseHelper.instance.cosmeticsDatabase;
   await AuthService.init();
+  await SubscriptionService.init();
   await NotificationService().initialize();
   await _migrateBiweeklyReminderIfNeeded();
 
