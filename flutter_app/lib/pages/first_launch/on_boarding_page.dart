@@ -157,24 +157,28 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   showModalBottomSheet(
                     context: context,
                     isScrollControlled: true,
-                    shape: const RoundedRectangleBorder(
+                    backgroundColor: Colors.transparent,
+                    builder: (ctx) => ClipRRect(
                       borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(20)),
-                    ),
-                    builder: (ctx) => Padding(
-                      padding: EdgeInsets.only(
-                        bottom: MediaQuery.of(ctx).viewInsets.bottom,
-                        left: 16,
-                        right: 16,
-                        top: 24,
-                      ),
-                      child: SingleChildScrollView(
-                        child: LoginForm(
-                          onLoginSuccess: () {
-                            Navigator.pop(ctx);
-                            _onIntroEnd(context);
-                          },
-                          onSwitchToRegister: () => Navigator.pop(ctx),
+                          const BorderRadius.vertical(top: Radius.circular(20)),
+                      child: Scaffold(
+                        backgroundColor: Colors.white,
+                        body: Padding(
+                          padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(ctx).viewInsets.bottom,
+                            left: 16,
+                            right: 16,
+                            top: 24,
+                          ),
+                          child: SingleChildScrollView(
+                            child: LoginForm(
+                              onLoginSuccess: () {
+                                Navigator.pop(ctx);
+                                _onIntroEnd(context);
+                              },
+                              onSwitchToRegister: () => Navigator.pop(ctx),
+                            ),
+                          ),
                         ),
                       ),
                     ),

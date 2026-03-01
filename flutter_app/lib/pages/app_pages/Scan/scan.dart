@@ -22,6 +22,8 @@ import 'package:vegan_app/widgets/scaner/vegan_product_info_card.dart';
 import 'package:vegan_app/widgets/scaner/shop_confirmation_modal.dart';
 import 'package:vegan_app/widgets/vegandex/vegandex_modal.dart';
 import 'package:vegan_app/widgets/vegandex/product_found_modal.dart';
+import 'package:vegan_app/widgets/auth/register_form.dart';
+import 'package:vegan_app/widgets/auth/login_form.dart';
 
 class ScanPage extends StatefulWidget {
   final VoidCallback? onNavigateToProfile;
@@ -519,6 +521,8 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
       PreferencesHelper.addBarcodeToHistory(barcodeValue.toString()).then((_) {
         // Reload the history after adding the barcode
         _loadScanHistory();
+        // Check if we should prompt the user to create an account
+        _checkAccountPrompt();
       });
 
       // Send scan event if it's a product of interest (don't wait for it)
@@ -529,6 +533,178 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
       });
       _checkVeganStatusOffline(barcodeValue.toString());
     }
+  }
+
+  Future<void> _checkAccountPrompt() async {
+    final totalScans = await PreferencesHelper.incrementTotalScanCount();
+    if (totalScans % 5 != 0) return;
+
+    if (AuthService.isLoggedIn) return;
+
+    final dismissed = await PreferencesHelper.hasAccountPromptBeenDismissed();
+    if (dismissed) return;
+
+    if (!mounted) return;
+
+    // Small delay so the scan result shows first
+    await Future.delayed(const Duration(milliseconds: 1500));
+    if (!mounted) return;
+
+    _showAccountPromptDialog();
+  }
+
+  void _showAccountPromptDialog() {
+    controller.stop();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(28.r),
+          ),
+          child: Container(
+            padding: EdgeInsets.all(32.w),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(28.r),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(24.w),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primary
+                        .withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.person_add,
+                    size: 100.sp,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                SizedBox(height: 24.h),
+                Text(
+                  'Créez votre compte !',
+                  style: TextStyle(
+                    fontSize: 56.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey[800],
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 16.h),
+                Text(
+                  'Accédez à toutes les fonctionnalités de l\'application en créant gratuitement votre compte !',
+                  style: TextStyle(
+                    fontSize: 42.sp,
+                    color: Colors.grey[600],
+                    height: 1.4,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 32.h),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () async {
+                          await PreferencesHelper.markAccountPromptDismissed();
+                          if (context.mounted) {
+                            Navigator.of(context).pop();
+                          }
+                        },
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.grey[600],
+                          side: BorderSide(color: Colors.grey[300]!, width: 2),
+                          padding: EdgeInsets.symmetric(vertical: 20.h),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                        ),
+                        child: Text(
+                          'Plus tard',
+                          style: TextStyle(
+                            fontSize: 44.sp,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 16.w),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          await PreferencesHelper.markAccountPromptDismissed();
+                          if (context.mounted) {
+                            Navigator.of(context).pop();
+                            _showAuthBottomSheet();
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                          foregroundColor: Colors.white,
+                          padding: EdgeInsets.symmetric(vertical: 20.h),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                        ),
+                        child: Text(
+                          'Créer un compte',
+                          style: TextStyle(
+                            fontSize: 44.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    ).then((_) {
+      controller.start();
+    });
+  }
+
+  void _showAuthBottomSheet() {
+    controller.stop();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.85,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        builder: (context, scrollController) => ClipRRect(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
+          child: Scaffold(
+            backgroundColor: Colors.white,
+            body: SingleChildScrollView(
+              controller: scrollController,
+              padding: EdgeInsets.all(28.w),
+              child: _AuthSheetContent(
+                onSuccess: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
+    ).then((_) {
+      controller.start();
+    });
   }
 
   @override
@@ -879,8 +1055,8 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
               right: 0,
               child: Center(
                 child: productInfo?['is_vegan'] == "not_found"
-                  ? SendInfoButton(barcode: productInfo?['code'] ?? '')
-                  : ReportErrorButton(barcode: productInfo?['code'] ?? ''),
+                    ? SendInfoButton(barcode: productInfo?['code'] ?? '')
+                    : ReportErrorButton(barcode: productInfo?['code'] ?? ''),
               ),
             ),
           Positioned.fill(
@@ -935,5 +1111,33 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
         ],
       ),
     );
+  }
+}
+
+class _AuthSheetContent extends StatefulWidget {
+  final VoidCallback onSuccess;
+
+  const _AuthSheetContent({required this.onSuccess});
+
+  @override
+  State<_AuthSheetContent> createState() => _AuthSheetContentState();
+}
+
+class _AuthSheetContentState extends State<_AuthSheetContent> {
+  bool _showRegister = true;
+
+  @override
+  Widget build(BuildContext context) {
+    if (_showRegister) {
+      return RegisterForm(
+        onRegisterSuccess: widget.onSuccess,
+        onSwitchToLogin: () => setState(() => _showRegister = false),
+      );
+    } else {
+      return LoginForm(
+        onLoginSuccess: widget.onSuccess,
+        onSwitchToRegister: () => setState(() => _showRegister = true),
+      );
+    }
   }
 }
