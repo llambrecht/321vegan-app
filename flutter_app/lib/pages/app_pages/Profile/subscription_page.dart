@@ -219,12 +219,11 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
     );
   }
 
-  Widget _buildActiveSubscriptionCard(
-      subscription, Color primaryColor) {
-    final productName = subscription.productId ==
-            SubscriptionService.yearlyProductId
-        ? 'Annuel'
-        : 'Mensuel';
+  Widget _buildActiveSubscriptionCard(subscription, Color primaryColor) {
+    final productName =
+        subscription.productId == SubscriptionService.yearlyProductId
+            ? 'Annuel'
+            : 'Mensuel';
     final expiresAt = subscription.expiresAt;
 
     return Container(
@@ -429,18 +428,17 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
           _buildPlanCard(
             productDetails: yearly,
             title: 'Annuel',
-            subtitle: 'Le meilleur rapport qualité-prix',
+            subtitle:
+                'Payez une seule fois par an avec un réduction sur le prix.',
             primaryColor: primaryColor,
-            isRecommended: true,
           ),
         if (yearly != null && monthly != null) SizedBox(height: 16.h),
         if (monthly != null)
           _buildPlanCard(
             productDetails: monthly,
             title: 'Mensuel',
-            subtitle: 'Flexibilité maximale',
+            subtitle: 'Payez tous les mois, annulez à tout moment.',
             primaryColor: primaryColor,
-            isRecommended: false,
           ),
       ],
     );
@@ -451,7 +449,6 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
     required String title,
     required String subtitle,
     required Color primaryColor,
-    required bool isRecommended,
   }) {
     final isSelected = _selectedProductId == productDetails.id;
 
@@ -519,25 +516,6 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                           color: Colors.grey[800],
                         ),
                       ),
-                      if (isRecommended) ...[
-                        SizedBox(width: 10.w),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 10.w, vertical: 4.h),
-                          decoration: BoxDecoration(
-                            color: primaryColor,
-                            borderRadius: BorderRadius.circular(8.r),
-                          ),
-                          child: Text(
-                            'Populaire',
-                            style: TextStyle(
-                              fontSize: 28.sp,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ],
                     ],
                   ),
                   SizedBox(height: 2.h),
@@ -659,8 +637,18 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
 
   String _formatDate(DateTime date) {
     final months = [
-      'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
-      'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'
+      'janvier',
+      'février',
+      'mars',
+      'avril',
+      'mai',
+      'juin',
+      'juillet',
+      'août',
+      'septembre',
+      'octobre',
+      'novembre',
+      'décembre'
     ];
     return '${date.day} ${months[date.month - 1]} ${date.year}';
   }

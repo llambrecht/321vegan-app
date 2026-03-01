@@ -281,6 +281,7 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal> {
               ),
             ),
           ),
+          SizedBox(height: 90.h),
         ],
       ),
     );
@@ -397,7 +398,11 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal> {
                 },
       child: AnimatedOpacity(
         duration: const Duration(milliseconds: 200),
-        opacity: (isDisabled && !isLocked) ? 0.4 : isLocked ? 0.7 : 1.0,
+        opacity: (isDisabled && !isLocked)
+            ? 0.4
+            : isLocked
+                ? 0.5
+                : 1.0,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           height: 260.h,
@@ -487,7 +492,7 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal> {
                                 ),
                                 child: Icon(
                                   Icons.lock,
-                                  size: 36.sp,
+                                  size: 90.sp,
                                   color: Colors.white,
                                 ),
                               )
@@ -547,8 +552,7 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal> {
                                     decoration: BoxDecoration(
                                       color:
                                           Colors.white.withValues(alpha: 0.25),
-                                      borderRadius:
-                                          BorderRadius.circular(8.r),
+                                      borderRadius: BorderRadius.circular(8.r),
                                     ),
                                     child: Text(
                                       'Premium',
