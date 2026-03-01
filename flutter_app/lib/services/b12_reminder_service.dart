@@ -64,7 +64,6 @@ class B12ReminderService {
           hour: settings.hour,
           minute: settings.minute,
           payload: 'b12_reminder',
-          isB12: true,
         );
         break;
 
@@ -78,7 +77,6 @@ class B12ReminderService {
             hour: settings.hour,
             minute: settings.minute,
             payload: 'b12_reminder',
-            isB12: true,
           );
         }
         break;
@@ -95,7 +93,6 @@ class B12ReminderService {
             hour: settings.hour,
             minute: settings.minute,
             payload: 'b12_reminder',
-            isB12: true,
           );
           await _notificationService.scheduleWeeklyNotification(
             id: _biweeklyNotificationId,
@@ -105,7 +102,6 @@ class B12ReminderService {
             hour: settings.hour,
             minute: settings.minute,
             payload: 'b12_reminder',
-            isB12: true,
           );
         }
         break;
@@ -172,7 +168,8 @@ class B12ReminderService {
     // Use startDate to determine which week is a "reminder week"
     if (startDate != null) {
       final startDay = DateTime(startDate.year, startDate.month, startDate.day);
-      final candidateDay = DateTime(candidateDate.year, candidateDate.month, candidateDate.day);
+      final candidateDay =
+          DateTime(candidateDate.year, candidateDate.month, candidateDate.day);
       final daysDiff = candidateDay.difference(startDay).inDays;
       // If the number of weeks since start is odd, shift by 7 days
       final weeksDiff = daysDiff ~/ 7;
@@ -203,7 +200,6 @@ class B12ReminderService {
       body: body,
       scheduledDate: candidateDate,
       payload: payload,
-      isB12: true,
     );
 
     // Save the scheduled date for biweekly tracking
@@ -384,7 +380,8 @@ class B12ReminderService {
             settings.biweeklyStartDate!.month,
             settings.biweeklyStartDate!.day,
           );
-          final candidateDay = DateTime(candidate.year, candidate.month, candidate.day);
+          final candidateDay =
+              DateTime(candidate.year, candidate.month, candidate.day);
           final daysDiff = candidateDay.difference(startDay).inDays;
           final weeksDiff = daysDiff ~/ 7;
           if (weeksDiff % 2 != 0) {

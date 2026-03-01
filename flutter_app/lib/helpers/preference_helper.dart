@@ -294,6 +294,32 @@ class PreferencesHelper {
     return lastUpdate != null && lastUpdate.isAfter(lastVisit);
   }
 
+  // Account prompt methods
+  static const String _accountPromptDismissedKey = 'account_prompt_dismissed';
+  static const String _totalScanCountKey = 'total_scan_count';
+
+  static Future<void> markAccountPromptDismissed() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_accountPromptDismissedKey, true);
+  }
+
+  static Future<bool> hasAccountPromptBeenDismissed() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_accountPromptDismissedKey) ?? false;
+  }
+
+  static Future<int> incrementTotalScanCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    final count = (prefs.getInt(_totalScanCountKey) ?? 0) + 1;
+    await prefs.setInt(_totalScanCountKey, count);
+    return count;
+  }
+
+  static Future<int> getTotalScanCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt(_totalScanCountKey) ?? 0;
+  }
+
   // B12 popup notification methods
   static const String _b12PopupShownKey = 'b12_popup_shown';
 
