@@ -33,24 +33,13 @@ class NotificationService {
       // Use default icon (app icon) for Android
       const androidSettings =
           AndroidInitializationSettings('@mipmap/ic_launcher');
-      final iosSettings = DarwinInitializationSettings(
+      const iosSettings = DarwinInitializationSettings(
         requestAlertPermission: false,
         requestBadgePermission: false,
         requestSoundPermission: false,
-        notificationCategories: [
-          DarwinNotificationCategory(
-            'b12_reminder_category',
-            actions: <DarwinNotificationAction>[
-              DarwinNotificationAction.plain(
-                'b12_taken',
-                'B12 prise ✓',
-              ),
-            ],
-          ),
-        ],
       );
 
-      final initSettings = InitializationSettings(
+      const initSettings = InitializationSettings(
         android: androidSettings,
         iOS: iosSettings,
       );
@@ -124,13 +113,6 @@ class NotificationService {
     if (kDebugMode) {
       print(
           'Notification tapped: ${response.payload}, actionId: ${response.actionId}');
-    }
-
-    // Handle "B12 prise" action button (from notification tray, no UI)
-    if (response.actionId == 'b12_taken') {
-      B12ReminderService.recordB12Intake();
-      B12ReminderService.markNotificationReceived();
-      return;
     }
 
     // Handle notification tap (opens app) - show confirmation dialog
@@ -274,46 +256,6 @@ class NotificationService {
     );
   }
 
-  /// Get B12 notification details with "B12 prise" action button
-  NotificationDetails _getB12NotificationDetails() {
-    const androidDetails = AndroidNotificationDetails(
-      'b12_reminders',
-      'Rappels B12',
-      channelDescription:
-          'Notifications pour les rappels de complémentation en B12',
-      importance: Importance.high,
-      priority: Priority.high,
-      icon: 'ic_notification',
-      largeIcon: DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
-      playSound: true,
-      enableVibration: true,
-      channelShowBadge: true,
-      visibility: NotificationVisibility.public,
-      ongoing: false,
-      autoCancel: true,
-      actions: <AndroidNotificationAction>[
-        AndroidNotificationAction(
-          'b12_taken',
-          'B12 prise ✓',
-          showsUserInterface: false,
-          cancelNotification: true,
-        ),
-      ],
-    );
-
-    const iosDetails = DarwinNotificationDetails(
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-      categoryIdentifier: 'b12_reminder_category',
-    );
-
-    return const NotificationDetails(
-      android: androidDetails,
-      iOS: iosDetails,
-    );
-  }
-
   /// Show an immediate test notification
   Future<void> showTestNotification() async {
     const title = '💊 Rappel B12';
@@ -362,10 +304,8 @@ class NotificationService {
     required String body,
     required tz.TZDateTime scheduledDate,
     String? payload,
-    bool isB12 = false,
   }) async {
-    final details =
-        isB12 ? _getB12NotificationDetails() : _getNotificationDetails();
+    final details = _getNotificationDetails();
 
     await _notifications.zonedSchedule(
       id,
@@ -388,7 +328,6 @@ class NotificationService {
     required int hour,
     required int minute,
     String? payload,
-    bool isB12 = false,
   }) async {
     final now = tz.TZDateTime.now(tz.local);
     var scheduledDate = tz.TZDateTime(
@@ -409,8 +348,7 @@ class NotificationService {
       print('Scheduling daily notification for: $scheduledDate');
     }
 
-    final details =
-        isB12 ? _getB12NotificationDetails() : _getNotificationDetails();
+    final details = _getNotificationDetails();
 
     await _notifications.zonedSchedule(
       id,
@@ -440,7 +378,6 @@ class NotificationService {
     required int hour,
     required int minute,
     String? payload,
-    bool isB12 = false,
   }) async {
     final now = tz.TZDateTime.now(tz.local);
 
@@ -470,8 +407,7 @@ class NotificationService {
       minute,
     ).add(Duration(days: daysUntilTarget));
 
-    final details =
-        isB12 ? _getB12NotificationDetails() : _getNotificationDetails();
+    final details = _getNotificationDetails();
 
     await _notifications.zonedSchedule(
       id,

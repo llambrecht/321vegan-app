@@ -5,6 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vegan_app/helpers/preference_helper.dart';
 import 'package:intl/intl.dart';
 import '../app_pages/home.dart';
+import '../../widgets/auth/register_form.dart';
+import '../../widgets/auth/login_form.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
@@ -15,6 +17,7 @@ class OnboardingPage extends StatefulWidget {
 
 class _OnboardingPageState extends State<OnboardingPage> {
   DateTime? selectedDate;
+  final TextEditingController _dateController = TextEditingController();
 
   @override
   void initState() {
@@ -29,8 +32,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
     }
     setState(() {});
   }
-
-  final TextEditingController _dateController = TextEditingController();
 
   Future<void> _onIntroEnd(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
@@ -104,79 +105,124 @@ class _OnboardingPageState extends State<OnboardingPage> {
           decoration: getPageDecorationWithGif(),
         ),
         PageViewModel(
-          title: "Prêt·e ?",
-          body: "Commençons maintenant ! 😁",
-          footer: Padding(
-            padding: const EdgeInsets.all(8.0),
+          titleWidget: Padding(
+            padding: EdgeInsets.only(top: 20.h),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
+              children: [
+                Icon(Icons.person_add_alt_1, size: 60.sp, color: Colors.green),
+                SizedBox(height: 10.h),
                 Text(
-                  "Pour calculer votre impact, indiquez depuis quand vous êtes végane. Sinon, laissez vide.",
-                  style: TextStyle(
-                    fontSize: 40.sp,
-                    color: Colors.black,
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-                const SizedBox(height: 20.0),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: _dateController,
-                        decoration: InputDecoration(
-                          labelText: 'Sélectionnez une date',
-                          labelStyle: const TextStyle(color: Colors.black),
-                          enabledBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
-                          border: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
-                          suffixIcon: IconButton(
-                            icon: const Icon(Icons.calendar_today,
-                                color: Colors.black),
-                            onPressed: _pickDate,
-                          ),
-                        ),
-                        readOnly: true,
-                        style: const TextStyle(color: Colors.black),
-                        onTap: _pickDate,
-                      ),
-                    ),
-                    const SizedBox(width: 10.0),
-                    ElevatedButton(
-                      onPressed: () async {
-                        _onIntroEnd(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 12),
-                        textStyle: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      child: const Text('Continuer'),
-                    ),
-                  ],
+                  "Créez votre compte",
+                  style:
+                      TextStyle(fontSize: 80.sp, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
                 ),
               ],
             ),
           ),
-          image: Image.asset('lib/assets/app_icon.png', height: 175),
-          decoration: getLastPageDecoration(),
+          bodyWidget: Column(
+            children: [
+              SizedBox(height: 16.h),
+              Text(
+                "Créez un compte pour profiter de toutes les fonctionnalités de l'application",
+                style: TextStyle(fontSize: 45.sp, color: Colors.grey[600]),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 32.h),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Végane depuis quand ? (optionnel)",
+                  style: TextStyle(fontSize: 40.sp, color: Colors.grey[700]),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              SizedBox(height: 8.h),
+              TextFormField(
+                controller: _dateController,
+                decoration: InputDecoration(
+                  labelText: 'Sélectionnez une date',
+                  prefixIcon: const Icon(Icons.calendar_today),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                ),
+                readOnly: true,
+                onTap: _pickDate,
+              ),
+              SizedBox(height: 24.h),
+              RegisterForm(
+                onRegisterSuccess: () => _onIntroEnd(context),
+                onSwitchToLogin: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (ctx) => ClipRRect(
+                      borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(20)),
+                      child: Scaffold(
+                        backgroundColor: Colors.white,
+                        body: Padding(
+                          padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(ctx).viewInsets.bottom,
+                            left: 16,
+                            right: 16,
+                            top: 24,
+                          ),
+                          child: SingleChildScrollView(
+                            child: LoginForm(
+                              onLoginSuccess: () {
+                                Navigator.pop(ctx);
+                                _onIntroEnd(context);
+                              },
+                              onSwitchToRegister: () => Navigator.pop(ctx),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+              SizedBox(height: 24.h),
+              // Button to pass
+              TextButton.icon(
+                onPressed: () => _onIntroEnd(context),
+                icon: Icon(Icons.arrow_forward,
+                    size: 40.sp, color: Colors.grey[500]),
+                label: Text(
+                  "Continuer sans compte",
+                  style: TextStyle(
+                    fontSize: 40.sp,
+                    color: Colors.grey[500],
+                    decoration: TextDecoration.underline,
+                    decorationColor: Colors.grey[500],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          decoration: PageDecoration(
+            titlePadding: EdgeInsets.zero,
+            bodyAlignment: Alignment.center,
+            pageColor: Colors.white,
+            contentMargin: EdgeInsets.symmetric(horizontal: 16.w),
+          ),
         ),
       ],
       onDone: () => _onIntroEnd(context),
       showSkipButton: true,
       skip: const Text("Passer"),
       next: const Icon(Icons.arrow_forward),
-      showDoneButton: false,
+      showDoneButton: true,
+      done: Text(
+        "Passer",
+        style: TextStyle(
+          fontSize: 40.sp,
+          color: Colors.grey[500],
+        ),
+      ),
       dotsDecorator: getDotsDecorator(),
       controlsMargin: EdgeInsets.only(bottom: 80.h),
       controlsPadding: const EdgeInsets.all(16),
@@ -188,16 +234,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
         bodyTextStyle: TextStyle(fontSize: 50.sp),
         imagePadding: const EdgeInsets.all(24),
         pageColor: Colors.white,
-      );
-
-  PageDecoration getLastPageDecoration() => PageDecoration(
-        titleTextStyle: TextStyle(fontSize: 80.sp, fontWeight: FontWeight.bold),
-        bodyTextStyle: TextStyle(fontSize: 50.sp),
-        imagePadding: const EdgeInsets.all(24),
-        imageFlex: 2,
-        bodyFlex: 0,
-        pageColor: Colors.white,
-        footerPadding: const EdgeInsets.only(top: 0),
       );
 
   PageDecoration getPageDecorationWithGif() => PageDecoration(
