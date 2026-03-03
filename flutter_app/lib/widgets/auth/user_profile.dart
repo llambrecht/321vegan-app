@@ -248,6 +248,8 @@ class _UserProfileState extends State<UserProfile> {
       children: [
         _buildProfileCard(),
         SizedBox(height: 24.h),
+        _buildSupportButton(),
+        SizedBox(height: 24.h),
         _buildStatsCards(),
         if ((_user?.nbProductsModified ?? 0) > 0 ||
             (_user?.nbCheckings ?? 0) > 0) ...[
@@ -496,79 +498,79 @@ class _UserProfileState extends State<UserProfile> {
                   ),
                 ),
 
-                // Subscription / Support button
-                SizedBox(height: 24.h),
-                GestureDetector(
-                  onTap: _openSubscriptionPage,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: SubscriptionService.isSubscribed
-                            ? [
-                                Colors.amber.shade600,
-                                Colors.orange.shade600,
-                              ]
-                            : [
-                                Colors.pink.shade400,
-                                Colors.deepPurple.shade400,
-                              ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(12.r),
-                      boxShadow: [
-                        BoxShadow(
-                          color: (SubscriptionService.isSubscribed
-                                  ? Colors.amber
-                                  : Colors.pink)
-                              .withValues(alpha: 0.3),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 16.w, vertical: 12.h),
-                    child: Row(
-                      children: [
-                        Icon(
-                          SubscriptionService.isSubscribed
-                              ? Icons.military_tech
-                              : Icons.favorite,
-                          size: 48.sp,
-                          color: Colors.white,
-                        ),
-                        SizedBox(width: 12.w),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                SubscriptionService.isSubscribed
-                                    ? 'Abonnement actif'
-                                    : 'Soutenir 321 Vegan',
-                                style: TextStyle(
-                                  fontSize: 44.sp,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Icon(
-                          Icons.arrow_forward_ios,
-                          size: 40.sp,
-                          color: Colors.white70,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSupportButton() {
+    return GestureDetector(
+      onTap: _openSubscriptionPage,
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: SubscriptionService.isSubscribed
+                ? [
+                    Colors.amber.shade600,
+                    Colors.orange.shade600,
+                  ]
+                : [
+                    Colors.pink.shade400,
+                    Colors.deepPurple.shade400,
+                  ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(12.r),
+          boxShadow: [
+            BoxShadow(
+              color: (SubscriptionService.isSubscribed
+                      ? Colors.amber
+                      : Colors.pink)
+                  .withValues(alpha: 0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+        child: Row(
+          children: [
+            Icon(
+              SubscriptionService.isSubscribed
+                  ? Icons.military_tech
+                  : Icons.favorite,
+              size: 48.sp,
+              color: Colors.white,
+            ),
+            SizedBox(width: 12.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    SubscriptionService.isSubscribed
+                        ? 'Abonnement actif'
+                        : 'Soutenir 321 Vegan',
+                    style: TextStyle(
+                      fontSize: 44.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.arrow_forward_ios,
+              size: 40.sp,
+              color: Colors.white70,
+            ),
+          ],
+        ),
       ),
     );
   }

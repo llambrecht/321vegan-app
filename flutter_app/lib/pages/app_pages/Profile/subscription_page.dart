@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
 import '../../../services/subscription_service.dart';
 import '../../../services/auth_service.dart';
 
@@ -14,19 +13,37 @@ class SubscriptionPage extends StatefulWidget {
 class _SubscriptionPageState extends State<SubscriptionPage> {
   bool _isLoading = false;
   bool _isRestoring = false;
-  String? _selectedProductId;
+  bool _isYearly = false;
+  int _selectedTier = 2; // 1, 2, or 3 — default to middle tier
   String? _errorMessage;
+
+  String? get _selectedProductId {
+    if (_isYearly) {
+      switch (_selectedTier) {
+        case 1:
+          return SubscriptionService.yearlyId;
+        case 2:
+          return SubscriptionService.tier1YearlyId;
+        case 3:
+          return SubscriptionService.tier2YearlyId;
+      }
+    } else {
+      switch (_selectedTier) {
+        case 1:
+          return SubscriptionService.monthlyId;
+        case 2:
+          return SubscriptionService.tier1MonthlyId;
+        case 3:
+          return SubscriptionService.tier2MonthlyId;
+      }
+    }
+    return null;
+  }
 
   @override
   void initState() {
     super.initState();
     SubscriptionService.onSubscriptionChanged = _onSubscriptionChanged;
-    // Pre-select yearly as default
-    if (SubscriptionService.yearlyProduct != null) {
-      _selectedProductId = SubscriptionService.yearlyProductId;
-    } else if (SubscriptionService.monthlyProduct != null) {
-      _selectedProductId = SubscriptionService.monthlyProductId;
-    }
   }
 
   @override
@@ -221,9 +238,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
 
   Widget _buildActiveSubscriptionCard(subscription, Color primaryColor) {
     final productName =
-        subscription.productId == SubscriptionService.yearlyProductId
-            ? 'Annuel'
-            : 'Mensuel';
+        SubscriptionService.getProductDisplayName(subscription.productId);
     final expiresAt = subscription.expiresAt;
 
     return Container(
@@ -321,7 +336,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
         ),
         SizedBox(height: 8.h),
         Text(
-          'Aidez-nous à améliorer 321 Vegan\net débloquez des thèmes exclusifs !',
+          'Aidez-nous à grandir et à rendre le véganisme facile pour encore plus de monde\net débloquez des thèmes exclusifs !',
           style: TextStyle(
             fontSize: 40.sp,
             color: Colors.grey[500],
@@ -418,128 +433,264 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
     );
   }
 
+  Widget _buildBillingToggle(Color primaryColor) {
+    return Container(
+      padding: EdgeInsets.all(6.w),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(16.r),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: GestureDetector(
+              onTap: () => setState(() => _isYearly = false),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding: EdgeInsets.symmetric(vertical: 14.h),
+                decoration: BoxDecoration(
+                  color: !_isYearly ? Colors.white : Colors.transparent,
+                  borderRadius: BorderRadius.circular(12.r),
+                  boxShadow: !_isYearly
+                      ? [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.08),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ]
+                      : [],
+                ),
+                child: Text(
+                  'Par mois',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 42.sp,
+                    fontWeight:
+                        !_isYearly ? FontWeight.bold : FontWeight.normal,
+                    color: !_isYearly ? primaryColor : Colors.grey[600],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: GestureDetector(
+              onTap: () => setState(() => _isYearly = true),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding: EdgeInsets.symmetric(vertical: 14.h),
+                decoration: BoxDecoration(
+                  color: _isYearly ? Colors.white : Colors.transparent,
+                  borderRadius: BorderRadius.circular(12.r),
+                  boxShadow: _isYearly
+                      ? [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.08),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ]
+                      : [],
+                ),
+                child: Text(
+                  'Par an',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 42.sp,
+                    fontWeight: _isYearly ? FontWeight.bold : FontWeight.normal,
+                    color: _isYearly ? primaryColor : Colors.grey[600],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildPlanCards(Color primaryColor) {
-    final monthly = SubscriptionService.monthlyProduct;
-    final yearly = SubscriptionService.yearlyProduct;
+    final tiers = [
+      (
+        tier: 1,
+        title: 'Petit soutien',
+        icon: Icons.eco,
+        monthlyId: SubscriptionService.monthlyId,
+        yearlyId: SubscriptionService.yearlyId,
+        isPopular: false,
+      ),
+      (
+        tier: 2,
+        title: 'Soutien',
+        icon: Icons.favorite,
+        monthlyId: SubscriptionService.tier1MonthlyId,
+        yearlyId: SubscriptionService.tier1YearlyId,
+        isPopular: true,
+      ),
+      (
+        tier: 3,
+        title: 'Grand soutien',
+        icon: Icons.star,
+        monthlyId: SubscriptionService.tier2MonthlyId,
+        yearlyId: SubscriptionService.tier2YearlyId,
+        isPopular: false,
+      ),
+    ];
 
     return Column(
       children: [
-        if (yearly != null)
-          _buildPlanCard(
-            productDetails: yearly,
-            title: 'Annuel',
-            subtitle:
-                'Payez une seule fois par an avec un réduction sur le prix.',
-            primaryColor: primaryColor,
-          ),
-        if (yearly != null && monthly != null) SizedBox(height: 16.h),
-        if (monthly != null)
-          _buildPlanCard(
-            productDetails: monthly,
-            title: 'Mensuel',
-            subtitle: 'Payez tous les mois, annulez à tout moment.',
-            primaryColor: primaryColor,
-          ),
+        _buildBillingToggle(primaryColor),
+        SizedBox(height: 20.h),
+        ...tiers.map((t) {
+          final productId = _isYearly ? t.yearlyId : t.monthlyId;
+          final product = SubscriptionService.getProduct(productId);
+
+          return Padding(
+            padding: EdgeInsets.only(bottom: 12.h),
+            child: _buildTierCard(
+              tier: t.tier,
+              title: t.title,
+              icon: t.icon,
+              price: product?.price,
+              isPopular: t.isPopular,
+              primaryColor: primaryColor,
+            ),
+          );
+        }),
       ],
     );
   }
 
-  Widget _buildPlanCard({
-    required ProductDetails productDetails,
+  Widget _buildTierCard({
+    required int tier,
     required String title,
-    required String subtitle,
+    required IconData icon,
+    required String? price,
+    required bool isPopular,
     required Color primaryColor,
   }) {
-    final isSelected = _selectedProductId == productDetails.id;
+    final isSelected = _selectedTier == tier;
 
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          _selectedProductId = productDetails.id;
-        });
-      },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: EdgeInsets.all(20.w),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20.r),
-          border: Border.all(
-            color: isSelected ? primaryColor : Colors.grey[200]!,
-            width: isSelected ? 2.5 : 1,
-          ),
-          boxShadow: [
-            if (isSelected)
-              BoxShadow(
-                color: primaryColor.withValues(alpha: 0.15),
-                blurRadius: 16,
-                offset: const Offset(0, 4),
+      onTap: () => setState(() => _selectedTier = tier),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 22.h),
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? primaryColor.withValues(alpha: 0.04)
+                  : Colors.white,
+              borderRadius: BorderRadius.circular(20.r),
+              border: Border.all(
+                color: isSelected ? primaryColor : Colors.grey[200]!,
+                width: isSelected ? 2.5 : 1,
               ),
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.03),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            // Radio indicator
-            Container(
-              width: 48.w,
-              height: 48.w,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: isSelected ? primaryColor : Colors.grey[300]!,
-                  width: 2,
-                ),
-                color: isSelected ? primaryColor : Colors.transparent,
-              ),
-              child: isSelected
-                  ? Icon(Icons.check, size: 28.sp, color: Colors.white)
-                  : null,
-            ),
-            SizedBox(width: 16.w),
-            // Plan info
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        title,
-                        style: TextStyle(
-                          fontSize: 46.sp,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey[800],
-                        ),
-                      ),
-                    ],
+              boxShadow: [
+                if (isSelected)
+                  BoxShadow(
+                    color: primaryColor.withValues(alpha: 0.15),
+                    blurRadius: 16,
+                    offset: const Offset(0, 4),
                   ),
-                  SizedBox(height: 2.h),
-                  Text(
-                    subtitle,
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.03),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                // Icon circle
+                Container(
+                  width: 100.w,
+                  height: 100.w,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: isSelected
+                        ? primaryColor.withValues(alpha: 0.15)
+                        : Colors.grey[100],
+                  ),
+                  child: Icon(
+                    icon,
+                    size: 48.sp,
+                    color: isSelected ? primaryColor : Colors.grey[500],
+                  ),
+                ),
+                SizedBox(width: 16.w),
+                // Title
+                Expanded(
+                  child: Text(
+                    title,
                     style: TextStyle(
-                      fontSize: 34.sp,
-                      color: Colors.grey[500],
+                      fontSize: 44.sp,
+                      fontWeight: FontWeight.bold,
+                      color: isSelected ? primaryColor : Colors.grey[800],
                     ),
                   ),
-                ],
+                ),
+                // Price + period
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      price ?? '...',
+                      style: TextStyle(
+                        fontSize: 50.sp,
+                        fontWeight: FontWeight.bold,
+                        color: isSelected ? primaryColor : Colors.grey[800],
+                      ),
+                    ),
+                    Text(
+                      _isYearly ? '/ an' : '/ mois',
+                      style: TextStyle(
+                        fontSize: 30.sp,
+                        color: Colors.grey[500],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          // "Populaire" badge
+          if (isPopular)
+            Positioned(
+              top: -12.h,
+              right: 20.w,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.orange.shade400,
+                      Colors.deepOrange.shade400
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(20.r),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.orange.withValues(alpha: 0.3),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Text(
+                  'Populaire',
+                  style: TextStyle(
+                    fontSize: 28.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
-            // Price
-            Text(
-              productDetails.price,
-              style: TextStyle(
-                fontSize: 48.sp,
-                fontWeight: FontWeight.bold,
-                color: isSelected ? primaryColor : Colors.grey[700],
-              ),
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }

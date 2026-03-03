@@ -8,9 +8,26 @@ import 'api_service.dart';
 import 'auth_service.dart';
 
 class SubscriptionService {
-  static const String monthlyProductId = 'supporter_monthly';
-  static const String yearlyProductId = 'supporter_yearly';
-  static const Set<String> _productIds = {monthlyProductId, yearlyProductId};
+  // Tier 0 - Petit soutien
+  static const String monthlyId = 'supporter_monthly';
+  static const String yearlyId = 'supporter_yearly';
+
+  // Tier 1 - soutien
+  static const String tier1MonthlyId = 'supporter_tier1_monthly';
+  static const String tier1YearlyId = 'supporter_tier1_yearly';
+
+  // Tier 2 - Grand soutien
+  static const String tier2MonthlyId = 'supporter_tier2_monthly';
+  static const String tier2YearlyId = 'supporter_tier2_yearly';
+
+  static const Set<String> _productIds = {
+    monthlyId,
+    yearlyId,
+    tier1MonthlyId,
+    tier1YearlyId,
+    tier2MonthlyId,
+    tier2YearlyId,
+  };
 
   static const String _statusKey = 'subscription_status';
   static const String _expiresAtKey = 'subscription_expires_at';
@@ -89,22 +106,24 @@ class SubscriptionService {
     _products = response.productDetails;
   }
 
-  /// Get the monthly product
-  static ProductDetails? get monthlyProduct {
+  /// Get a product by its ID
+  static ProductDetails? getProduct(String productId) {
     try {
-      return _products.firstWhere((p) => p.id == monthlyProductId);
+      return _products.firstWhere((p) => p.id == productId);
     } catch (_) {
       return null;
     }
   }
 
-  /// Get the yearly product
-  static ProductDetails? get yearlyProduct {
-    try {
-      return _products.firstWhere((p) => p.id == yearlyProductId);
-    } catch (_) {
-      return null;
-    }
+  /// Get the display name for a product ID
+  static String getProductDisplayName(String productId) {
+    if (productId.contains('tier3')) return 'Grand soutien';
+    if (productId.contains('tier2')) return 'Soutien';
+    if (productId.contains('tier1')) return 'Petit soutien';
+    // Legacy
+    if (productId.contains('yearly')) return 'Annuel';
+    if (productId.contains('monthly')) return 'Mensuel';
+    return 'Soutien';
   }
 
   /// Initiate a purchase
