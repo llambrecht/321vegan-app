@@ -2091,7 +2091,8 @@
     },
     {
       "alternative_names": [],
-      "description": "Le phosphate de calcium est généralement vegan, dans la grande majorité des cas. Mais le procédé de fabrication peut faire intervenir des produits d'origine animale.",
+      "description": "",
+      "description_fr": "Le phosphate de calcium est généralement vegan, dans la grande majorité des cas. Mais le procédé de fabrication peut faire intervenir des produits d'origine animale.",
       "e_number": "E341",
       "name": "Calcium phosphates",
       "state": "Ça dépend",
@@ -2102,7 +2103,7 @@
           "value": "https://en.wikipedia.org/wiki/E341"
         }
       ],
-      "name_fr": "Phosphates de calcium"
+      "name_fr": "Phosphate de calcium"
     },
     {
       "alternative_names": [],
