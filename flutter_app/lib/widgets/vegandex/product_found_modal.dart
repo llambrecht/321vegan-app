@@ -135,7 +135,7 @@ class _ProductFoundModalState extends State<ProductFoundModal>
                             placeholder: (context, url) => const Center(
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                color: const Color(0xFF1A722E),
+                                color: Color(0xFF1A722E),
                               ),
                             ),
                             errorWidget: (context, url, error) {

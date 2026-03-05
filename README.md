@@ -70,7 +70,6 @@
   </p>
 </div>
 
-
 ---
 
 ## 🌱 About 321 Vegan
@@ -113,7 +112,7 @@ It covers the client-side Flutter code only.
 
 #### External Services
 
-This application uses third-party services such as [Firebase](https://firebase.google.com) (Firestore, Analytics, etc.).  
+This application uses third-party services.
 These services are external and proprietary; their server-side code is not included in this repository and is not covered by the AGPLv3 license.
 
 Only the code developed by the 321 Vegan team and included in this repository is subject to AGPLv3 terms.
