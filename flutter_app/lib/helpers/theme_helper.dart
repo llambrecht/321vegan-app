@@ -1,5 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/seasonal_theme.dart';
+import '../services/subscription_service.dart';
 import '../themes/default_theme.dart';
 import '../themes/spring_theme.dart';
 import '../themes/summer_theme.dart';
@@ -14,10 +15,10 @@ class ThemeHelper {
   static List<SeasonalTheme> getAllThemes() {
     return [
       defaultTheme,
+      winterTheme,
       springTheme,
       summerTheme,
       autumnTheme,
-      winterTheme,
     ];
   }
 
@@ -106,19 +107,24 @@ class ThemeHelper {
 
   // Get current active theme
   static Future<SeasonalTheme> getCurrentTheme() async {
+    final isSubscribed = SubscriptionService.isSubscribed;
     final isAuto = await isAutoThemeEnabled();
 
     if (isAuto) {
-      // Use season-based theme
+      // Auto theme requires subscription
+      if (!isSubscribed) return defaultTheme;
       final season = getCurrentSeason();
       return getThemeBySeason(season);
     } else {
       // Use user's saved preference
       final savedSeason = await getSavedThemePreference();
       if (savedSeason != null) {
+        // Non-default themes require subscription
+        if (savedSeason != Season.defaultTheme && !isSubscribed) {
+          return defaultTheme;
+        }
         return getThemeBySeason(savedSeason);
       } else {
-        // Fallback to default theme
         return defaultTheme;
       }
     }

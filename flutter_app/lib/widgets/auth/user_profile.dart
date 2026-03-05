@@ -464,12 +464,12 @@ class _UserProfileState extends State<UserProfile> {
                       ],
                     ),
                     padding:
-                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                        EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
                     child: Row(
                       children: [
                         Icon(
                           Icons.palette,
-                          size: 48.sp,
+                          size: 64.sp,
                           color: Colors.white,
                         ),
                         SizedBox(width: 12.w),
@@ -497,7 +497,6 @@ class _UserProfileState extends State<UserProfile> {
                     ),
                   ),
                 ),
-
               ],
             ),
           ),
@@ -536,7 +535,7 @@ class _UserProfileState extends State<UserProfile> {
             ),
           ],
         ),
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
         child: Row(
           children: [
             Icon(

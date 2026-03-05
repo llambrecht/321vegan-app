@@ -117,13 +117,12 @@ class SubscriptionService {
 
   /// Get the display name for a product ID
   static String getProductDisplayName(String productId) {
-    if (productId.contains('tier3')) return 'Grand soutien';
-    if (productId.contains('tier2')) return 'Soutien';
-    if (productId.contains('tier1')) return 'Petit soutien';
+    if (productId.contains('tier2')) return 'Grand soutien';
+    if (productId.contains('tier1')) return 'Soutien';
     // Legacy
     if (productId.contains('yearly')) return 'Annuel';
     if (productId.contains('monthly')) return 'Mensuel';
-    return 'Soutien';
+    return 'Petit soutien';
   }
 
   /// Initiate a purchase

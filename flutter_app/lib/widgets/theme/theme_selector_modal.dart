@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../models/seasonal_theme.dart';
@@ -13,26 +14,70 @@ class ThemeSelectorModal extends StatefulWidget {
   State<ThemeSelectorModal> createState() => _ThemeSelectorModalState();
 }
 
-class _ThemeSelectorModalState extends State<ThemeSelectorModal> {
+class _ThemeSelectorModalState extends State<ThemeSelectorModal>
+    with TickerProviderStateMixin {
   bool _isAutoTheme = true;
   Season? _selectedSeason;
   bool _isLoading = true;
+  late PageController _pageController;
+  int _currentPage = 0;
+  double _pageOffset = 0;
+  late AnimationController _iconAnimController;
 
   @override
   void initState() {
     super.initState();
+    _pageController = PageController(viewportFraction: 0.75);
+    _pageController.addListener(_onPageScroll);
+    _iconAnimController = AnimationController(
+      duration: const Duration(seconds: 5),
+      vsync: this,
+    )..repeat(reverse: true);
     _loadCurrentSettings();
+  }
+
+  @override
+  void dispose() {
+    _pageController.removeListener(_onPageScroll);
+    _pageController.dispose();
+    _iconAnimController.dispose();
+    super.dispose();
+  }
+
+  void _onPageScroll() {
+    if (_pageController.page != null) {
+      setState(() {
+        _pageOffset = _pageController.page!;
+      });
+    }
   }
 
   Future<void> _loadCurrentSettings() async {
     final isAuto = await ThemeHelper.isAutoThemeEnabled();
     final savedSeason = await ThemeHelper.getSavedThemePreference();
+    final allThemes = ThemeHelper.getAllThemes();
+
+    final activeSeason = isAuto
+        ? ThemeHelper.getCurrentSeason()
+        : (savedSeason ?? Season.defaultTheme);
+
+    final initialIndex = allThemes
+        .indexWhere((t) => t.season == activeSeason)
+        .clamp(0, allThemes.length - 1);
 
     setState(() {
       _isAutoTheme = isAuto;
       _selectedSeason = savedSeason ??
           (isAuto ? ThemeHelper.getCurrentSeason() : Season.defaultTheme);
+      _currentPage = initialIndex;
+      _pageOffset = initialIndex.toDouble();
       _isLoading = false;
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_pageController.hasClients) {
+        _pageController.jumpToPage(initialIndex);
+      }
     });
   }
 
@@ -40,9 +85,7 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => const Center(
-        child: CircularProgressIndicator(),
-      ),
+      builder: (context) => const Center(child: CircularProgressIndicator()),
     );
 
     await ThemeHelper.saveAutoThemePreference(_isAutoTheme);
@@ -72,6 +115,19 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal> {
     }
   }
 
+  Future<void> _applyThemeSilently() async {
+    await ThemeHelper.saveAutoThemePreference(_isAutoTheme);
+    if (!_isAutoTheme && _selectedSeason != null) {
+      await ThemeHelper.saveThemePreference(_selectedSeason);
+    }
+    if (mounted) {
+      final myAppState = MyApp.of(context);
+      if (myAppState != null) {
+        await myAppState.updateTheme();
+      }
+    }
+  }
+
   void _openSubscriptionPage() {
     Navigator.pop(context);
     Navigator.push(
@@ -80,481 +136,438 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal> {
     );
   }
 
+  Color _lerpThemeColor(Color Function(SeasonalTheme) getter) {
+    final allThemes = ThemeHelper.getAllThemes();
+    final index = _pageOffset.floor().clamp(0, allThemes.length - 1);
+    final nextIndex = (index + 1).clamp(0, allThemes.length - 1);
+    final t = _pageOffset - index;
+    return Color.lerp(
+        getter(allThemes[index]), getter(allThemes[nextIndex]), t)!;
+  }
+
+  // Per-season icon animation values
+  _IconAnimValues _getIconAnim(Season season, double t) {
+    // t goes 0→1→0 (reverse repeat)
+    final sinT = math.sin(t * math.pi);
+    switch (season) {
+      case Season.defaultTheme:
+        // Gentle pulse
+        return _IconAnimValues(
+          rotation: 0,
+          scale: 1.0 + sinT * 0.06,
+        );
+      case Season.spring:
+        // Bouncy tilt
+        return _IconAnimValues(
+          rotation: math.sin(t * math.pi * 2) * 0.12,
+          scale: 1.0 + sinT * 0.1,
+        );
+      case Season.summer:
+        // Continuous slow spin + pulse
+        return _IconAnimValues(
+          rotation: t * math.pi * 2,
+          scale: 1.0 + sinT * 0.05,
+        );
+      case Season.autumn:
+        // Gentle swaying like a falling leaf
+        return _IconAnimValues(
+          rotation: math.sin(t * math.pi * 1.5) * 0.25,
+          scale: 1.0 + math.sin(t * math.pi * 0.7) * 0.04,
+        );
+      case Season.winter:
+        // Slow rotation + shimmer
+        return _IconAnimValues(
+          rotation: t * math.pi,
+          scale: 1.0 + sinT * 0.08,
+        );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
+        ),
+        child: const Center(child: CircularProgressIndicator()),
+      );
     }
 
     final isSubscribed = SubscriptionService.isSubscribed;
     final currentSeason = ThemeHelper.getCurrentSeason();
     final allThemes = ThemeHelper.getAllThemes();
-    final activeTheme = _isAutoTheme
-        ? ThemeHelper.getThemeBySeason(currentSeason)
-        : ThemeHelper.getThemeBySeason(_selectedSeason ?? Season.defaultTheme);
+    final currentTheme = allThemes[_currentPage.clamp(0, allThemes.length - 1)];
+    final isCurrentLocked =
+        currentTheme.season != Season.defaultTheme && !isSubscribed;
+
+    final gradStart = _lerpThemeColor((t) => t.waveColor);
+    final gradEnd = _lerpThemeColor((t) => t.primaryColor);
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey[50],
         borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
       ),
-      child: Column(
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
         children: [
-          // Header with active theme gradient
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.04),
-                  blurRadius: 10,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+          // Background gradient
+          Positioned.fill(
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+              ),
             ),
-            child: Column(
-              children: [
-                // Handle bar
-                Container(
-                  margin: EdgeInsets.only(top: 16.h),
-                  width: 60.w,
-                  height: 6.h,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(3.r),
-                  ),
-                ),
+          ),
+
+          Column(
+            children: [
+              _buildHeader(),
+
+              if (isSubscribed)
                 Padding(
-                  padding: EdgeInsets.fromLTRB(28.w, 24.h, 16.w, 24.h),
+                  padding: EdgeInsets.fromLTRB(24.w, 0, 24.w, 12.h),
+                  child: _buildAutoThemeToggle(currentSeason),
+                ),
+
+              // Theme name + description above carousel
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 250),
+                child: Column(
+                  key: ValueKey(_currentPage),
+                  children: [
+                    Text(
+                      currentTheme.name,
+                      style: TextStyle(
+                        fontSize: 64.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey[800],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: 16.h),
+
+              // Carousel
+              SizedBox(
+                height: 680.h,
+                child: PageView.builder(
+                  controller: _pageController,
+                  physics: null,
+                  itemCount: allThemes.length,
+                  onPageChanged: (index) {
+                    setState(() {
+                      _currentPage = index;
+                      if (_isAutoTheme) {
+                        _isAutoTheme = false;
+                      }
+                      _selectedSeason = allThemes[index].season;
+                    });
+                  },
+                  itemBuilder: (context, index) {
+                    final theme = allThemes[index];
+                    final isDefault = theme.season == Season.defaultTheme;
+                    final isLocked = !isDefault && !isSubscribed;
+                    final isCurrentSeason = theme.season == currentSeason;
+
+                    return _buildThemeCard(
+                      theme,
+                      index: index,
+                      isLocked: isLocked,
+                      isCurrentSeason: isCurrentSeason,
+                    );
+                  },
+                ),
+              ),
+
+              SizedBox(height: 16.h),
+
+              // Page indicator
+              _buildPageIndicator(allThemes),
+
+              // Info text for non-subscribers
+              if (!isSubscribed)
+                Padding(
+                  padding: EdgeInsets.all(8.h),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        padding: EdgeInsets.all(14.w),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              activeTheme.waveColor,
-                              activeTheme.primaryColor,
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(16.r),
-                        ),
-                        child: Icon(
-                          Icons.palette,
-                          size: 52.sp,
-                          color: Colors.white,
-                        ),
-                      ),
-                      SizedBox(width: 16.w),
+                      Icon(Icons.info_outline,
+                          size: 32.sp, color: Colors.grey[400]),
+                      SizedBox(width: 6.w),
                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Thèmes',
-                              style: TextStyle(
-                                fontSize: 56.sp,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey[800],
-                              ),
-                            ),
-                            Text(
-                              'Personnalisez l\'apparence',
-                              style: TextStyle(
-                                fontSize: 36.sp,
-                                color: Colors.grey[500],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: Container(
-                          padding: EdgeInsets.all(8.w),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[100],
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.close,
-                            size: 48.sp,
-                            color: Colors.grey[600],
+                        child: Text(
+                          'L\'abonnement soutien débloque tous les thèmes. Y souscrire permet de permettre au projet 321 Vegan de continuer d\'exister et de se développer. Merci !',
+                          style: TextStyle(
+                            fontSize: 30.sp,
+                            color: Colors.grey[500],
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
                     ],
                   ),
                 ),
-              ],
-            ),
+
+              // Bottom button
+              _buildBottomButton(currentTheme, isCurrentLocked),
+              SizedBox(height: 60.h),
+            ],
           ),
+        ],
+      ),
+    );
+  }
 
-          // Content
-          Expanded(
-            child: ListView(
-              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
-              children: [
-                // Auto theme toggle card (only for subscribers)
-                if (isSubscribed) ...[
-                  _buildAutoThemeToggle(currentSeason),
-                  SizedBox(height: 24.h),
-                ],
-
-                // Section title
-                Padding(
-                  padding: EdgeInsets.only(left: 4.w, bottom: 16.h),
-                  child: Text(
-                    'Choisir un thème',
-                    style: TextStyle(
-                      fontSize: 44.sp,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey[700],
-                    ),
-                  ),
-                ),
-
-                // Themes grid
-                ...allThemes.map((theme) {
-                  final isDefault = theme.season == Season.defaultTheme;
-                  final isLocked = !isDefault && !isSubscribed;
-                  final isSelected =
-                      !_isAutoTheme && _selectedSeason == theme.season;
-                  final isCurrentSeason = theme.season == currentSeason;
-                  final isActive = _isAutoTheme ? isCurrentSeason : isSelected;
-                  final isDisabled =
-                      (_isAutoTheme && !isCurrentSeason) || isLocked;
-
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: 16.h),
-                    child: _buildThemeCard(
-                      theme,
-                      isActive: isActive,
-                      isDisabled: isDisabled,
-                      isCurrentSeason: isCurrentSeason,
-                      isLocked: isLocked,
-                    ),
-                  );
-                }),
-
-                SizedBox(height: 16.h),
-              ],
-            ),
+  Widget _buildHeader() {
+    return Column(
+      children: [
+        Container(
+          margin: EdgeInsets.only(top: 16.h),
+          width: 60.w,
+          height: 6.h,
+          decoration: BoxDecoration(
+            color: Colors.grey[300],
+            borderRadius: BorderRadius.circular(3.r),
           ),
-
-          // Apply button
-          Container(
-            padding: EdgeInsets.fromLTRB(24.w, 16.h, 24.w, 32.h),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.06),
-                  blurRadius: 10,
-                  offset: const Offset(0, -2),
+        ),
+        Padding(
+          padding: EdgeInsets.fromLTRB(28.w, 20.h, 16.w, 16.h),
+          child: Row(
+            children: [
+              Text(
+                'Thèmes',
+                style: TextStyle(
+                  fontSize: 60.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[800],
                 ),
-              ],
-            ),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _saveThemeSettings,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: activeTheme.primaryColor,
-                  foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(vertical: 20.h),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.r),
+              ),
+              const Spacer(),
+              GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Container(
+                  padding: EdgeInsets.all(10.w),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    shape: BoxShape.circle,
                   ),
-                  elevation: 0,
-                ),
-                child: Text(
-                  'Appliquer',
-                  style: TextStyle(
-                    fontSize: 48.sp,
-                    fontWeight: FontWeight.bold,
+                  child: Icon(
+                    Icons.close,
+                    size: 44.sp,
+                    color: Colors.grey[600],
                   ),
                 ),
               ),
-            ),
+            ],
           ),
-          SizedBox(height: 90.h),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   Widget _buildAutoThemeToggle(Season currentSeason) {
     final currentTheme = ThemeHelper.getThemeBySeason(currentSeason);
 
-    return Container(
-      padding: EdgeInsets.all(20.w),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
-          ),
-        ],
-        border: Border.all(
-          color: _isAutoTheme
-              ? currentTheme.primaryColor.withValues(alpha: 0.3)
-              : Colors.grey[200]!,
+    return GestureDetector(
+      onTap: () async {
+        if (!_isAutoTheme) {
+          // Turning auto ON: animate first, then lock
+          final allThemes = ThemeHelper.getAllThemes();
+          final seasonIndex = allThemes
+              .indexWhere((t) => t.season == ThemeHelper.getCurrentSeason())
+              .clamp(0, allThemes.length - 1);
+          await _pageController.animateToPage(
+            seasonIndex,
+            duration: const Duration(milliseconds: 400),
+            curve: Curves.easeInOut,
+          );
+          if (mounted) {
+            setState(() => _isAutoTheme = true);
+            _applyThemeSilently();
+          }
+        } else {
+          // Turning auto OFF
+          setState(() => _isAutoTheme = false);
+        }
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeInOut,
+        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
+        decoration: BoxDecoration(
+          color: _isAutoTheme ? currentTheme.primaryColor : Colors.grey[200],
+          borderRadius: BorderRadius.circular(50.r),
         ),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: EdgeInsets.all(12.w),
-            decoration: BoxDecoration(
-              color: _isAutoTheme
-                  ? currentTheme.primaryColor.withValues(alpha: 0.1)
-                  : Colors.grey[100],
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
               Icons.auto_awesome,
-              size: 48.sp,
-              color:
-                  _isAutoTheme ? currentTheme.primaryColor : Colors.grey[400],
+              size: 64.sp,
+              color: _isAutoTheme ? Colors.white : Colors.grey[500],
             ),
-          ),
-          SizedBox(width: 16.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Thème automatique',
-                  style: TextStyle(
-                    fontSize: 44.sp,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey[800],
-                  ),
-                ),
-                SizedBox(height: 2.h),
-                Text(
-                  _isAutoTheme
-                      ? 'Saison : ${ThemeHelper.getThemeDisplayName(currentSeason)}'
-                      : 'Change selon la saison',
-                  style: TextStyle(
-                    fontSize: 36.sp,
-                    color: _isAutoTheme
-                        ? currentTheme.primaryColor
-                        : Colors.grey[500],
-                    fontWeight:
-                        _isAutoTheme ? FontWeight.w600 : FontWeight.normal,
-                  ),
-                ),
-              ],
+            SizedBox(width: 10.w),
+            Text(
+              _isAutoTheme
+                  ? 'Mode automatique · ${ThemeHelper.getThemeDisplayName(currentSeason)}'
+                  : 'Activer le mode automatique',
+              style: TextStyle(
+                fontSize: 46.sp,
+                fontWeight: FontWeight.w600,
+                color: _isAutoTheme ? Colors.white : Colors.grey[600],
+              ),
             ),
-          ),
-          Switch(
-            value: _isAutoTheme,
-            onChanged: (value) {
-              setState(() {
-                _isAutoTheme = value;
-              });
-            },
-            activeTrackColor: currentTheme.primaryColor,
-            activeThumbColor: Colors.white,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildThemeCard(
     SeasonalTheme theme, {
-    required bool isActive,
-    required bool isDisabled,
+    required int index,
+    required bool isLocked,
     required bool isCurrentSeason,
-    bool isLocked = false,
   }) {
-    final isDefault = theme.season == Season.defaultTheme;
-    final gradientStart = isDefault ? const Color(0xFF9E9E9E) : theme.waveColor;
-    final gradientEnd =
-        isDefault ? const Color(0xFF616161) : theme.primaryColor;
-    final shadowColor = isDefault ? Colors.grey : theme.primaryColor;
-    final checkColor = isDefault ? Colors.grey[700]! : theme.primaryColor;
+    final distance = _pageOffset - index;
+    final absDistance = distance.abs().clamp(0.0, 1.0);
+    // Scale down non-centered cards
+    final scale = 1.0 - (absDistance * 0.08);
 
-    return GestureDetector(
-      onTap: isLocked
-          ? _openSubscriptionPage
-          : isDisabled
-              ? null
-              : () {
-                  if (!_isAutoTheme) {
-                    setState(() {
-                      _selectedSeason = theme.season;
-                    });
-                  }
-                },
-      child: AnimatedOpacity(
-        duration: const Duration(milliseconds: 200),
-        opacity: (isDisabled && !isLocked)
-            ? 0.4
-            : isLocked
-                ? 0.5
-                : 1.0,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          height: 260.h,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20.r),
-            border: Border.all(
-              color: isActive ? Colors.white : Colors.transparent,
-              width: isActive ? 3 : 0,
-            ),
-            boxShadow: [
-              if (isActive)
-                BoxShadow(
-                  color: shadowColor.withValues(alpha: 0.4),
-                  blurRadius: 20,
-                  offset: const Offset(0, 6),
-                  spreadRadius: 2,
-                ),
-              BoxShadow(
-                color: shadowColor.withValues(alpha: 0.15),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: scale, end: scale),
+      duration: const Duration(milliseconds: 50),
+      builder: (context, scaleVal, child) {
+        return Transform.scale(
+          scale: scaleVal,
+          child: child,
+        );
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+        child: GestureDetector(
+          onTap: isLocked ? _openSubscriptionPage : null,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(28.r),
+              gradient: LinearGradient(
+                colors: [theme.waveColor, theme.primaryColor],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(isActive ? 17.r : 20.r),
-            child: Stack(
-              children: [
-                // Full gradient background
-                Positioned.fill(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [gradientStart, gradientEnd],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
+              boxShadow: [
+                BoxShadow(
+                  color: theme.primaryColor.withValues(alpha: 0.3),
+                  blurRadius: 24,
+                  offset: const Offset(0, 10),
+                  spreadRadius: 1,
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(28.r),
+              child: Stack(
+                children: [
+                  // Large background icon with parallax + season animation
+                  AnimatedBuilder(
+                    animation: _iconAnimController,
+                    builder: (context, child) {
+                      final anim =
+                          _getIconAnim(theme.season, _iconAnimController.value);
+                      return Positioned(
+                        right: -60.w + (distance * 100.w),
+                        top: -30.h,
+                        bottom: -30.h,
+                        child: Transform.scale(
+                          scale: anim.scale,
+                          child: Transform.rotate(
+                            angle: anim.rotation,
+                            child: Icon(
+                              theme.seasonalIcon,
+                              size: 700.r,
+                              color: Colors.white.withValues(alpha: 0.12),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+
+                  // Small decorative icon with parallax
+                  Positioned(
+                    left: -20.w + (distance * -50.w),
+                    bottom: -15.h,
+                    child: AnimatedBuilder(
+                      animation: _iconAnimController,
+                      builder: (context, child) {
+                        final anim = _getIconAnim(
+                            theme.season, _iconAnimController.value);
+                        return Transform.rotate(
+                          angle: -anim.rotation * 0.5,
+                          child: Icon(
+                            theme.seasonalIcon,
+                            size: 300.r,
+                            color: Colors.white.withValues(alpha: 0.07),
+                          ),
+                        );
+                      },
                     ),
                   ),
-                ),
-                // Large seasonal icon in background
-                Positioned(
-                  right: -60.w,
-                  top: -40.h,
-                  child: Icon(
-                    theme.seasonalIcon,
-                    size: 600.r,
-                    color: Colors.white.withValues(alpha: 0.15),
-                  ),
-                ),
-                // Content overlay
-                Positioned.fill(
-                  child: Padding(
-                    padding: EdgeInsets.all(20.w),
+
+                  // Content overlay
+                  Padding(
+                    padding: EdgeInsets.all(24.w),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // Top row: badges
+                        // Top badges
                         Row(
                           children: [
                             if (_isAutoTheme && isCurrentSeason)
                               Container(
                                 padding: EdgeInsets.symmetric(
-                                    horizontal: 12.w, vertical: 5.h),
+                                    horizontal: 10.w, vertical: 5.h),
                                 decoration: BoxDecoration(
                                   color: Colors.white.withValues(alpha: 0.25),
                                   borderRadius: BorderRadius.circular(10.r),
                                 ),
-                                child: Text(
-                                  'Saison actuelle',
-                                  style: TextStyle(
-                                    fontSize: 30.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
-                                  ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.auto_awesome,
+                                        size: 28.sp, color: Colors.white),
+                                    SizedBox(width: 4.w),
+                                    Text(
+                                      'Saison actuelle',
+                                      style: TextStyle(
+                                        fontSize: 28.sp,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             const Spacer(),
-                            // Lock icon or selection indicator
                             if (isLocked)
                               Container(
-                                padding: EdgeInsets.all(8.w),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 10.w, vertical: 5.h),
                                 decoration: BoxDecoration(
-                                  color: Colors.black.withValues(alpha: 0.3),
-                                  shape: BoxShape.circle,
+                                  color: Colors.black.withValues(alpha: 0.2),
+                                  borderRadius: BorderRadius.circular(10.r),
                                 ),
-                                child: Icon(
-                                  Icons.lock,
-                                  size: 90.sp,
-                                  color: Colors.white,
-                                ),
-                              )
-                            else
-                              AnimatedContainer(
-                                duration: const Duration(milliseconds: 200),
-                                width: 48.w,
-                                height: 48.w,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: isActive
-                                      ? Colors.white
-                                      : Colors.white.withValues(alpha: 0.25),
-                                  border: Border.all(
-                                    color: Colors.white.withValues(
-                                        alpha: isActive ? 1.0 : 0.5),
-                                    width: 2,
-                                  ),
-                                ),
-                                child: isActive
-                                    ? Icon(
-                                        Icons.check,
-                                        size: 32.sp,
-                                        color: checkColor,
-                                      )
-                                    : null,
-                              ),
-                          ],
-                        ),
-                        // Bottom: name + color dots
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  theme.name,
-                                  style: TextStyle(
-                                    fontSize: 56.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                    shadows: [
-                                      Shadow(
-                                        color:
-                                            Colors.black.withValues(alpha: 0.2),
-                                        blurRadius: 4,
-                                        offset: const Offset(0, 1),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                if (isLocked) ...[
-                                  SizedBox(width: 10.w),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 10.w, vertical: 4.h),
-                                    decoration: BoxDecoration(
-                                      color:
-                                          Colors.white.withValues(alpha: 0.25),
-                                      borderRadius: BorderRadius.circular(8.r),
-                                    ),
-                                    child: Text(
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.lock,
+                                        size: 28.sp, color: Colors.white),
+                                    SizedBox(width: 4.w),
+                                    Text(
                                       'Premium',
                                       style: TextStyle(
                                         fontSize: 28.sp,
@@ -562,27 +575,124 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal> {
                                         color: Colors.white,
                                       ),
                                     ),
+                                  ],
+                                ),
+                              ),
+                          ],
+                        ),
+
+                        const Spacer(),
+
+                        // Central animated icon
+                        Center(
+                          child: AnimatedBuilder(
+                            animation: _iconAnimController,
+                            builder: (context, child) {
+                              final anim = _getIconAnim(
+                                  theme.season, _iconAnimController.value);
+                              return Transform.scale(
+                                scale: anim.scale,
+                                child: Transform.rotate(
+                                  angle: anim.rotation,
+                                  child: Container(
+                                    padding: EdgeInsets.all(24.w),
+                                    decoration: BoxDecoration(
+                                      color:
+                                          Colors.white.withValues(alpha: 0.18),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      theme.seasonalIcon,
+                                      size: 130.sp,
+                                      color: Colors.white,
+                                    ),
                                   ),
-                                ],
-                              ],
-                            ),
-                            SizedBox(height: 8.h),
-                            Row(
-                              children: [
-                                _buildColorDot(theme.primaryColor),
-                                SizedBox(width: 8.w),
-                                _buildColorDot(theme.secondaryColor),
-                                SizedBox(width: 8.w),
-                                _buildColorDot(theme.accentColor),
-                              ],
-                            ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+
+                        const Spacer(),
+
+                        // Bottom: theme name
+                        Text(
+                          theme.name,
+                          style: TextStyle(
+                            fontSize: 60.sp,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            shadows: [
+                              Shadow(
+                                color: Colors.black.withValues(alpha: 0.15),
+                                blurRadius: 6,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 4.h),
+                        // Color dots
+                        Row(
+                          children: [
+                            _buildCardColorDot(theme.primaryColor),
+                            SizedBox(width: 8.w),
+                            _buildCardColorDot(theme.secondaryColor),
+                            SizedBox(width: 8.w),
+                            _buildCardColorDot(theme.accentColor),
                           ],
                         ),
                       ],
                     ),
                   ),
-                ),
-              ],
+
+                  // Lock overlay
+                  if (isLocked)
+                    Positioned.fill(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.35),
+                        ),
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(20.w),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.15),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.lock_outline,
+                                  size: 100.sp,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              SizedBox(height: 16.h),
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 18.w, vertical: 8.h),
+                                decoration: BoxDecoration(
+                                  color: Colors.amber[700],
+                                  borderRadius: BorderRadius.circular(14.r),
+                                ),
+                                child: Text(
+                                  'Débloqué avec l\'abonnement soutien',
+                                  style: TextStyle(
+                                    fontSize: 34.sp,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
         ),
@@ -590,25 +700,116 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal> {
     );
   }
 
-  Widget _buildColorDot(Color color) {
+  Widget _buildCardColorDot(Color color) {
     return Container(
-      width: 24.w,
-      height: 24.w,
+      width: 22.w,
+      height: 22.w,
       decoration: BoxDecoration(
         color: color,
         shape: BoxShape.circle,
-        border: Border.all(
-          color: Colors.white,
-          width: 1.5,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: color.withValues(alpha: 0.3),
-            blurRadius: 3,
-            offset: const Offset(0, 1),
+        border: Border.all(color: Colors.white, width: 1.5),
+      ),
+    );
+  }
+
+  Widget _buildPaletteChip(Color color, String label) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(10.r),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 18.w,
+            height: 18.w,
+            decoration: BoxDecoration(
+              color: color,
+              shape: BoxShape.circle,
+            ),
+          ),
+          SizedBox(width: 6.w),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 26.sp,
+              color: color,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ],
       ),
     );
   }
+
+  Widget _buildPageIndicator(List<SeasonalTheme> themes) {
+    final activeColor = _lerpThemeColor((t) => t.primaryColor);
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(themes.length, (index) {
+        final isActive = index == _currentPage;
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOutCubic,
+          margin: EdgeInsets.symmetric(horizontal: 4.w),
+          width: isActive ? 32.w : 10.w,
+          height: 10.w,
+          decoration: BoxDecoration(
+            color: isActive ? activeColor : Colors.grey[300],
+            borderRadius: BorderRadius.circular(5.r),
+          ),
+        );
+      }),
+    );
+  }
+
+  Widget _buildBottomButton(SeasonalTheme currentTheme, bool isLocked) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(24.w, 4.h, 24.w, 8.h),
+      child: SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed: isLocked ? _openSubscriptionPage : _saveThemeSettings,
+          style: ElevatedButton.styleFrom(
+            backgroundColor:
+                isLocked ? Colors.amber[700] : currentTheme.primaryColor,
+            foregroundColor: Colors.white,
+            padding: EdgeInsets.symmetric(vertical: 20.h),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18.r),
+            ),
+            elevation: 0,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                isLocked ? Icons.lock_open : Icons.check_circle_outline,
+                size: 46.sp,
+              ),
+              SizedBox(width: 10.w),
+              Text(
+                isLocked ? 'Débloquer' : 'Appliquer',
+                style: TextStyle(
+                  fontSize: 48.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _IconAnimValues {
+  final double rotation;
+  final double scale;
+
+  const _IconAnimValues({required this.rotation, required this.scale});
 }

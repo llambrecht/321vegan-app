@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../services/subscription_service.dart';
 import '../../../services/auth_service.dart';
 
@@ -185,6 +187,8 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
               // Already subscribed banner
               if (isSubscribed && subscription != null) ...[
                 _buildActiveSubscriptionCard(subscription, primaryColor),
+                SizedBox(height: 16.h),
+                _buildManageSubscriptionButton(),
                 SizedBox(height: 32.h),
               ],
 
@@ -200,6 +204,19 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                 // Plan cards
                 if (SubscriptionService.products.isNotEmpty) ...[
                   _buildPlanCards(primaryColor),
+                  SizedBox(height: 8.h),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.w),
+                    child: Text(
+                      'Tous les paliers débloquent les mêmes avantages. Choisissez simplement selon vos moyens !',
+                      style: TextStyle(
+                        fontSize: 32.sp,
+                        color: Colors.grey[500],
+                        fontStyle: FontStyle.italic,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                   SizedBox(height: 24.h),
 
                   // Error message
@@ -350,7 +367,11 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
 
   Widget _buildBenefits(Color primaryColor) {
     final benefits = [
-      ('Thèmes saisonniers', 'Printemps, Été, Automne, Hiver', Icons.palette),
+      (
+        'Tous les thèmes débloqués',
+        'Printemps, Été, Automne, Hiver',
+        Icons.palette
+      ),
       ('Thème automatique', 'Change selon la saison', Icons.auto_awesome),
       ('Badge soutien', 'Badge exclusif sur votre profil', Icons.military_tech),
       ('Soutenir le projet', 'Aidez-nous à continuer', Icons.favorite),
@@ -514,7 +535,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
     final tiers = [
       (
         tier: 1,
-        title: 'Petit soutien',
+        title: 'Soutien',
         icon: Icons.eco,
         monthlyId: SubscriptionService.monthlyId,
         yearlyId: SubscriptionService.yearlyId,
@@ -522,7 +543,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
       ),
       (
         tier: 2,
-        title: 'Soutien',
+        title: 'Soutien palier 2',
         icon: Icons.favorite,
         monthlyId: SubscriptionService.tier1MonthlyId,
         yearlyId: SubscriptionService.tier1YearlyId,
@@ -530,7 +551,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
       ),
       (
         tier: 3,
-        title: 'Grand soutien',
+        title: 'Soutien palier 3',
         icon: Icons.star,
         monthlyId: SubscriptionService.tier2MonthlyId,
         yearlyId: SubscriptionService.tier2YearlyId,
@@ -780,6 +801,36 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
               color: Colors.orange[700],
             ),
             textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildManageSubscriptionButton() {
+    return TextButton(
+      onPressed: () async {
+        final Uri url;
+        if (Platform.isIOS) {
+          url = Uri.parse('https://apps.apple.com/account/subscriptions');
+        } else {
+          url =
+              Uri.parse('https://play.google.com/store/account/subscriptions');
+        }
+        await launchUrl(url, mode: LaunchMode.externalApplication);
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.settings, size: 40.sp, color: Colors.grey[500]),
+          SizedBox(width: 8.w),
+          Text(
+            'Gérer mon abonnement',
+            style: TextStyle(
+              fontSize: 38.sp,
+              color: Colors.grey[500],
+              decoration: TextDecoration.underline,
+            ),
           ),
         ],
       ),
