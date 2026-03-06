@@ -138,6 +138,8 @@ flutter:
     - lib/assets/images/pumpkin-smile.webp
     - lib/assets/images/pumpkin.webp
     - lib/assets/images/marguerite.webp
+    - lib/assets/images/tulipe.webp
+    - lib/assets/images/tulipe-smile.webp
     - .env
 
   fonts:

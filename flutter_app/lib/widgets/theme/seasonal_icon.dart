@@ -5,10 +5,16 @@ import '../../models/seasonal_theme.dart';
 
 class SeasonalIcon extends StatefulWidget {
   final SeasonalTheme theme;
+  final double? size;
+  final double? top;
+  final double? left;
 
   const SeasonalIcon({
     super.key,
     required this.theme,
+    this.size,
+    this.top,
+    this.left,
   });
 
   @override
@@ -21,16 +27,23 @@ class _SeasonalIconState extends State<SeasonalIcon>
   late Animation<double> _rotationAnimation;
   late Animation<double> _scaleAnimation;
   late String _pumpkinAsset;
+  late String _tulipAsset;
 
   static const _pumpkinAssets = [
     'lib/assets/images/pumpkin.webp',
     'lib/assets/images/pumpkin-smile.webp',
   ];
 
+  static const _tulipAssets = [
+    'lib/assets/images/tulipe.webp',
+    'lib/assets/images/tulipe-smile.webp',
+  ];
+
   @override
   void initState() {
     super.initState();
     _pumpkinAsset = _pumpkinAssets[Random().nextInt(_pumpkinAssets.length)];
+    _tulipAsset = _tulipAssets[Random().nextInt(_tulipAssets.length)];
     _animationController = AnimationController(vsync: this);
     _setupAnimations();
     _animationController.repeat(reverse: true);
@@ -64,10 +77,10 @@ class _SeasonalIconState extends State<SeasonalIcon>
             curve: Curves.easeInOut,
           ),
         );
-        _scaleAnimation = Tween<double>(begin: 0.28, end: 0.38).animate(
+        _scaleAnimation = Tween<double>(begin: 0.35, end: 0.45).animate(
           CurvedAnimation(
             parent: _animationController,
-            curve: Curves.elasticOut,
+            curve: Curves.easeInBack,
           ),
         );
         break;
@@ -143,11 +156,11 @@ class _SeasonalIconState extends State<SeasonalIcon>
     return AnimatedBuilder(
       animation: _animationController,
       builder: (context, child) {
+        final iconSize = widget.size ?? 889.r;
+        final topOffset = widget.top ?? widget.theme.iconTopPosition.h;
+        final leftOffset = widget.left ?? widget.theme.iconLeftPosition.w;
         return Transform.translate(
-          offset: Offset(
-            widget.theme.iconLeftPosition.w,
-            widget.theme.iconTopPosition.h,
-          ),
+          offset: Offset(leftOffset, topOffset),
           child: Transform.rotate(
             angle: _rotationAnimation.value,
             child: Transform.scale(
@@ -155,14 +168,20 @@ class _SeasonalIconState extends State<SeasonalIcon>
               child: widget.theme.season == Season.autumn
                   ? Image.asset(
                       _pumpkinAsset,
-                      width: 889.r,
-                      height: 889.r,
+                      width: iconSize,
+                      height: iconSize,
                     )
-                  : Icon(
-                      widget.theme.seasonalIcon,
-                      size: 889.r,
-                      color: Colors.white,
-                    ),
+                  : widget.theme.season == Season.spring
+                      ? Image.asset(
+                          _tulipAsset,
+                          width: iconSize,
+                          height: iconSize,
+                        )
+                      : Icon(
+                          widget.theme.seasonalIcon,
+                          size: iconSize,
+                          color: Colors.white,
+                        ),
             ),
           ),
         );

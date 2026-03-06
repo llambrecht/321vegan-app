@@ -32,11 +32,13 @@ class SubscriptionService {
   static const String _statusKey = 'subscription_status';
   static const String _expiresAtKey = 'subscription_expires_at';
   static const String _productIdKey = 'subscription_product_id';
+  static const String _bypassKey = 'subscription_bypass';
 
   static StreamSubscription<List<PurchaseDetails>>? _purchaseSubscription;
   static List<ProductDetails> _products = [];
   static bool _isAvailable = false;
   static Subscription? _currentSubscription;
+  static bool _subscriptionBypass = false;
 
   /// Callback for UI to react to purchase state changes
   static VoidCallback? onSubscriptionChanged;
@@ -79,7 +81,9 @@ class SubscriptionService {
 
   /// Whether the user has an active subscription
   static bool get isSubscribed {
-    // First check backend subscription
+    // Check subscription bypass first
+    if (_subscriptionBypass) return true;
+    // Then check backend subscription
     if (_currentSubscription != null && _currentSubscription!.isActive) {
       return true;
     }
@@ -234,6 +238,7 @@ class SubscriptionService {
   /// Load cached subscription status
   static Future<void> _loadCachedStatus() async {
     final prefs = await SharedPreferences.getInstance();
+    _subscriptionBypass = prefs.getBool(_bypassKey) ?? false;
     final status = prefs.getString(_statusKey);
     if (status == null) return;
 
@@ -248,12 +253,22 @@ class SubscriptionService {
     return false;
   }
 
+  /// Update subscription bypass from user data
+  static Future<void> updateBypass(bool bypass) async {
+    _subscriptionBypass = bypass;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_bypassKey, bypass);
+    onSubscriptionChanged?.call();
+  }
+
   /// Clear cached status
   static Future<void> _clearCachedStatus() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_statusKey);
     await prefs.remove(_expiresAtKey);
     await prefs.remove(_productIdKey);
+    await prefs.remove(_bypassKey);
+    _subscriptionBypass = false;
   }
 
   /// Dispose the service

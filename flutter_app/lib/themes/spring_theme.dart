@@ -26,7 +26,7 @@ SeasonalTheme springTheme = SeasonalTheme(
   ],
   particleType: ParticleType.petals,
   iconTopPosition: -400.h,
-  iconLeftPosition: -100.w,
+  iconLeftPosition: -200.w,
   backgroundGradient: const LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,

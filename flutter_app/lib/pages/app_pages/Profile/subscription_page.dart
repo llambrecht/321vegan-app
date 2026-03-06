@@ -157,6 +157,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
   Widget build(BuildContext context) {
     final isSubscribed = SubscriptionService.isSubscribed;
     final subscription = SubscriptionService.currentSubscription;
+    final isBypass = AuthService.currentUser?.subscriptionBypass ?? false;
     final theme = Theme.of(context);
     final primaryColor = theme.colorScheme.primary;
 
@@ -185,7 +186,10 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
           child: Column(
             children: [
               // Already subscribed banner
-              if (isSubscribed && subscription != null) ...[
+              if (isSubscribed && isBypass) ...[
+                _buildBypassCard(primaryColor),
+                SizedBox(height: 32.h),
+              ] else if (isSubscribed && subscription != null) ...[
                 _buildActiveSubscriptionCard(subscription, primaryColor),
                 SizedBox(height: 16.h),
                 _buildManageSubscriptionButton(),
@@ -249,6 +253,52 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildBypassCard(Color primaryColor) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(24.w),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [primaryColor, primaryColor.withValues(alpha: 0.8)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20.r),
+        boxShadow: [
+          BoxShadow(
+            color: primaryColor.withValues(alpha: 0.3),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Icon(Icons.check_circle, color: Colors.white, size: 120.sp),
+          SizedBox(height: 16.h),
+          Text(
+            'Accès accordé',
+            style: TextStyle(
+              fontSize: 52.sp,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontFamily: 'Baloo',
+            ),
+          ),
+          SizedBox(height: 16.h),
+          Text(
+            'Tous les thèmes sont débloqués.',
+            style: TextStyle(
+              fontSize: 38.sp,
+              color: Colors.white.withValues(alpha: 0.9),
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }
@@ -535,7 +585,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
     final tiers = [
       (
         tier: 1,
-        title: 'Soutien',
+        title: 'Graine',
         icon: Icons.eco,
         monthlyId: SubscriptionService.monthlyId,
         yearlyId: SubscriptionService.yearlyId,
@@ -543,7 +593,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
       ),
       (
         tier: 2,
-        title: 'Soutien palier 2',
+        title: 'Fleur',
         icon: Icons.favorite,
         monthlyId: SubscriptionService.tier1MonthlyId,
         yearlyId: SubscriptionService.tier1YearlyId,
@@ -551,7 +601,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
       ),
       (
         tier: 3,
-        title: 'Soutien palier 3',
+        title: 'Arbre',
         icon: Icons.star,
         monthlyId: SubscriptionService.tier2MonthlyId,
         yearlyId: SubscriptionService.tier2YearlyId,

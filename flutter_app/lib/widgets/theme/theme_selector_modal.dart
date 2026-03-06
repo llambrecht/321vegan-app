@@ -490,8 +490,7 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal>
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 10.w, vertical: 5.h),
                                   decoration: BoxDecoration(
-                                    color:
-                                        Colors.white.withValues(alpha: 0.25),
+                                    color: Colors.white.withValues(alpha: 0.25),
                                     borderRadius: BorderRadius.circular(10.r),
                                   ),
                                   child: Row(
@@ -517,8 +516,7 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal>
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 10.w, vertical: 5.h),
                                   decoration: BoxDecoration(
-                                    color:
-                                        Colors.black.withValues(alpha: 0.2),
+                                    color: Colors.black.withValues(alpha: 0.2),
                                     borderRadius: BorderRadius.circular(10.r),
                                   ),
                                   child: Row(
@@ -567,11 +565,17 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal>
                                               width: 130.sp,
                                               height: 130.sp,
                                             )
-                                          : Icon(
-                                              theme.seasonalIcon,
-                                              size: 130.sp,
-                                              color: Colors.white,
-                                            ),
+                                          : theme.season == Season.spring
+                                              ? Image.asset(
+                                                  'lib/assets/images/tulipe.webp',
+                                                  width: 160.sp,
+                                                  height: 160.sp,
+                                                )
+                                              : Icon(
+                                                  theme.seasonalIcon,
+                                                  size: 130.sp,
+                                                  color: Colors.white,
+                                                ),
                                     ),
                                   ),
                                 );
@@ -590,8 +594,7 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal>
                               color: Colors.white,
                               shadows: [
                                 Shadow(
-                                  color:
-                                      Colors.black.withValues(alpha: 0.15),
+                                  color: Colors.black.withValues(alpha: 0.15),
                                   blurRadius: 6,
                                   offset: const Offset(0, 2),
                                 ),
@@ -627,8 +630,7 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal>
                                 Container(
                                   padding: EdgeInsets.all(20.w),
                                   decoration: BoxDecoration(
-                                    color:
-                                        Colors.white.withValues(alpha: 0.15),
+                                    color: Colors.white.withValues(alpha: 0.15),
                                     shape: BoxShape.circle,
                                   ),
                                   child: Icon(
@@ -643,8 +645,7 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal>
                                       horizontal: 18.w, vertical: 8.h),
                                   decoration: BoxDecoration(
                                     color: Colors.amber[700],
-                                    borderRadius:
-                                        BorderRadius.circular(14.r),
+                                    borderRadius: BorderRadius.circular(14.r),
                                   ),
                                   child: Text(
                                     'Débloqué avec l\'abonnement soutien',
@@ -691,7 +692,7 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal>
         );
       case Season.spring:
         return SnowGlobeOverlay(
-          particleIcon: FontAwesomeIcons.dove,
+          particleAsset: 'lib/assets/images/marguerite.webp',
           particleCount: 10,
           borderRadius: br,
           child: child,
