@@ -7,11 +7,15 @@ import 'package:sensors_plus/sensors_plus.dart';
 class SnowGlobeOverlay extends StatefulWidget {
   final Widget child;
   final int particleCount;
+  final IconData? particleIcon;
+  final String? particleAsset;
 
   const SnowGlobeOverlay({
     super.key,
     required this.child,
     this.particleCount = 18,
+    this.particleIcon,
+    this.particleAsset,
   });
 
   @override
@@ -74,6 +78,8 @@ class _SnowGlobeOverlayState extends State<SnowGlobeOverlay>
       shimmerPhase: _random.nextDouble() * 2 * pi,
       shimmerSpeed: 1.0 + _random.nextDouble() * 2.0,
       damping: 0.96 + _random.nextDouble() * 0.03, // each flake has unique drag
+      rotationPhase: _random.nextDouble() * 2 * pi,
+      rotationSpeed: 0.5 + _random.nextDouble() * 1.5,
     );
   }
 
@@ -144,16 +150,48 @@ class _SnowGlobeOverlayState extends State<SnowGlobeOverlay>
       child: Stack(
         children: [
           widget.child,
-          Positioned.fill(
-            child: IgnorePointer(
-              child: CustomPaint(
-                painter: _SnowGlobePainter(
-                  flakes: _flakes,
-                  time: elapsed,
+          if (widget.particleIcon != null || widget.particleAsset != null)
+            ...List.generate(_flakes.length, (i) {
+              final f = _flakes[i];
+              final shimmer =
+                  0.7 + 0.3 * sin(elapsed * f.shimmerSpeed + f.shimmerPhase);
+              final size = f.radius * 5;
+              return Positioned.fill(
+                child: IgnorePointer(
+                  child: Align(
+                    alignment: Alignment(f.x * 2 - 1, f.y * 2 - 1),
+                    child: Transform.rotate(
+                      angle: elapsed * f.rotationSpeed + f.rotationPhase,
+                      child: Opacity(
+                        opacity: (f.opacity * shimmer).clamp(0.0, 1.0),
+                        child: widget.particleIcon != null
+                            ? Icon(
+                                widget.particleIcon,
+                                size: size,
+                                color: Colors.white,
+                              )
+                            : Image.asset(
+                                widget.particleAsset!,
+                                width: size,
+                                height: size,
+                              ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            })
+          else
+            Positioned.fill(
+              child: IgnorePointer(
+                child: CustomPaint(
+                  painter: _SnowGlobePainter(
+                    flakes: _flakes,
+                    time: elapsed,
+                  ),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );
@@ -196,6 +234,8 @@ class _Snowflake {
   final double shimmerPhase;
   final double shimmerSpeed;
   final double damping;
+  final double rotationPhase;
+  final double rotationSpeed;
 
   _Snowflake({
     required this.x,
@@ -207,5 +247,7 @@ class _Snowflake {
     required this.shimmerPhase,
     required this.shimmerSpeed,
     required this.damping,
+    required this.rotationPhase,
+    required this.rotationSpeed,
   });
 }

@@ -137,6 +137,7 @@ flutter:
     # Seasons
     - lib/assets/images/pumpkin-smile.webp
     - lib/assets/images/pumpkin.webp
+    - lib/assets/images/marguerite.webp
     - .env
 
   fonts:
