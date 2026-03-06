@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../models/seasonal_theme.dart';
@@ -19,14 +20,18 @@ class _SeasonalIconState extends State<SeasonalIcon>
   late AnimationController _animationController;
   late Animation<double> _rotationAnimation;
   late Animation<double> _scaleAnimation;
+  late String _pumpkinAsset;
+
+  static const _pumpkinAssets = [
+    'lib/assets/images/pumpkin.webp',
+    'lib/assets/images/pumpkin-smile.webp',
+  ];
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      duration: const Duration(seconds: 4),
-      vsync: this,
-    );
+    _pumpkinAsset = _pumpkinAssets[Random().nextInt(_pumpkinAssets.length)];
+    _animationController = AnimationController(vsync: this);
     _setupAnimations();
     _animationController.repeat(reverse: true);
   }
@@ -36,6 +41,7 @@ class _SeasonalIconState extends State<SeasonalIcon>
     switch (widget.theme.season) {
       case Season.defaultTheme:
         // Gentle pulsing for default theme (like original)
+        _animationController.duration = const Duration(seconds: 4);
         _rotationAnimation = Tween<double>(begin: 0.0, end: 0.0).animate(
           CurvedAnimation(
             parent: _animationController,
@@ -51,6 +57,7 @@ class _SeasonalIconState extends State<SeasonalIcon>
         break;
       case Season.spring:
         //  Bouncy hop for spring
+        _animationController.duration = const Duration(seconds: 3);
         _rotationAnimation = Tween<double>(begin: -0.08, end: 0.08).animate(
           CurvedAnimation(
             parent: _animationController,
@@ -66,6 +73,7 @@ class _SeasonalIconState extends State<SeasonalIcon>
         break;
       case Season.summer:
         // Continuous rotation and slight pulsing for summer sun
+        _animationController.duration = const Duration(seconds: 4);
         _rotationAnimation = Tween<double>(begin: 0.0, end: 6.28).animate(
           CurvedAnimation(
             parent: _animationController,
@@ -80,8 +88,9 @@ class _SeasonalIconState extends State<SeasonalIcon>
         );
         break;
       case Season.autumn:
-        // Gentle swaying for autumn leaves
-        _rotationAnimation = Tween<double>(begin: -0.5, end: 0.7).animate(
+        // Faster swaying for pumpkin
+        _animationController.duration = const Duration(seconds: 2);
+        _rotationAnimation = Tween<double>(begin: -0.1, end: 0.1).animate(
           CurvedAnimation(
             parent: _animationController,
             curve: Curves.easeInOut,
@@ -96,6 +105,7 @@ class _SeasonalIconState extends State<SeasonalIcon>
         break;
       case Season.winter:
         // Slow rotation and shimmer for snowflake
+        _animationController.duration = const Duration(seconds: 5);
         _rotationAnimation = Tween<double>(begin: 0.0, end: 6.28).animate(
           CurvedAnimation(
             parent: _animationController,
@@ -142,11 +152,17 @@ class _SeasonalIconState extends State<SeasonalIcon>
             angle: _rotationAnimation.value,
             child: Transform.scale(
               scale: _scaleAnimation.value,
-              child: Icon(
-                widget.theme.seasonalIcon,
-                size: 889.r,
-                color: Colors.white,
-              ),
+              child: widget.theme.season == Season.autumn
+                  ? Image.asset(
+                      _pumpkinAsset,
+                      width: 889.r,
+                      height: 889.r,
+                    )
+                  : Icon(
+                      widget.theme.seasonalIcon,
+                      size: 889.r,
+                      color: Colors.white,
+                    ),
             ),
           ),
         );

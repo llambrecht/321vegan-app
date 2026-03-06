@@ -71,6 +71,7 @@ dependencies:
   in_app_review: ^2.0.9
   upgrader: ^11.3.0
   in_app_purchase: ^3.2.0
+  sensors_plus: ^7.0.0
 
 dev_dependencies:
   flutter_test:
@@ -133,6 +134,9 @@ flutter:
     - lib/assets/avatars/cochon.png
     - lib/assets/avatars/vache.png
     - lib/assets/avatars/chat.png
+    # Seasons
+    - lib/assets/images/pumpkin-smile.webp
+    - lib/assets/images/pumpkin.webp
     - .env
 
   fonts:
