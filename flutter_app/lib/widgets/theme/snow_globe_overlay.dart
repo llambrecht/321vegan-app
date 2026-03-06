@@ -9,6 +9,7 @@ class SnowGlobeOverlay extends StatefulWidget {
   final int particleCount;
   final IconData? particleIcon;
   final String? particleAsset;
+  final BorderRadius? borderRadius;
 
   const SnowGlobeOverlay({
     super.key,
@@ -16,6 +17,7 @@ class SnowGlobeOverlay extends StatefulWidget {
     this.particleCount = 18,
     this.particleIcon,
     this.particleAsset,
+    this.borderRadius,
   });
 
   @override
@@ -146,7 +148,7 @@ class _SnowGlobeOverlayState extends State<SnowGlobeOverlay>
     final elapsed = _lastTick.inMilliseconds / 1000.0;
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: widget.borderRadius ?? BorderRadius.circular(10),
       child: Stack(
         children: [
           widget.child,

@@ -139,32 +139,44 @@ class SocialFeedbackButtons extends StatelessWidget {
   }
 
   static Future<void> _rateApp(BuildContext context) async {
-    final inAppReview = InAppReview.instance;
+    try {
+      final inAppReview = InAppReview.instance;
 
-    if (await inAppReview.isAvailable()) {
-      await inAppReview.requestReview();
-    } else {
-      // Fallback: open the store page directly
-      Uri? url;
-
-      if (Platform.isIOS) {
-        url = Uri.parse('https://apps.apple.com/fr/app/321-vegan/id6736880006');
-      } else if (Platform.isAndroid) {
-        url = Uri.parse(
-            'https://play.google.com/store/apps/details?id=com.app321vegan.veganapp');
-      }
-
-      if (url != null && await canLaunchUrl(url)) {
-        await launchUrl(url, mode: LaunchMode.externalApplication);
+      if (await inAppReview.isAvailable()) {
+        await inAppReview.requestReview();
       } else {
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Impossible d\'ouvrir le store'),
-              backgroundColor: Colors.red,
-            ),
-          );
+        // Fallback: open the store page directly
+        Uri? url;
+
+        if (Platform.isIOS) {
+          url =
+              Uri.parse('https://apps.apple.com/fr/app/321-vegan/id6736880006');
+        } else if (Platform.isAndroid) {
+          url = Uri.parse(
+              'https://play.google.com/store/apps/details?id=com.app321vegan.veganapp');
         }
+
+        if (url != null && await canLaunchUrl(url)) {
+          await launchUrl(url, mode: LaunchMode.externalApplication);
+        } else {
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Impossible d\'ouvrir le store'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Impossible d\'ouvrir le store'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     }
   }
