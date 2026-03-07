@@ -699,7 +699,7 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal>
         );
       case Season.summer:
         return SnowGlobeOverlay(
-          particleIcon: Icons.sunny,
+          particleAsset: 'lib/assets/images/rainbow.webp',
           particleCount: 10,
           borderRadius: br,
           child: child,

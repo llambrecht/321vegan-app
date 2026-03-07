@@ -71,13 +71,13 @@ class _SeasonalIconState extends State<SeasonalIcon>
       case Season.spring:
         //  Bouncy hop for spring
         _animationController.duration = const Duration(seconds: 3);
-        _rotationAnimation = Tween<double>(begin: -0.08, end: 0.08).animate(
+        _rotationAnimation = Tween<double>(begin: -0.08, end: 0.04).animate(
           CurvedAnimation(
             parent: _animationController,
             curve: Curves.easeInOut,
           ),
         );
-        _scaleAnimation = Tween<double>(begin: 0.35, end: 0.45).animate(
+        _scaleAnimation = Tween<double>(begin: 0.7, end: 0.72).animate(
           CurvedAnimation(
             parent: _animationController,
             curve: Curves.easeInBack,

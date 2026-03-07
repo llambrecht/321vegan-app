@@ -72,7 +72,6 @@ dependencies:
   url_launcher: ^6.3.0
   in_app_review: ^2.0.9
   upgrader: ^11.3.0
-  in_app_purchase: ^3.2.0
   sensors_plus: ^7.0.0
 
 dev_dependencies:
@@ -142,6 +141,7 @@ flutter:
     - lib/assets/images/marguerite.webp
     - lib/assets/images/tulipe.webp
     - lib/assets/images/tulipe-smile.webp
+    - lib/assets/images/rainbow.webp
     - .env
 
   fonts:
