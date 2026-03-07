@@ -1,3 +1,4 @@
+import 'dart:io' show File;
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:vegan_app/helpers/preference_helper.dart';
@@ -31,18 +32,33 @@ class ProductHelper {
     );
   }
 
-  static Future<bool> tryAddDocument(BuildContext context,
-      Map<dynamic, dynamic>? productInfo, VeganStatus? veganStatus) async {
+  static Future<bool> tryAddDocument(
+    BuildContext context,
+    Map<dynamic, dynamic>? productInfo,
+    VeganStatus? veganStatus, {
+    String productName = '',
+    String brand = '',
+    File? photo,
+  }) async {
     if (!await _checkConnectivityAndShowSnackbar(context)) return false;
     try {
-      // Use the new API instead of Firebase
-      final success = await ApiService.postProduct(
+      final productId = await ApiService.postProduct(
         ean: productInfo?['code'] ?? '',
         status:
             veganStatus?.toApiString() ?? VeganStatus.maybeVegan.toApiString(),
+        productName: productName,
+        brand: brand,
       );
 
-      if (success) {
+      if (productId != null) {
+        // Upload photo if provided and we got a real product ID
+        if (photo != null && productId > 0) {
+          await ApiService.uploadProductImage(
+            productId: productId,
+            photo: photo,
+          );
+        }
+
         await PreferencesHelper.addCodeToPreferences(
             productInfo?['code'] ?? '', true);
 

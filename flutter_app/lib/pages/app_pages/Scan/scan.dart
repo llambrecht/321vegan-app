@@ -52,6 +52,7 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
   bool _showBoycott = true;
   List<String> _productsOfInterest = [];
   Map<String, ProductOfInterest> _productsOfInterestMap = {};
+  bool _scannerPausedByModal = false;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -70,7 +71,9 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
         controller.stop();
         break;
       case AppLifecycleState.resumed:
-        controller.start();
+        if (!_scannerPausedByModal) {
+          controller.start();
+        }
         // Retry pending scans when app resumes
         _retryPendingScans();
         break;
@@ -1037,6 +1040,14 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
                                       confettiController: _confettiController,
                                       onNavigateToProfile:
                                           widget.onNavigateToProfile,
+                                      onScannerStop: () {
+                                        _scannerPausedByModal = true;
+                                        controller.stop();
+                                      },
+                                      onScannerStart: () {
+                                        _scannerPausedByModal = false;
+                                        controller.start();
+                                      },
                                     )
                                   : RejectedProductInfoCard(
                                       productInfo: productInfo),
@@ -1055,8 +1066,28 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
               right: 0,
               child: Center(
                 child: productInfo?['is_vegan'] == "not_found"
-                    ? SendInfoButton(barcode: productInfo?['code'] ?? '')
-                    : ReportErrorButton(barcode: productInfo?['code'] ?? ''),
+                    ? SendInfoButton(
+                        barcode: productInfo?['code'] ?? '',
+                        onScannerStop: () {
+                          _scannerPausedByModal = true;
+                          controller.stop();
+                        },
+                        onScannerStart: () {
+                          _scannerPausedByModal = false;
+                          controller.start();
+                        },
+                      )
+                    : ReportErrorButton(
+                        barcode: productInfo?['code'] ?? '',
+                        onScannerStop: () {
+                          _scannerPausedByModal = true;
+                          controller.stop();
+                        },
+                        onScannerStart: () {
+                          _scannerPausedByModal = false;
+                          controller.start();
+                        },
+                      ),
               ),
             ),
           Positioned.fill(

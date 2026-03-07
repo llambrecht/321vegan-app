@@ -1,5 +1,6 @@
 import 'dart:convert';
-import 'package:dio/dio.dart';
+import 'dart:io' show File;
+import 'package:dio/dio.dart' as dio_pkg;
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,9 +24,14 @@ class ApiService {
   /// Post a product with its vegan status
   /// [ean] - The product's barcode
   /// [status] - One of: "VEGAN", "NON_VEGAN", "MAYBE_VEGAN"
-  static Future<bool> postProduct({
+  /// [productName] - Name of the product (optional)
+  /// [brand] - Brand of the product (optional)
+  /// Returns the product ID on success, or null on failure
+  static Future<int?> postProduct({
     required String ean,
     required String status,
+    String productName = '',
+    String brand = '',
   }) async {
     try {
       final url = Uri.parse('$_baseUrl/products/');
@@ -36,6 +42,9 @@ class ApiService {
       final body = json.encode({
         'ean': ean,
         'status': status,
+        if (productName.isNotEmpty) 'name': productName,
+        // We put brand in description because brand is the ID that we dont have here.
+        if (brand.isNotEmpty) 'description': brand,
         if (userId != null) 'user_id': userId,
       });
 
@@ -45,11 +54,80 @@ class ApiService {
         body: body,
       );
 
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final data = json.decode(utf8.decode(response.bodyBytes));
+        return data['id'] as int?;
+      }
       // 409 means product already exists, which is fine for the user
-      return (response.statusCode >= 200 && response.statusCode < 300) ||
-          response.statusCode == 409;
+      if (response.statusCode == 409) return -1;
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Upload a photo for a product using the user's JWT token
+  /// [productId] - The product's ID
+  /// [photo] - The image file to upload
+  static Future<bool> uploadProductImage({
+    required int productId,
+    required File photo,
+  }) async {
+    try {
+      final dio = await DioClient.getDio();
+      final prefs = await SharedPreferences.getInstance();
+      final accessToken = prefs.getString('access_token');
+
+      final formData = dio_pkg.FormData.fromMap({
+        'file': await dio_pkg.MultipartFile.fromFile(
+          photo.path,
+          filename: photo.path.split('/').last,
+        ),
+      });
+
+      final response = await dio.post(
+        '/products/$productId/image',
+        data: formData,
+        options: dio_pkg.Options(
+          headers: {
+            if (accessToken != null) 'Authorization': 'Bearer $accessToken',
+          },
+          contentType: 'multipart/form-data',
+        ),
+      );
+
+      return response.statusCode != null &&
+          response.statusCode! >= 200 &&
+          response.statusCode! < 300;
     } catch (e) {
       return false;
+    }
+  }
+
+  /// Get a product's ID by its EAN (requires user JWT)
+  static Future<int?> getProductIdByEan({required String ean}) async {
+    try {
+      final dio = await DioClient.getDio();
+      final prefs = await SharedPreferences.getInstance();
+      final accessToken = prefs.getString('access_token');
+
+      final response = await dio.get(
+        '/products/ean/$ean',
+        options: dio_pkg.Options(
+          headers: {
+            if (accessToken != null) 'Authorization': 'Bearer $accessToken',
+          },
+        ),
+      );
+
+      if (response.statusCode != null &&
+          response.statusCode! >= 200 &&
+          response.statusCode! < 300) {
+        return response.data['id'] as int?;
+      }
+      return null;
+    } catch (e) {
+      return null;
     }
   }
 
@@ -231,7 +309,7 @@ class ApiService {
 
       final response = await dio.get(
         '/subscriptions/me',
-        options: Options(
+        options: dio_pkg.Options(
           headers: {'Authorization': 'Bearer $token'},
         ),
       );
@@ -239,7 +317,7 @@ class ApiService {
       if (response.statusCode == 200) {
         return Subscription.fromJson(response.data);
       }
-    } on DioException catch (e) {
+    } on dio_pkg.DioException catch (e) {
       if (e.response?.statusCode == 404) {
         return null;
       }
@@ -274,7 +352,7 @@ class ApiService {
     final response = await dio.post(
       '/subscriptions/verify',
       data: data,
-      options: Options(
+      options: dio_pkg.Options(
         headers: {'Authorization': 'Bearer $token'},
       ),
     );
