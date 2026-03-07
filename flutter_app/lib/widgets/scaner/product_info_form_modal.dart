@@ -164,7 +164,7 @@ class _ProductInfoFormModalState extends State<ProductInfoFormModal> {
                 controller: _nameController,
                 maxLength: 200,
                 decoration: InputDecoration(
-                  hintText: 'Ex: Granola chocolat',
+                  hintText: 'Ex: Galettes de légumes',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
