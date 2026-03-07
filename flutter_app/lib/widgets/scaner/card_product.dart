@@ -5,6 +5,7 @@ import 'package:vegan_app/helpers/helper.dart';
 import 'package:vegan_app/models/vegan_status.dart';
 import 'package:vegan_app/pages/app_pages/helpers/product.helper.dart';
 import 'package:vegan_app/services/auth_service.dart';
+import 'package:vegan_app/widgets/scaner/product_info_form_modal.dart';
 
 class NoResultCard extends StatelessWidget {
   const NoResultCard({super.key});
@@ -167,12 +168,16 @@ class NonVeganProductInfoCard extends StatefulWidget {
   final Map<dynamic, dynamic>? productInfo;
   final ConfettiController confettiController;
   final VoidCallback? onNavigateToProfile;
+  final VoidCallback? onScannerStop;
+  final VoidCallback? onScannerStart;
 
   const NonVeganProductInfoCard({
     super.key,
     required this.productInfo,
     required this.confettiController,
     this.onNavigateToProfile,
+    this.onScannerStop,
+    this.onScannerStart,
   });
 
   @override
@@ -393,6 +398,37 @@ class NonVeganProductInfoCardState extends State<NonVeganProductInfoCard> {
     ];
   }
 
+  Future<void> _sendProduct(VeganStatus veganStatus) async {
+    if (_isButtonDisabled) return;
+
+    // Stop scanner while modal is open
+    widget.onScannerStop?.call();
+
+    try {
+      // Show modal to collect additional info
+      final result = await ProductInfoFormModal.show(context);
+      if (!mounted) return;
+
+      bool success = await ProductHelper.tryAddDocument(
+        context,
+        widget.productInfo,
+        veganStatus,
+        productName: result?.productName ?? '',
+        brand: result?.brand ?? '',
+        photo: result?.photo,
+      );
+      if (success) {
+        setState(() {
+          _isButtonDisabled = true;
+        });
+        widget.confettiController.play();
+      }
+    } finally {
+      // Restart scanner only after the entire flow completes
+      widget.onScannerStart?.call();
+    }
+  }
+
   List<Widget> _buildLoggedInButtons() {
     return [
       // Side by side buttons for vegan/non-vegan
@@ -402,19 +438,7 @@ class NonVeganProductInfoCardState extends State<NonVeganProductInfoCard> {
             child: ElevatedButton(
               onPressed: _isButtonDisabled
                   ? null
-                  : () async {
-                      bool success = await ProductHelper.tryAddDocument(
-                        context,
-                        widget.productInfo,
-                        VeganStatus.vegan, // Vegan
-                      );
-                      if (success) {
-                        setState(() {
-                          _isButtonDisabled = true;
-                        });
-                        widget.confettiController.play();
-                      }
-                    },
+                  : () => _sendProduct(VeganStatus.vegan),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
                 padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 20.w),
@@ -449,19 +473,7 @@ class NonVeganProductInfoCardState extends State<NonVeganProductInfoCard> {
             child: ElevatedButton(
               onPressed: _isButtonDisabled
                   ? null
-                  : () async {
-                      bool success = await ProductHelper.tryAddDocument(
-                        context,
-                        widget.productInfo,
-                        VeganStatus.nonVegan, // Non vegan
-                      );
-                      if (success) {
-                        setState(() {
-                          _isButtonDisabled = true;
-                        });
-                        widget.confettiController.play();
-                      }
-                    },
+                  : () => _sendProduct(VeganStatus.nonVegan),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
                 padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 20.w),
@@ -500,19 +512,7 @@ class NonVeganProductInfoCardState extends State<NonVeganProductInfoCard> {
           child: ElevatedButton(
             onPressed: _isButtonDisabled
                 ? null
-                : () async {
-                    bool success = await ProductHelper.tryAddDocument(
-                      context,
-                      widget.productInfo,
-                      VeganStatus.maybeVegan, // Maybe vegan
-                    );
-                    if (success) {
-                      setState(() {
-                        _isButtonDisabled = true;
-                      });
-                      widget.confettiController.play();
-                    }
-                  },
+                : () => _sendProduct(VeganStatus.maybeVegan),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.orange,
               padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 24.w),
