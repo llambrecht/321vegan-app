@@ -21,7 +21,7 @@ class AboutPage extends StatefulWidget {
 }
 
 class _AboutPageState extends State<AboutPage> {
-  AuthView _currentView = AuthView.login;
+  AuthView _currentView = AuthView.register;
   bool _isLoggedIn = false;
 
   @override
@@ -33,7 +33,7 @@ class _AboutPageState extends State<AboutPage> {
   void _checkAuthStatus() async {
     setState(() {
       _isLoggedIn = AuthService.isLoggedIn;
-      _currentView = _isLoggedIn ? AuthView.profile : AuthView.login;
+      _currentView = _isLoggedIn ? AuthView.profile : AuthView.register;
     });
 
     // If logged in but user data is not loaded, fetch it

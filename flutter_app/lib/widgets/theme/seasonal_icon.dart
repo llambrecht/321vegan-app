@@ -39,6 +39,11 @@ class _SeasonalIconState extends State<SeasonalIcon>
     'lib/assets/images/tulipe-smile.webp',
   ];
 
+  static const _winterAssets = [
+    'lib/assets/images/snowman.webp',
+    Icon.snowflake,
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -85,15 +90,15 @@ class _SeasonalIconState extends State<SeasonalIcon>
         );
         break;
       case Season.summer:
-        // Continuous rotation and slight pulsing for summer sun
-        _animationController.duration = const Duration(seconds: 4);
-        _rotationAnimation = Tween<double>(begin: 0.0, end: 6.28).animate(
+        // Gentle tilt — right side bobs up and down
+        _animationController.duration = const Duration(seconds: 3);
+        _rotationAnimation = Tween<double>(begin: -0.02, end: 0.02).animate(
           CurvedAnimation(
             parent: _animationController,
-            curve: Curves.linear,
+            curve: Curves.easeInOut,
           ),
         );
-        _scaleAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
+        _scaleAnimation = Tween<double>(begin: 1.0, end: 1.0).animate(
           CurvedAnimation(
             parent: _animationController,
             curve: Curves.easeInOut,
@@ -163,6 +168,9 @@ class _SeasonalIconState extends State<SeasonalIcon>
           offset: Offset(leftOffset, topOffset),
           child: Transform.rotate(
             angle: _rotationAnimation.value,
+            alignment: widget.theme.season == Season.summer
+                ? Alignment.centerLeft
+                : Alignment.center,
             child: Transform.scale(
               scale: _scaleAnimation.value,
               child: widget.theme.season == Season.autumn
@@ -177,11 +185,17 @@ class _SeasonalIconState extends State<SeasonalIcon>
                           width: iconSize,
                           height: iconSize,
                         )
-                      : Icon(
-                          widget.theme.seasonalIcon,
-                          size: iconSize,
-                          color: Colors.white,
-                        ),
+                      : widget.theme.season == Season.summer
+                          ? Image.asset(
+                              'lib/assets/images/ruche.webp',
+                              width: iconSize,
+                              height: iconSize,
+                            )
+                          : Icon(
+                              widget.theme.seasonalIcon,
+                              size: iconSize,
+                              color: Colors.white,
+                            ),
             ),
           ),
         );

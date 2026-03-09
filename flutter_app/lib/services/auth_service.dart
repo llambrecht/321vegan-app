@@ -142,6 +142,9 @@ class AuthService {
         // Fetch user data and sync vegan date to local storage
         await _syncUserDataToPreferences();
 
+        // Fetch subscription status from backend
+        await SubscriptionService.checkSubscriptionStatus();
+
         return AuthResult.success(token);
       } else {
         return AuthResult.error('Mot de passe ou email incorrect');
@@ -437,7 +440,7 @@ class AuthService {
 
       if (response.statusCode == 200) {
         _currentUser = User.fromJson(response.data);
-        SubscriptionService.updateBypass(_currentUser!.subscriptionBypass);
+        await SubscriptionService.updateBypass(_currentUser!.subscriptionBypass);
         return AuthResult.success(_currentUser!);
       } else {
         return AuthResult.error('Failed to get user info');

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../services/subscription_service.dart';
 import '../../../services/auth_service.dart';
@@ -102,7 +103,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
       await SubscriptionService.buyProduct(product);
     } catch (e) {
       setState(() {
-        _errorMessage = 'Erreur lors de l\'achat. Réessayez plus tard.';
+        _errorMessage = 'Erreur lors de l\'achat. Réessayez plus tard. $e';
       });
     } finally {
       if (mounted) {
@@ -403,7 +404,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
         ),
         SizedBox(height: 8.h),
         Text(
-          'Aidez-nous à grandir et à rendre le véganisme facile pour encore plus de monde\net débloquez des thèmes exclusifs !',
+          'Aidez-nous à grandir et à rendre le véganisme facile pour encore plus de monde et débloquez des thèmes exclusifs !',
           style: TextStyle(
             fontSize: 40.sp,
             color: Colors.grey[500],
@@ -422,9 +423,12 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
         'Printemps, Été, Automne, Hiver',
         Icons.palette
       ),
-      ('Thème automatique', 'Change selon la saison', Icons.auto_awesome),
       ('Badge soutien', 'Badge exclusif sur votre profil', Icons.military_tech),
-      ('Soutenir le projet', 'Aidez-nous à continuer', Icons.favorite),
+      (
+        'Soutenir le projet',
+        'Chaque abonnement nous aide à continuer',
+        Icons.favorite
+      ),
     ];
 
     return Container(
@@ -586,7 +590,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
       (
         tier: 1,
         title: 'Graine',
-        icon: Icons.eco,
+        icon: FontAwesomeIcons.seedling,
         monthlyId: SubscriptionService.monthlyId,
         yearlyId: SubscriptionService.yearlyId,
         isPopular: false,
@@ -594,7 +598,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
       (
         tier: 2,
         title: 'Fleur',
-        icon: Icons.favorite,
+        icon: Icons.local_florist,
         monthlyId: SubscriptionService.tier1MonthlyId,
         yearlyId: SubscriptionService.tier1YearlyId,
         isPopular: true,
@@ -602,7 +606,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
       (
         tier: 3,
         title: 'Arbre',
-        icon: Icons.star,
+        icon: Icons.park,
         monthlyId: SubscriptionService.tier2MonthlyId,
         yearlyId: SubscriptionService.tier2YearlyId,
         isPopular: false,

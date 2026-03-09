@@ -13,6 +13,8 @@ import 'package:vegan_app/pages/app_pages/Profile/b12_reminder_settings_page.dar
 import 'package:vegan_app/helpers/time_counter/time_counter.dart';
 import 'package:vegan_app/widgets/homepage/stat_card.dart';
 import 'package:vegan_app/widgets/homepage/draggable_profile_bubble.dart';
+import 'package:vegan_app/services/subscription_service.dart';
+import 'package:vegan_app/pages/app_pages/Profile/subscription_page.dart';
 import 'package:confetti/confetti.dart';
 import 'package:vegan_app/widgets/wave_clipper.dart';
 import 'package:intl/intl.dart';
@@ -401,6 +403,65 @@ class MyHomePageState extends State<MyHomePage>
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             SizedBox(height: 200.h),
+                            if (!SubscriptionService.isSubscribed)
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding:
+                                      EdgeInsets.only(left: 16.w, bottom: 8.h),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const SubscriptionPage(),
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 28.w, vertical: 14.h),
+                                      decoration: BoxDecoration(
+                                        gradient: const LinearGradient(
+                                          colors: [
+                                            Color(0xFF7C3AED),
+                                            Color(0xFFA855F7),
+                                          ],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                        ),
+                                        borderRadius:
+                                            BorderRadius.circular(40.r),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: const Color(0xFF7C3AED)
+                                                .withValues(alpha: 0.35),
+                                            blurRadius: 12,
+                                            offset: const Offset(0, 4),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(Icons.favorite,
+                                              color: Colors.white, size: 44.sp),
+                                          SizedBox(width: 10.w),
+                                          Text(
+                                            'Soutenir 321 Vegan',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 40.sp,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Baloo',
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                             Text(
                               "Vous êtes végane depuis",
                               style: TextStyle(

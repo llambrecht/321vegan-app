@@ -196,7 +196,7 @@ Widget _maybeSnowGlobe({Season? season, required Widget child}) {
   }
   if (season == Season.summer) {
     return SnowGlobeOverlay(
-      particleAsset: 'lib/assets/images/rainbow.webp',
+      particleAsset: 'lib/assets/images/papillon.webp',
       particleCount: 12,
       child: child,
     );

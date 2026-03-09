@@ -141,7 +141,8 @@ flutter:
     - lib/assets/images/marguerite.webp
     - lib/assets/images/tulipe.webp
     - lib/assets/images/tulipe-smile.webp
-    - lib/assets/images/rainbow.webp
+    - lib/assets/images/papillon.webp
+    - lib/assets/images/ruche.webp
     - .env
 
   fonts:

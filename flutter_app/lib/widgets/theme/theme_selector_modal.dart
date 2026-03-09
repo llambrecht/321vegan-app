@@ -159,25 +159,21 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal>
           scale: 1.0 + sinT * 0.06,
         );
       case Season.spring:
-        // Bouncy tilt
         return _IconAnimValues(
           rotation: math.sin(t * math.pi * 2) * 0.12,
           scale: 1.0 + sinT * 0.1,
         );
       case Season.summer:
-        // Continuous slow spin + pulse
         return _IconAnimValues(
-          rotation: t * math.pi * 2,
-          scale: 1.0 + sinT * 0.05,
+          rotation: math.sin(t * math.pi * 1.5) * 0.25,
+          scale: 1.0 + math.sin(t * math.pi * 0.7) * 0.04,
         );
       case Season.autumn:
-        // Gentle swaying like a falling leaf
         return _IconAnimValues(
           rotation: math.sin(t * math.pi * 1.5) * 0.25,
           scale: 1.0 + math.sin(t * math.pi * 0.7) * 0.04,
         );
       case Season.winter:
-        // Slow rotation + shimmer
         return _IconAnimValues(
           rotation: t * math.pi,
           scale: 1.0 + sinT * 0.08,
@@ -203,9 +199,6 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal>
     final currentTheme = allThemes[_currentPage.clamp(0, allThemes.length - 1)];
     final isCurrentLocked =
         currentTheme.season != Season.defaultTheme && !isSubscribed;
-
-    final gradStart = _lerpThemeColor((t) => t.waveColor);
-    final gradEnd = _lerpThemeColor((t) => t.primaryColor);
 
     return Container(
       decoration: BoxDecoration(
@@ -571,11 +564,17 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal>
                                                   width: 160.sp,
                                                   height: 160.sp,
                                                 )
-                                              : Icon(
-                                                  theme.seasonalIcon,
-                                                  size: 130.sp,
-                                                  color: Colors.white,
-                                                ),
+                                              : theme.season == Season.summer
+                                                  ? Image.asset(
+                                                      'lib/assets/images/ruche.webp',
+                                                      width: 160.sp,
+                                                      height: 160.sp,
+                                                    )
+                                                  : Icon(
+                                                      theme.seasonalIcon,
+                                                      size: 130.sp,
+                                                      color: Colors.white,
+                                                    ),
                                     ),
                                   ),
                                 );
@@ -699,7 +698,7 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal>
         );
       case Season.summer:
         return SnowGlobeOverlay(
-          particleAsset: 'lib/assets/images/rainbow.webp',
+          particleAsset: 'lib/assets/images/papillon.webp',
           particleCount: 10,
           borderRadius: br,
           child: child,

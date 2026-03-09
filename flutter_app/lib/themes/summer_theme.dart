@@ -1,29 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../models/seasonal_theme.dart';
 
-const SeasonalTheme summerTheme = SeasonalTheme(
+SeasonalTheme summerTheme = SeasonalTheme(
   name: 'Été',
   season: Season.summer,
-  primaryColor: Color(0xFF166534),
-  secondaryColor: Color(0xFFFCD34D),
-  accentColor: Color(0xFF60A5FA),
-  waveColor: Color(0xFF22C55E),
+  primaryColor: const Color.fromARGB(255, 228, 176, 8),
+  secondaryColor: const Color(0xFF166534),
+  accentColor: const Color(0xFF60A5FA),
+  waveColor: const Color.fromARGB(255, 228, 176, 8),
   seasonalIcon: Icons.sunny,
-  iconBackgroundColor: Color(0xFFFEF9C3),
+  iconBackgroundColor: const Color(0xFFFEF9C3),
   particleColors: [
-    Color(0xFFFCD34D),
-    Color(0xFFFCA311),
-    Color(0xFF60A5FA),
-    Color(0xFFFBBF24),
+    const Color(0xFFFCD34D),
+    const Color(0xFFFCA311),
+    const Color(0xFF60A5FA),
+    const Color(0xFFFBBF24),
   ],
   confettiColors: [
-    Color(0xFFFCD34D),
-    Color(0xFF60A5FA),
-    Color(0xFF22C55E),
-    Color(0xFFFCA311),
+    const Color(0xFFFCD34D),
+    const Color(0xFF60A5FA),
+    const Color(0xFF22C55E),
+    const Color(0xFFFCA311),
   ],
   particleType: ParticleType.sunRays,
-  backgroundGradient: LinearGradient(
+  backgroundGradient: const LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
     colors: [
@@ -31,4 +32,6 @@ const SeasonalTheme summerTheme = SeasonalTheme(
       Colors.white,
     ],
   ),
+  iconTopPosition: -700.h,
+  iconLeftPosition: 100.w,
 );

@@ -261,14 +261,12 @@ class SubscriptionService {
     onSubscriptionChanged?.call();
   }
 
-  /// Clear cached status
+  /// Clear cached status (preserves bypass since it comes from user data, not subscription)
   static Future<void> _clearCachedStatus() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_statusKey);
     await prefs.remove(_expiresAtKey);
     await prefs.remove(_productIdKey);
-    await prefs.remove(_bypassKey);
-    _subscriptionBypass = false;
   }
 
   /// Dispose the service
