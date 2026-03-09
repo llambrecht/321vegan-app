@@ -26,27 +26,28 @@ class _SeasonalIconState extends State<SeasonalIcon>
   late AnimationController _animationController;
   late Animation<double> _rotationAnimation;
   late Animation<double> _scaleAnimation;
-  late String _pumpkinAsset;
-  late String _tulipAsset;
+  late String? _resolvedAsset;
 
-  static const _pumpkinAssets = [
-    'lib/assets/images/pumpkin.webp',
-    'lib/assets/images/pumpkin-smile.webp',
-  ];
-
-  static const _tulipAssets = [
-    'lib/assets/images/tulipe.webp',
-    'lib/assets/images/tulipe-smile.webp',
-  ];
+  static const _smileVariants = {
+    'lib/assets/images/pumpkin.webp': 'lib/assets/images/pumpkin-smile.webp',
+    'lib/assets/images/tulipe.webp': 'lib/assets/images/tulipe-smile.webp',
+  };
 
   @override
   void initState() {
     super.initState();
-    _pumpkinAsset = _pumpkinAssets[Random().nextInt(_pumpkinAssets.length)];
-    _tulipAsset = _tulipAssets[Random().nextInt(_tulipAssets.length)];
+    _resolvedAsset = _pickAssetVariant(widget.theme.seasonalAsset);
     _animationController = AnimationController(vsync: this);
     _setupAnimations();
     _animationController.repeat(reverse: true);
+  }
+
+  /// If the asset has a smile variant, randomly pick one.
+  static String? _pickAssetVariant(String? base) {
+    if (base == null) return null;
+    final smile = _smileVariants[base];
+    if (smile == null) return base;
+    return Random().nextBool() ? base : smile;
   }
 
   void _setupAnimations() {
@@ -168,29 +169,17 @@ class _SeasonalIconState extends State<SeasonalIcon>
                 : Alignment.center,
             child: Transform.scale(
               scale: _scaleAnimation.value,
-              child: widget.theme.season == Season.autumn
+              child: _resolvedAsset != null
                   ? Image.asset(
-                      _pumpkinAsset,
+                      _resolvedAsset!,
                       width: iconSize,
                       height: iconSize,
                     )
-                  : widget.theme.season == Season.spring
-                      ? Image.asset(
-                          _tulipAsset,
-                          width: iconSize,
-                          height: iconSize,
-                        )
-                      : widget.theme.season == Season.summer
-                          ? Image.asset(
-                              'lib/assets/images/ruche.webp',
-                              width: iconSize,
-                              height: iconSize,
-                            )
-                          : Icon(
-                              widget.theme.seasonalIcon,
-                              size: iconSize,
-                              color: Colors.white,
-                            ),
+                  : Icon(
+                      widget.theme.seasonalIcon,
+                      size: iconSize,
+                      color: Colors.white,
+                    ),
             ),
           ),
         );

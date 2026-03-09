@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../models/seasonal_theme.dart';
 import '../../helpers/theme_helper.dart';
 import '../../main.dart';
@@ -95,16 +94,17 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal>
       await ThemeHelper.saveThemePreference(_selectedSeason);
     }
 
-    if (mounted) {
-      final myAppState = MyApp.of(context);
-      if (myAppState != null) {
-        await myAppState.updateTheme();
-      }
+    if (!mounted) return;
+    final myAppState = MyApp.of(context);
+    if (myAppState != null) {
+      await myAppState.updateTheme();
+    }
 
-      Navigator.of(context).pop();
-      Navigator.of(context).pop(true);
+    if (!mounted) return;
+    Navigator.of(context).pop();
+    Navigator.of(context).pop(true);
 
-      ScaffoldMessenger.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
             'Thème mis à jour avec succès !',
@@ -114,7 +114,6 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal>
           duration: const Duration(seconds: 2),
         ),
       );
-    }
   }
 
   Future<void> _applyThemeSilently() async {
@@ -197,8 +196,7 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal>
     final currentSeason = ThemeHelper.getCurrentSeason();
     final allThemes = ThemeHelper.getAllThemes();
     final currentTheme = allThemes[_currentPage.clamp(0, allThemes.length - 1)];
-    final isCurrentLocked =
-        currentTheme.season != Season.defaultTheme && !isSubscribed;
+    final isCurrentLocked = currentTheme.isPremium && !isSubscribed;
 
     return Container(
       decoration: BoxDecoration(
@@ -264,8 +262,7 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal>
                   },
                   itemBuilder: (context, index) {
                     final theme = allThemes[index];
-                    final isDefault = theme.season == Season.defaultTheme;
-                    final isLocked = !isDefault && !isSubscribed;
+                    final isLocked = theme.isPremium && !isSubscribed;
                     final isCurrentSeason = theme.season == currentSeason;
 
                     return _buildThemeCard(
@@ -408,7 +405,7 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal>
             SizedBox(width: 10.w),
             Text(
               _isAutoTheme
-                  ? 'Mode automatique · ${ThemeHelper.getThemeDisplayName(currentSeason)}'
+                  ? 'Mode automatique · ${ThemeHelper.getThemeBySeason(currentSeason).name}'
                   : 'Activer le mode automatique',
               style: TextStyle(
                 fontSize: 46.sp,
@@ -552,29 +549,17 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal>
                                             .withValues(alpha: 0.18),
                                         shape: BoxShape.circle,
                                       ),
-                                      child: theme.season == Season.autumn
+                                      child: theme.seasonalAsset != null
                                           ? Image.asset(
-                                              'lib/assets/images/pumpkin.webp',
-                                              width: 130.sp,
-                                              height: 130.sp,
+                                              theme.seasonalAsset!,
+                                              width: 150.sp,
+                                              height: 150.sp,
                                             )
-                                          : theme.season == Season.spring
-                                              ? Image.asset(
-                                                  'lib/assets/images/tulipe.webp',
-                                                  width: 160.sp,
-                                                  height: 160.sp,
-                                                )
-                                              : theme.season == Season.summer
-                                                  ? Image.asset(
-                                                      'lib/assets/images/ruche.webp',
-                                                      width: 160.sp,
-                                                      height: 160.sp,
-                                                    )
-                                                  : Icon(
-                                                      theme.seasonalIcon,
-                                                      size: 130.sp,
-                                                      color: Colors.white,
-                                                    ),
+                                          : Icon(
+                                              theme.seasonalIcon,
+                                              size: 130.sp,
+                                              color: Colors.white,
+                                            ),
                                     ),
                                   ),
                                 );
@@ -674,38 +659,19 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal>
     required SeasonalTheme theme,
     required Widget child,
   }) {
-    final br = BorderRadius.circular(28.r);
-    switch (theme.season) {
-      case Season.winter:
-        return SnowGlobeOverlay(
-          particleCount: 15,
-          borderRadius: br,
-          child: child,
-        );
-      case Season.autumn:
-        return SnowGlobeOverlay(
-          particleIcon: FontAwesomeIcons.canadianMapleLeaf,
-          particleCount: 10,
-          borderRadius: br,
-          child: child,
-        );
-      case Season.spring:
-        return SnowGlobeOverlay(
-          particleAsset: 'lib/assets/images/marguerite.webp',
-          particleCount: 10,
-          borderRadius: br,
-          child: child,
-        );
-      case Season.summer:
-        return SnowGlobeOverlay(
-          particleAsset: 'lib/assets/images/papillon.webp',
-          particleCount: 10,
-          borderRadius: br,
-          child: child,
-        );
-      case Season.defaultTheme:
-        return child;
+    if (theme.snowGlobeParticleAsset == null &&
+        theme.snowGlobeParticleIcon == null &&
+        theme.particleType != ParticleType.snowflakes) {
+      return child;
     }
+    final br = BorderRadius.circular(28.r);
+    return SnowGlobeOverlay(
+      particleAsset: theme.snowGlobeParticleAsset,
+      particleIcon: theme.snowGlobeParticleIcon,
+      particleCount: theme.particleType == ParticleType.snowflakes ? 15 : 10,
+      borderRadius: br,
+      child: child,
+    );
   }
 
   Widget _buildCardColorDot(Color color) {
@@ -716,39 +682,6 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal>
         color: color,
         shape: BoxShape.circle,
         border: Border.all(color: Colors.white, width: 1.5),
-      ),
-    );
-  }
-
-  Widget _buildPaletteChip(Color color, String label) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(10.r),
-        border: Border.all(color: color.withValues(alpha: 0.2)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 18.w,
-            height: 18.w,
-            decoration: BoxDecoration(
-              color: color,
-              shape: BoxShape.circle,
-            ),
-          ),
-          SizedBox(width: 6.w),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 26.sp,
-              color: color,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
       ),
     );
   }

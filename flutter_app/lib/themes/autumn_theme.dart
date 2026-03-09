@@ -12,12 +12,6 @@ SeasonalTheme autumnTheme = SeasonalTheme(
   waveColor: const Color(0xFFFB923C),
   seasonalIcon: FontAwesomeIcons.canadianMapleLeaf,
   iconBackgroundColor: const Color(0xFFFEF3C7),
-  particleColors: [
-    const Color(0xFFF97316),
-    const Color(0xFFDC2626),
-    const Color(0xFFA16207),
-    const Color(0xFFFCD34D),
-  ],
   confettiColors: [
     const Color(0xFFF97316),
     const Color(0xFFDC2626),
@@ -25,6 +19,8 @@ SeasonalTheme autumnTheme = SeasonalTheme(
     const Color(0xFFFCD34D),
   ],
   particleType: ParticleType.leaves,
+  seasonalAsset: 'lib/assets/images/pumpkin.webp',
+  snowGlobeParticleIcon: FontAwesomeIcons.canadianMapleLeaf,
   backgroundGradient: const LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,

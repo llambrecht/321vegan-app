@@ -11,12 +11,6 @@ SeasonalTheme summerTheme = SeasonalTheme(
   waveColor: const Color.fromARGB(255, 228, 176, 8),
   seasonalIcon: Icons.sunny,
   iconBackgroundColor: const Color(0xFFFEF9C3),
-  particleColors: [
-    const Color(0xFFFCD34D),
-    const Color(0xFFFCA311),
-    const Color(0xFF60A5FA),
-    const Color(0xFFFBBF24),
-  ],
   confettiColors: [
     const Color(0xFFFCD34D),
     const Color(0xFF60A5FA),
@@ -24,6 +18,8 @@ SeasonalTheme summerTheme = SeasonalTheme(
     const Color(0xFFFCA311),
   ],
   particleType: ParticleType.sunRays,
+  seasonalAsset: 'lib/assets/images/ruche.webp',
+  snowGlobeParticleAsset: 'lib/assets/images/papillon.webp',
   backgroundGradient: const LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,

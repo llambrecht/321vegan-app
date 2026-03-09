@@ -11,12 +11,6 @@ SeasonalTheme winterTheme = SeasonalTheme(
   waveColor: const Color(0xFF38BDF8),
   seasonalIcon: Icons.ac_unit,
   iconBackgroundColor: const Color(0xFFF0F9FF),
-  particleColors: [
-    const Color(0xFFE0F2FE),
-    const Color(0xFFFFFFFF),
-    const Color(0xFFDEEFFD),
-    const Color(0xFFF0F9FF),
-  ],
   confettiColors: [
     const Color(0xFFE0F2FE),
     const Color(0xFFFFFFFF),

@@ -70,6 +70,7 @@ class _RegisterFormState extends State<RegisterForm> {
         );
         final loginResult = await AuthService.login(loginRequest);
 
+        if (!mounted) return;
         setState(() => _isLoading = false);
 
         if (loginResult.isSuccess) {

@@ -119,30 +119,14 @@ class ThemeHelper {
       // Use user's saved preference
       final savedSeason = await getSavedThemePreference();
       if (savedSeason != null) {
-        // Non-default themes require subscription
-        if (savedSeason != Season.defaultTheme && !isSubscribed) {
+        final savedTheme = getThemeBySeason(savedSeason);
+        if (savedTheme.isPremium && !isSubscribed) {
           return defaultTheme;
         }
         return getThemeBySeason(savedSeason);
       } else {
         return defaultTheme;
       }
-    }
-  }
-
-  // Get theme name for display
-  static String getThemeDisplayName(Season season) {
-    switch (season) {
-      case Season.defaultTheme:
-        return 'Défaut';
-      case Season.spring:
-        return 'Printemps';
-      case Season.summer:
-        return 'Été';
-      case Season.autumn:
-        return 'Automne';
-      case Season.winter:
-        return 'Hiver';
     }
   }
 }

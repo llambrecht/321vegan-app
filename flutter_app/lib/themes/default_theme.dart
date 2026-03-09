@@ -10,12 +10,6 @@ const SeasonalTheme defaultTheme = SeasonalTheme(
   waveColor: Color(0xFF166534),
   seasonalIcon: Icons.sunny,
   iconBackgroundColor: Color(0xFFF0FDF4),
-  particleColors: [
-    Color(0xFF22C55E),
-    Color(0xFF86EFAC),
-    Color(0xFF4ADE80),
-    Color(0xFFBBF7D0),
-  ],
   confettiColors: [
     Colors.red,
     Colors.blue,

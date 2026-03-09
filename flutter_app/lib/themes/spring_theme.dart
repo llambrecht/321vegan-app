@@ -12,12 +12,6 @@ SeasonalTheme springTheme = SeasonalTheme(
   waveColor: const Color.fromARGB(255, 234, 115, 168),
   seasonalIcon: FontAwesomeIcons.dove,
   iconBackgroundColor: const Color(0xFFFEF3C7),
-  particleColors: [
-    const Color(0xFFFDA4AF),
-    const Color(0xFFFDE047),
-    const Color(0xFFDDD6FE),
-    const Color(0xFFBFDBFE),
-  ],
   confettiColors: [
     const Color(0xFFFDA4AF),
     const Color(0xFFFDE047),
@@ -25,6 +19,8 @@ SeasonalTheme springTheme = SeasonalTheme(
     const Color(0xFFDDD6FE),
   ],
   particleType: ParticleType.petals,
+  seasonalAsset: 'lib/assets/images/tulipe.webp',
+  snowGlobeParticleAsset: 'lib/assets/images/marguerite.webp',
   iconTopPosition: -400.h,
   iconLeftPosition: -200.w,
   backgroundGradient: const LinearGradient(

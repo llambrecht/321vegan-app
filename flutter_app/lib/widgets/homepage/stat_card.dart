@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vegan_app/models/seasonal_theme.dart';
 import 'package:vegan_app/widgets/theme/snow_globe_overlay.dart';
@@ -14,7 +13,7 @@ Widget buildStatCard(
   Color iconColor,
   Color cardColor, {
   String? info,
-  Season? season,
+  SeasonalTheme? theme,
 }) {
   return InkWell(
     borderRadius: BorderRadius.circular(10),
@@ -78,7 +77,7 @@ Widget buildStatCard(
     child: Container(
       margin: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
       child: _maybeSnowGlobe(
-        season: season,
+        theme: theme,
         child: Stack(
           children: [
             ClipPath(
@@ -176,32 +175,19 @@ Widget buildStatCard(
   );
 }
 
-Widget _maybeSnowGlobe({Season? season, required Widget child}) {
-  if (season == Season.winter) {
-    return SnowGlobeOverlay(child: child);
+Widget _maybeSnowGlobe({SeasonalTheme? theme, required Widget child}) {
+  if (theme == null) return child;
+  if (theme.snowGlobeParticleAsset == null &&
+      theme.snowGlobeParticleIcon == null &&
+      theme.particleType != ParticleType.snowflakes) {
+    return child;
   }
-  if (season == Season.spring) {
-    return SnowGlobeOverlay(
-      particleAsset: 'lib/assets/images/marguerite.webp',
-      particleCount: 12,
-      child: child,
-    );
-  }
-  if (season == Season.autumn) {
-    return SnowGlobeOverlay(
-      particleIcon: FontAwesomeIcons.canadianMapleLeaf,
-      particleCount: 12,
-      child: child,
-    );
-  }
-  if (season == Season.summer) {
-    return SnowGlobeOverlay(
-      particleAsset: 'lib/assets/images/papillon.webp',
-      particleCount: 12,
-      child: child,
-    );
-  }
-  return child;
+  return SnowGlobeOverlay(
+    particleAsset: theme.snowGlobeParticleAsset,
+    particleIcon: theme.snowGlobeParticleIcon,
+    particleCount: 12,
+    child: child,
+  );
 }
 
 class BookDividerClipper extends CustomClipper<Path> {
