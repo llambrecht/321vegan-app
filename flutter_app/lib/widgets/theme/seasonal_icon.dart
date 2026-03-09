@@ -39,11 +39,6 @@ class _SeasonalIconState extends State<SeasonalIcon>
     'lib/assets/images/tulipe-smile.webp',
   ];
 
-  static const _winterAssets = [
-    'lib/assets/images/snowman.webp',
-    Icon.snowflake,
-  ];
-
   @override
   void initState() {
     super.initState();
