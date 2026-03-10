@@ -5,9 +5,15 @@ import 'helpers/first_time_launch.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'services/auth_service.dart';
+import 'services/b12_reminder_service.dart';
 import 'services/notification_service.dart';
 import 'services/products_of_interest_cache.dart';
+import 'models/b12_reminder_settings.dart';
+
+/// Global navigator key for showing dialogs from notification handlers
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,11 +22,27 @@ void main() async {
   await DatabaseHelper.instance.cosmeticsDatabase;
   await AuthService.init();
   await NotificationService().initialize();
+  await _migrateBiweeklyReminderIfNeeded();
 
   // Pre-load products of interest cache at app startup (when likely to have internet)
   ProductsOfInterestCache.initializeAtStartup();
 
   runApp(const MyApp());
+}
+
+/// One-time migration: cancel the old daily-repeating biweekly notification
+/// (scheduled with matchDateTimeComponents: time) and replace it with a
+/// correct one-shot notification.
+Future<void> _migrateBiweeklyReminderIfNeeded() async {
+  final prefs = await SharedPreferences.getInstance();
+  if (prefs.getBool('biweekly_migration_v1') == true) return;
+
+  final settings = await B12ReminderService.getSettings();
+  if (settings.enabled && settings.frequency == ReminderFrequency.biweekly) {
+    await B12ReminderService.scheduleReminder(settings);
+  }
+
+  await prefs.setBool('biweekly_migration_v1', true);
 }
 
 class MyApp extends StatelessWidget {
@@ -42,6 +64,7 @@ class MyApp extends StatelessWidget {
         data: MediaQuery.of(context)
             .copyWith(textScaler: const TextScaler.linear(1.0)),
         child: MaterialApp(
+          navigatorKey: navigatorKey,
           title: '321 Vegan',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(

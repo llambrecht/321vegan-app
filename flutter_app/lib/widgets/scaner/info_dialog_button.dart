@@ -1,5 +1,9 @@
+import 'dart:io' show File;
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:vegan_app/pages/app_pages/helpers/product.helper.dart';
+import 'package:vegan_app/services/api_service.dart';
 
 class InfoDialogButton extends StatelessWidget {
   final String barcode;
@@ -8,6 +12,9 @@ class InfoDialogButton extends StatelessWidget {
   final String commentTitle;
   final String commentHint;
   final Color buttonColor;
+  final IconData icon;
+  final VoidCallback? onScannerStop;
+  final VoidCallback? onScannerStart;
 
   const InfoDialogButton({
     super.key,
@@ -16,13 +23,16 @@ class InfoDialogButton extends StatelessWidget {
     required this.dialogTitle,
     required this.commentTitle,
     required this.commentHint,
-    required this.buttonColor
+    required this.buttonColor,
+    this.icon = Icons.report_problem,
+    this.onScannerStop,
+    this.onScannerStart,
   });
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
-      icon: Icon(Icons.report_problem, color: buttonColor),
+      icon: Icon(icon, color: buttonColor),
       label: Text(
         buttonLabel,
         style: TextStyle(color: buttonColor),
@@ -35,161 +45,430 @@ class InfoDialogButton extends StatelessWidget {
         ),
       ),
       onPressed: () {
+        onScannerStop?.call();
         final rootContext = context;
-        showDialog(
+        showModalBottomSheet(
           context: rootContext,
-          builder: (context) {
-            final TextEditingController commentController =
-                TextEditingController();
-            final TextEditingController contactController =
-                TextEditingController();
-            String? commentErrorText;
-            return StatefulBuilder(
-              builder: (context, setState) {
-                return AlertDialog(
-                  title: Text(dialogTitle),
-                  content: SingleChildScrollView(
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          builder: (context) => _InfoDialogModalContent(
+            barcode: barcode,
+            dialogTitle: dialogTitle,
+            commentTitle: commentTitle,
+            commentHint: commentHint,
+            buttonColor: buttonColor,
+            rootContext: rootContext,
+          ),
+        ).then((_) {
+          onScannerStart?.call();
+        });
+      },
+    );
+  }
+}
+
+class _InfoDialogModalContent extends StatefulWidget {
+  final String barcode;
+  final String dialogTitle;
+  final String commentTitle;
+  final String commentHint;
+  final Color buttonColor;
+  final BuildContext rootContext;
+
+  const _InfoDialogModalContent({
+    required this.barcode,
+    required this.dialogTitle,
+    required this.commentTitle,
+    required this.commentHint,
+    required this.buttonColor,
+    required this.rootContext,
+  });
+
+  @override
+  State<_InfoDialogModalContent> createState() =>
+      _InfoDialogModalContentState();
+}
+
+class _InfoDialogModalContentState extends State<_InfoDialogModalContent> {
+  final _commentController = TextEditingController();
+  final _contactController = TextEditingController();
+  String? _commentErrorText;
+  File? _photo;
+  bool _isTakingPhoto = false;
+  bool _isSending = false;
+
+  @override
+  void dispose() {
+    _commentController.dispose();
+    _contactController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _takePhoto() async {
+    if (_isTakingPhoto) return;
+    setState(() => _isTakingPhoto = true);
+
+    try {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(
+        source: ImageSource.camera,
+        maxWidth: 1200,
+        maxHeight: 1200,
+        imageQuality: 80,
+      );
+      if (pickedFile != null) {
+        setState(() => _photo = File(pickedFile.path));
+      }
+    } finally {
+      setState(() => _isTakingPhoto = false);
+    }
+  }
+
+  Future<void> _submit() async {
+    if (_commentController.text.trim().isEmpty) {
+      setState(() => _commentErrorText = "Ce champ est requis.");
+      return;
+    }
+    if (_isSending) return;
+    setState(() => _isSending = true);
+
+    Navigator.of(context).pop();
+
+    bool result = await ProductHelper.tryAddError(
+      widget.rootContext,
+      widget.barcode,
+      _commentController.text.trim(),
+      contact: _contactController.text.trim(),
+    );
+
+    // Upload photo to the product if provided
+    if (_photo != null) {
+      final productId = await ApiService.getProductIdByEan(ean: widget.barcode);
+      if (productId != null) {
+        await ApiService.uploadProductImage(
+          productId: productId,
+          photo: _photo!,
+        );
+      }
+    }
+
+    await Future.delayed(const Duration(milliseconds: 100));
+    if (!widget.rootContext.mounted) return;
+    final messenger = ScaffoldMessenger.of(widget.rootContext);
+
+    if (!result) {
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text("Une erreur est survenue. Veuillez réessayer."),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } else {
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text("Signalement envoyé. Merci !"),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20.r),
+            topRight: Radius.circular(20.r),
+          ),
+        ),
+        padding: EdgeInsets.all(24.w),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Handle bar
+              Center(
+                child: Container(
+                  width: 40.w,
+                  height: 4.h,
+                  margin: EdgeInsets.only(bottom: 16.h),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+
+              // Header
+              Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(12.w),
+                    decoration: BoxDecoration(
+                      color: widget.buttonColor.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      Icons.report_problem,
+                      color: widget.buttonColor,
+                      size: 54.sp,
+                    ),
+                  ),
+                  SizedBox(width: 16.w),
+                  Expanded(
                     child: Column(
-                      mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Code-barre : $barcode",
+                          widget.dialogTitle,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        SizedBox(height: 4.h),
+                        Text(
+                          "Code-barre : ${widget.barcode}",
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 13,
                             color: Colors.grey[600],
                             fontStyle: FontStyle.italic,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        RichText(
-                          text: TextSpan(
-                            text: commentTitle,
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                            ),
-                            children: const [
-                              TextSpan(
-                                text: "*",
-                                style: TextStyle(
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        TextField(
-                          controller: commentController,
-                          maxLines: 4,
-                          maxLength: 800,
-                          decoration: InputDecoration(
-                            hintText:
-                                commentHint,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                              vertical: 16,
-                              horizontal: 12,
-                            ),
-                            errorText: commentErrorText,
-                          ),
-                          onChanged: (_) {
-                            if (commentErrorText != null) {
-                              setState(() => commentErrorText = null);
-                            }
-                          },
-                        ),
-                        const SizedBox(height: 12),
-                        const Text(
-                          "Contact (optionnel)",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        TextField(
-                          controller: contactController,
-                          maxLines: 2,
-                          maxLength: 200,
-                          decoration: InputDecoration(
-                            hintText:
-                                "Email ou @ instagram (au cas où on aurait besoin d'infos)",
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                              vertical: 16,
-                              horizontal: 12,
-                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text("Annuler"),
-                    ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        if (commentController.text.trim().isEmpty) {
-                          setState(
-                              () => commentErrorText = "Ce champ est requis.");
-                        } else {
-                          Navigator.of(context).pop();
-                          bool result = await ProductHelper.tryAddError(
-                            rootContext,
-                            barcode,
-                            commentController.text.trim(),
-                            contact: contactController.text.trim(),
-                          );
+                ],
+              ),
+              SizedBox(height: 20.h),
 
-                          await Future.delayed(
-                              const Duration(milliseconds: 100));
-                          if (!rootContext.mounted) return;
-                          final messenger = ScaffoldMessenger.of(rootContext);
-
-                          if (!result) {
-                            messenger.showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                    "Une erreur est survenue. Veuillez réessayer."),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                          } else {
-                            messenger.showSnackBar(
-                              const SnackBar(
-                                content: Text("Signalement envoyé. Merci !"),
-                                backgroundColor: Colors.green,
-                              ),
-                            );
-                          }
-                        }
-                      },
-                      child: const Text("Envoyer"),
+              // Comment field (required)
+              RichText(
+                text: TextSpan(
+                  text: widget.commentTitle,
+                  style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  children: const [
+                    TextSpan(
+                      text: "*",
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
-                );
-              },
-            );
-          },
-        );
-      },
+                ),
+              ),
+              SizedBox(height: 6.h),
+              TextField(
+                controller: _commentController,
+                maxLines: 4,
+                maxLength: 800,
+                decoration: InputDecoration(
+                  hintText: widget.commentHint,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 16,
+                    horizontal: 12,
+                  ),
+                  errorText: _commentErrorText,
+                ),
+                onChanged: (_) {
+                  if (_commentErrorText != null) {
+                    setState(() => _commentErrorText = null);
+                  }
+                },
+              ),
+              SizedBox(height: 12.h),
+
+              // Contact field (optional)
+              const Text(
+                "Contact (optionnel)",
+                style: TextStyle(
+                  color: Colors.black87,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(height: 6.h),
+              TextField(
+                controller: _contactController,
+                maxLines: 1,
+                maxLength: 200,
+                decoration: InputDecoration(
+                  hintText:
+                      "Email ou @ instagram (au cas où on aurait besoin d'infos)",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 12,
+                  ),
+                ),
+              ),
+              SizedBox(height: 16.h),
+
+              // Photo section
+              const Text(
+                'Photo des ingrédients (optionnel)',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black87,
+                ),
+              ),
+              SizedBox(height: 6.h),
+              if (_photo != null) ...[
+                Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.file(
+                        _photo!,
+                        height: 180.h,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: GestureDetector(
+                        onTap: () => setState(() => _photo = null),
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: const BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.close,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 8.h),
+                Center(
+                  child: TextButton.icon(
+                    onPressed: _isTakingPhoto ? null : _takePhoto,
+                    icon: const Icon(Icons.camera_alt),
+                    label: const Text('Reprendre la photo'),
+                  ),
+                ),
+              ] else
+                GestureDetector(
+                  onTap: _isTakingPhoto ? null : _takePhoto,
+                  child: Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(vertical: 24.h),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade100,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Colors.grey.shade300,
+                        width: 1.5,
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.camera_alt,
+                          size: 40,
+                          color: Colors.grey.shade500,
+                        ),
+                        SizedBox(height: 8.h),
+                        Text(
+                          'Prendre une photo des ingrédients',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              SizedBox(height: 24.h),
+
+              // Buttons
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      style: OutlinedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(vertical: 14.h),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text(
+                        'Annuler',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 12.w),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: _isSending ? null : _submit,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: widget.buttonColor,
+                        padding: EdgeInsets.symmetric(vertical: 14.h),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Text(
+                        _isSending ? 'Envoi...' : 'Envoyer',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 160.h),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
 
 class ReportErrorButton extends StatelessWidget {
   final String barcode;
+  final VoidCallback? onScannerStop;
+  final VoidCallback? onScannerStart;
 
-  const ReportErrorButton({super.key, required this.barcode});
+  const ReportErrorButton({
+    super.key,
+    required this.barcode,
+    this.onScannerStop,
+    this.onScannerStart,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -197,17 +476,26 @@ class ReportErrorButton extends StatelessWidget {
       barcode: barcode,
       buttonLabel: "Signaler une erreur",
       dialogTitle: "Signaler une erreur",
-      commentTitle: "Quel est ce produit ? ",
-      commentHint: "Décrivez le problème rencontré avec ce produit",
+      commentTitle: "Décrivez le problème ",
+      commentHint: "Ex: Ce produit n'est pas vegan, il contient...",
       buttonColor: Colors.orange,
+      onScannerStop: onScannerStop,
+      onScannerStart: onScannerStart,
     );
   }
 }
 
 class SendInfoButton extends StatelessWidget {
   final String barcode;
+  final VoidCallback? onScannerStop;
+  final VoidCallback? onScannerStart;
 
-  const SendInfoButton({super.key, required this.barcode});
+  const SendInfoButton({
+    super.key,
+    required this.barcode,
+    this.onScannerStop,
+    this.onScannerStart,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -218,6 +506,9 @@ class SendInfoButton extends StatelessWidget {
       commentTitle: "Quel est ce produit? ",
       commentHint: "Décrivez le produit",
       buttonColor: Colors.blue,
+      icon: Icons.info_outline,
+      onScannerStop: onScannerStop,
+      onScannerStart: onScannerStart,
     );
   }
 }

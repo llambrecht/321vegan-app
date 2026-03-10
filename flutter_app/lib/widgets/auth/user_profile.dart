@@ -13,6 +13,7 @@ import './edit_profile_modal.dart';
 import '../shared/social_feedback_buttons.dart';
 import '../vegandex/vegandex_modal.dart';
 import '../../pages/app_pages/Profile/b12_reminder_settings_page.dart';
+import '../../services/b12_reminder_service.dart';
 
 class UserProfile extends StatefulWidget {
   final VoidCallback? onLogout;
@@ -34,6 +35,7 @@ class _UserProfileState extends State<UserProfile> {
   String? _selectedAvatar;
   bool _openOnScanPage = false;
   bool _showBoycott = true;
+  List<DateTime> _b12History = [];
 
   final List<String> _availableAvatars = [
     'lapin.png',
@@ -52,6 +54,39 @@ class _UserProfileState extends State<UserProfile> {
     super.initState();
     _loadUserInfo();
     _loadPreferences();
+    _loadB12History();
+  }
+
+  Future<void> _loadB12History() async {
+    final history = await B12ReminderService.getB12IntakeHistory();
+    if (mounted) {
+      setState(() {
+        _b12History = history;
+      });
+    }
+  }
+
+  bool get _b12TakenToday {
+    if (_b12History.isEmpty) return false;
+    final today = DateTime.now();
+    final last = _b12History.first;
+    return last.year == today.year &&
+        last.month == today.month &&
+        last.day == today.day;
+  }
+
+  Future<void> _markB12AsTaken() async {
+    await B12ReminderService.recordB12Intake();
+    await _loadB12History();
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('B12 prise enregistrée !'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
   String _getRandomAvatar(String? currentAvatar) {
@@ -219,6 +254,8 @@ class _UserProfileState extends State<UserProfile> {
         ],
         SizedBox(height: 24.h),
         _buildVegandexCard(),
+        SizedBox(height: 24.h),
+        _buildB12HistoryCard(),
         SizedBox(height: 24.h),
         _buildBadgesSection(),
         SizedBox(height: 24.h),
@@ -610,6 +647,257 @@ class _UserProfileState extends State<UserProfile> {
       context,
       MaterialPageRoute(
         builder: (context) => const B12ReminderSettingsPage(),
+      ),
+    );
+  }
+
+  Widget _buildB12HistoryCard() {
+    final formatter = DateFormat('EEEE d MMMM yyyy', 'fr_FR');
+    final lastTaken = _b12History.isNotEmpty ? _b12History.first : null;
+    final takenToday = _b12TakenToday;
+
+    return _buildCard(
+      child: Column(
+        children: [
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: _b12History.isNotEmpty ? () => _showB12HistoryModal() : null,
+            child: Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(16.w),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primary
+                        .withValues(alpha: 0.15),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Text(
+                    '💊',
+                    style: TextStyle(fontSize: 48.sp),
+                  ),
+                ),
+                SizedBox(width: 20.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Historique B12',
+                        style: TextStyle(
+                          fontSize: 52.sp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey[800],
+                        ),
+                      ),
+                      SizedBox(height: 4.h),
+                      if (lastTaken != null)
+                        Text(
+                          'Dernière prise : ${formatter.format(lastTaken)}',
+                          style: TextStyle(
+                            fontSize: 36.sp,
+                            color: Colors.grey[600],
+                          ),
+                        )
+                      else
+                        Text(
+                          'Aucune prise enregistrée',
+                          style: TextStyle(
+                            fontSize: 36.sp,
+                            color: Colors.grey[500],
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                if (_b12History.isNotEmpty)
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    size: 40.sp,
+                    color: Colors.grey[400],
+                  ),
+              ],
+            ),
+          ),
+          SizedBox(height: 16.h),
+          SizedBox(
+            width: double.infinity,
+            child: takenToday
+                ? Container(
+                    padding: EdgeInsets.symmetric(vertical: 16.h),
+                    decoration: BoxDecoration(
+                      color: Colors.green.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(
+                        color: Colors.green.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.check_circle,
+                          size: 44.sp,
+                          color: Colors.green[700],
+                        ),
+                        SizedBox(width: 10.w),
+                        Text(
+                          'B12 prise aujourd\'hui',
+                          style: TextStyle(
+                            fontSize: 40.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.green[700],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : ElevatedButton.icon(
+                    onPressed: _markB12AsTaken,
+                    icon: Icon(Icons.check, size: 70.sp),
+                    label: Text(
+                      'Marquer comme prise aujourd\'hui',
+                      style: TextStyle(fontSize: 40.sp),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(vertical: 16.h),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                    ),
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showB12HistoryModal() {
+    final formatter = DateFormat('EEEE d MMMM yyyy', 'fr_FR');
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => GestureDetector(
+        onTap: () => Navigator.pop(context),
+        behavior: HitTestBehavior.opaque,
+        child: DraggableScrollableSheet(
+          initialChildSize: 0.6,
+          minChildSize: 0.3,
+          maxChildSize: 0.9,
+          builder: (context, scrollController) => GestureDetector(
+            onTap: () {},
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
+              ),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(24.w),
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 60.w,
+                          height: 6.h,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius: BorderRadius.circular(3.r),
+                          ),
+                        ),
+                        SizedBox(height: 20.h),
+                        Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(16.w),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withValues(alpha: 0.15),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Text(
+                                '💊',
+                                style: TextStyle(fontSize: 48.sp),
+                              ),
+                            ),
+                            SizedBox(width: 16.w),
+                            Text(
+                              'Historique B12',
+                              style: TextStyle(
+                                fontSize: 56.sp,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey[800],
+                              ),
+                            ),
+                            const Spacer(),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 16.w, vertical: 8.h),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(20.r),
+                              ),
+                              child: Text(
+                                '${_b12History.length} prise${_b12History.length > 1 ? 's' : ''}',
+                                style: TextStyle(
+                                  fontSize: 36.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(height: 1, color: Colors.grey[200]),
+                  Expanded(
+                    child: ListView.builder(
+                      controller: scrollController,
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 24.w, vertical: 16.h),
+                      itemCount: _b12History.length,
+                      itemBuilder: (context, index) {
+                        final date = _b12History[index];
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: 12.h),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.check_circle,
+                                size: 44.sp,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                              SizedBox(width: 16.w),
+                              Text(
+                                formatter.format(date),
+                                style: TextStyle(
+                                  fontSize: 40.sp,
+                                  color: Colors.grey[700],
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

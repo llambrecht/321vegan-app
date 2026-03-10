@@ -1,6 +1,7 @@
 enum ReminderFrequency {
   daily,
   weekly,
+  twiceWeekly,
   biweekly,
 }
 
@@ -10,6 +11,8 @@ class B12ReminderSettings {
   int hour; // 0-23
   int minute; // 0-59
   int? dayOfWeek; // 1-7 (Monday = 1, Sunday = 7), null for daily
+  List<int>? daysOfWeek; // For twiceWeekly: exactly 2 days (1-7)
+  DateTime? biweeklyStartDate; // Starting date for biweekly cycle
 
   B12ReminderSettings({
     this.enabled = false,
@@ -17,6 +20,8 @@ class B12ReminderSettings {
     this.hour = 9,
     this.minute = 0,
     this.dayOfWeek = 1, // Default to Monday
+    this.daysOfWeek,
+    this.biweeklyStartDate,
   });
 
   // Convert to JSON for storage
@@ -27,6 +32,8 @@ class B12ReminderSettings {
       'hour': hour,
       'minute': minute,
       'dayOfWeek': dayOfWeek,
+      'daysOfWeek': daysOfWeek,
+      'biweeklyStartDate': biweeklyStartDate?.millisecondsSinceEpoch,
     };
   }
 
@@ -38,6 +45,12 @@ class B12ReminderSettings {
       hour: json['hour'] ?? 9,
       minute: json['minute'] ?? 0,
       dayOfWeek: json['dayOfWeek'],
+      daysOfWeek: (json['daysOfWeek'] as List<dynamic>?)
+          ?.map((e) => e as int)
+          .toList(),
+      biweeklyStartDate: json['biweeklyStartDate'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(json['biweeklyStartDate'])
+          : null,
     );
   }
 
@@ -54,6 +67,14 @@ class B12ReminderSettings {
       case ReminderFrequency.weekly:
         final dayName = _getDayName(dayOfWeek ?? 1);
         return 'Chaque $dayName à $timeStr';
+      case ReminderFrequency.twiceWeekly:
+        if (daysOfWeek != null && daysOfWeek!.length == 2) {
+          final sorted = List<int>.from(daysOfWeek!)..sort();
+          final day1 = _getDayName(sorted[0]);
+          final day2 = _getDayName(sorted[1]);
+          return 'Chaque $day1 et $day2 à $timeStr';
+        }
+        return 'Deux fois par semaine à $timeStr';
       case ReminderFrequency.biweekly:
         final dayName = _getDayName(dayOfWeek ?? 1);
         return 'Toutes les deux semaines le $dayName à $timeStr';
@@ -87,6 +108,8 @@ class B12ReminderSettings {
     int? hour,
     int? minute,
     Object? dayOfWeek = _undefined,
+    Object? daysOfWeek = _undefined,
+    Object? biweeklyStartDate = _undefined,
   }) {
     return B12ReminderSettings(
       enabled: enabled ?? this.enabled,
@@ -96,6 +119,12 @@ class B12ReminderSettings {
       dayOfWeek: identical(dayOfWeek, _undefined)
           ? this.dayOfWeek
           : (dayOfWeek as int?),
+      daysOfWeek: identical(daysOfWeek, _undefined)
+          ? this.daysOfWeek
+          : (daysOfWeek as List<int>?),
+      biweeklyStartDate: identical(biweeklyStartDate, _undefined)
+          ? this.biweeklyStartDate
+          : (biweeklyStartDate as DateTime?),
     );
   }
 }
