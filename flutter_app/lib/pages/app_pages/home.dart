@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:motion_tab_bar_v2/motion-tab-bar.dart';
 import 'package:motion_tab_bar_v2/motion-tab-controller.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 import 'package:vegan_app/helpers/preference_helper.dart';
 import 'package:vegan_app/pages/app_pages/Partners/partners_page.dart';
 import 'package:vegan_app/pages/app_pages/Scan/scan.dart';
@@ -20,6 +24,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:vegan_app/services/auth_service.dart';
 import 'package:vegan_app/services/b12_reminder_service.dart';
 import 'package:vegan_app/services/badge_service.dart';
+import 'package:vegan_app/widgets/homepage/share_stats_card.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -39,6 +44,7 @@ class MyHomePageState extends State<MyHomePage>
   bool _hasNewPartners = false;
   late AnimationController _partnersAnimationController;
   String? _currentAvatar;
+  final ScreenshotController _screenshotController = ScreenshotController();
 
   @override
   void initState() {
@@ -535,6 +541,18 @@ class MyHomePageState extends State<MyHomePage>
                               ),
                             ),
                           ),
+                        Positioned(
+                          bottom: 100.h,
+                          right: 40.w,
+                          child: FloatingActionButton(
+                            backgroundColor: Colors.white,
+                            onPressed: _shareStats,
+                            child: Icon(
+                              Icons.share,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                        ),
                         ConfettiWidget(
                           numberOfParticles: 20,
                           maxBlastForce: 50.r,
@@ -549,7 +567,7 @@ class MyHomePageState extends State<MyHomePage>
                           ],
                         ),
                       ],
-                    ),
+                    )
                   ),
                   const SearchPage(),
                   ScanPage(
@@ -692,5 +710,36 @@ class MyHomePageState extends State<MyHomePage>
     });
 
     _confettiController.play();
+  }
+
+  Future<void> _shareStats() async {
+    try {
+      final image = await ScreenshotController().captureFromWidget(
+        Material(
+          type: MaterialType.transparency,
+          child: Theme(
+            data: Theme.of(context),
+            child: ShareStatsWidget(
+              targetDate: targetDate,
+              animalUnit: _savings['animalUnit'] ?? 0,
+              co2Unit: _savings['co2Unit'] ?? 0,
+              forestUnit: _savings['forestUnit'] ?? 0,
+              waterUnit: _savings['waterUnit'] ?? 0,
+            ),
+          ),
+        ),
+      );
+
+      final directory = await getTemporaryDirectory();
+      final imagePath = await File('${directory.path}/vegan_stats_story.png').create();
+      await imagePath.writeAsBytes(image);
+
+      await Share.shareXFiles(
+        [XFile(imagePath.path)],
+        text: "Mes statistiques",
+      );
+    } catch (e) {
+      debugPrint("Share error: $e");
+    }
   }
 }

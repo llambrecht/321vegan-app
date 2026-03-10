@@ -71,6 +71,7 @@ dependencies:
   url_launcher: ^6.3.0
   in_app_review: ^2.0.9
   upgrader: ^11.3.0
+  screenshot: ^3.0.0
 
 dev_dependencies:
   flutter_test:
