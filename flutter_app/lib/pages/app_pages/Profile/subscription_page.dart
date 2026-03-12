@@ -1,10 +1,14 @@
 import 'dart:io';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../services/subscription_service.dart';
 import '../../../services/auth_service.dart';
+import '../../../widgets/auth/forgot_password_form.dart';
+import '../../../widgets/auth/login_form.dart';
+import '../../../widgets/auth/register_form.dart';
 
 class SubscriptionPage extends StatefulWidget {
   const SubscriptionPage({super.key});
@@ -137,7 +141,8 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
           );
         } else {
           setState(() {
-            _errorMessage = 'Aucun abonnement trouvé à restaurer.';
+            _errorMessage =
+                'Aucun abonnement trouvé. N\'hésitez pas à nous contacter si vous pensez que c\'est une erreur.';
           });
         }
       }
@@ -181,79 +186,85 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
         ),
         centerTitle: true,
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 28.w, vertical: 16.h),
-          child: Column(
-            children: [
-              // Already subscribed banner
-              if (isSubscribed && isBypass) ...[
-                _buildBypassCard(primaryColor),
-                SizedBox(height: 32.h),
-              ] else if (isSubscribed && subscription != null) ...[
-                _buildActiveSubscriptionCard(subscription, primaryColor),
-                SizedBox(height: 16.h),
-                _buildManageSubscriptionButton(),
-                SizedBox(height: 32.h),
-              ],
-
-              // Header illustration
-              if (!isSubscribed) ...[
-                _buildHeader(primaryColor),
-                SizedBox(height: 32.h),
-
-                // Benefits list
-                _buildBenefits(primaryColor),
-                SizedBox(height: 32.h),
-
-                // Plan cards
-                if (SubscriptionService.products.isNotEmpty) ...[
-                  _buildPlanCards(primaryColor),
-                  SizedBox(height: 8.h),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8.w),
-                    child: Text(
-                      'Tous les paliers débloquent les mêmes avantages. Choisissez simplement selon vos moyens !',
-                      style: TextStyle(
-                        fontSize: 32.sp,
-                        color: Colors.grey[500],
-                        fontStyle: FontStyle.italic,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  SizedBox(height: 24.h),
-
-                  // Error message
-                  if (_errorMessage != null) ...[
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 16.h),
-                      child: Text(
-                        _errorMessage!,
-                        style: TextStyle(
-                          fontSize: 38.sp,
-                          color: Colors.red[600],
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
+      body: Stack(
+        children: [
+          SafeArea(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: 28.w, vertical: 16.h),
+              child: Column(
+                children: [
+                  // Already subscribed banner
+                  if (isSubscribed && isBypass) ...[
+                    _buildBypassCard(primaryColor),
+                    SizedBox(height: 32.h),
+                  ] else if (isSubscribed && subscription != null) ...[
+                    _buildActiveSubscriptionCard(subscription, primaryColor),
+                    SizedBox(height: 16.h),
+                    _buildManageSubscriptionButton(),
+                    SizedBox(height: 32.h),
                   ],
 
-                  // Purchase button
-                  _buildPurchaseButton(primaryColor),
-                  SizedBox(height: 20.h),
+                  // Header illustration
+                  if (!isSubscribed) ...[
+                    _buildHeader(primaryColor),
+                    SizedBox(height: 32.h),
 
-                  // Restore button
-                  _buildRestoreButton(),
-                ] else ...[
-                  _buildProductsUnavailable(),
+                    // Benefits list
+                    _buildBenefits(primaryColor),
+                    SizedBox(height: 32.h),
+
+                    // Plan cards
+                    if (SubscriptionService.products.isNotEmpty) ...[
+                      _buildPlanCards(primaryColor),
+                      SizedBox(height: 8.h),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8.w),
+                        child: Text(
+                          'Tous les paliers débloquent les mêmes avantages. Choisissez simplement selon vos moyens !',
+                          style: TextStyle(
+                            fontSize: 32.sp,
+                            color: Colors.grey[500],
+                            fontStyle: FontStyle.italic,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      SizedBox(height: 24.h),
+
+                      // Error message
+                      if (_errorMessage != null) ...[
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 16.h),
+                          child: Text(
+                            _errorMessage!,
+                            style: TextStyle(
+                              fontSize: 38.sp,
+                              color: Colors.red[600],
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+
+                      // Purchase button
+                      _buildPurchaseButton(primaryColor),
+                      SizedBox(height: 20.h),
+
+                      // Restore button
+                      _buildRestoreButton(),
+                    ] else ...[
+                      _buildProductsUnavailable(),
+                    ],
+
+                    SizedBox(height: 32.h),
+                  ],
                 ],
-
-                SizedBox(height: 32.h),
-              ],
-            ],
+              ),
+            ),
           ),
-        ),
+          // Auth overlay when not logged in
+          if (!AuthService.isLoggedIn) _buildAuthOverlay(primaryColor),
+        ],
       ),
     );
   }
@@ -818,7 +829,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
               ),
             )
           : Text(
-              'Restaurer un achat existant',
+              'J\'ai déjà un abonnement - Restaurer mes achats',
               style: TextStyle(
                 fontSize: 38.sp,
                 color: Colors.grey[500],
@@ -891,6 +902,138 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
     );
   }
 
+  Widget _buildAuthOverlay(Color primaryColor) {
+    return Positioned.fill(
+      child: ClipRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+          child: Container(
+            color: Colors.white.withValues(alpha: 0.6),
+            child: SafeArea(
+              child: Center(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(horizontal: 32.w),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(24.w),
+                        decoration: BoxDecoration(
+                          color: primaryColor.withValues(alpha: 0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.lock_outline,
+                          size: 120.sp,
+                          color: primaryColor,
+                        ),
+                      ),
+                      SizedBox(height: 24.h),
+                      Text(
+                        'Connectez-vous pour soutenir 321 Vegan',
+                        style: TextStyle(
+                          fontSize: 52.sp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey[800],
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 12.h),
+                      Text(
+                        'Créez un compte ou connectez-vous pour vous abonner et débloquer tous les thèmes.',
+                        style: TextStyle(
+                          fontSize: 40.sp,
+                          color: Colors.grey[500],
+                          height: 1.4,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 32.h),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () => _showAuthSheet(showRegister: true),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: primaryColor,
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 20.h),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16.r),
+                            ),
+                            elevation: 0,
+                          ),
+                          child: Text(
+                            'Créer un compte',
+                            style: TextStyle(
+                              fontSize: 46.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 12.h),
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton(
+                          onPressed: () => _showAuthSheet(showRegister: false),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: primaryColor,
+                            side: BorderSide(color: primaryColor, width: 1.5),
+                            padding: EdgeInsets.symmetric(vertical: 20.h),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16.r),
+                            ),
+                          ),
+                          child: Text(
+                            'Se connecter',
+                            style: TextStyle(
+                              fontSize: 46.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showAuthSheet({required bool showRegister}) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.65,
+        minChildSize: 0.4,
+        maxChildSize: 0.85,
+        builder: (context, scrollController) => ClipRRect(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
+          child: Scaffold(
+            backgroundColor: Colors.white,
+            body: SingleChildScrollView(
+              controller: scrollController,
+              padding: EdgeInsets.all(28.w),
+              child: _AuthSheetContent(
+                initialShowRegister: showRegister,
+                onSuccess: () {
+                  Navigator.of(context).pop();
+                  if (mounted) setState(() {});
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   String _formatDate(DateTime date) {
     final months = [
       'janvier',
@@ -907,5 +1050,52 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
       'décembre'
     ];
     return '${date.day} ${months[date.month - 1]} ${date.year}';
+  }
+}
+
+class _AuthSheetContent extends StatefulWidget {
+  final bool initialShowRegister;
+  final VoidCallback onSuccess;
+
+  const _AuthSheetContent({
+    required this.initialShowRegister,
+    required this.onSuccess,
+  });
+
+  @override
+  State<_AuthSheetContent> createState() => _AuthSheetContentState();
+}
+
+enum _AuthView { register, login, forgotPassword }
+
+class _AuthSheetContentState extends State<_AuthSheetContent> {
+  late _AuthView _view;
+
+  @override
+  void initState() {
+    super.initState();
+    _view = widget.initialShowRegister ? _AuthView.register : _AuthView.login;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    switch (_view) {
+      case _AuthView.register:
+        return RegisterForm(
+          onRegisterSuccess: widget.onSuccess,
+          onSwitchToLogin: () => setState(() => _view = _AuthView.login),
+        );
+      case _AuthView.login:
+        return LoginForm(
+          onLoginSuccess: widget.onSuccess,
+          onSwitchToRegister: () => setState(() => _view = _AuthView.register),
+          onSwitchToForgotPassword: () =>
+              setState(() => _view = _AuthView.forgotPassword),
+        );
+      case _AuthView.forgotPassword:
+        return ForgotPasswordForm(
+          onBackToLogin: () => setState(() => _view = _AuthView.login),
+        );
+    }
   }
 }
