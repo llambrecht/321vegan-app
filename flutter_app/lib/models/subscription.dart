@@ -2,7 +2,8 @@ enum SubscriptionStatus {
   active,
   expired,
   cancelled,
-  graceperiod;
+  graceperiod,
+  paused;
 
   static SubscriptionStatus fromString(String value) {
     switch (value.toLowerCase()) {
@@ -14,6 +15,8 @@ enum SubscriptionStatus {
         return SubscriptionStatus.cancelled;
       case 'grace_period':
         return SubscriptionStatus.graceperiod;
+      case 'paused':
+        return SubscriptionStatus.paused;
       default:
         return SubscriptionStatus.expired;
     }

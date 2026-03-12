@@ -370,7 +370,8 @@ class SubscriptionService {
 
   /// Check cached subscription status
   static bool _getCachedIsSubscribed() {
-    if (_cachedStatus == 'active' && _cachedExpiresAt != null) {
+    if ((_cachedStatus == 'active' || _cachedStatus == 'graceperiod') &&
+        _cachedExpiresAt != null) {
       return _cachedExpiresAt!.isAfter(DateTime.now());
     }
     return false;
