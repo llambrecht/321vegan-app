@@ -220,7 +220,7 @@ class _EditProfileModalState extends State<EditProfileModal> {
                       shape: BoxShape.circle,
                       border: Border.all(
                         color: isSelected
-                            ? Theme.of(context).primaryColor
+                            ? Theme.of(context).colorScheme.primary
                             : Colors.grey[300]!,
                         width: isSelected ? 4 : 2,
                       ),
@@ -281,7 +281,7 @@ class _EditProfileModalState extends State<EditProfileModal> {
           ElevatedButton(
             onPressed: _isLoading ? null : _saveChanges,
             style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).primaryColor,
+              backgroundColor: Theme.of(context).colorScheme.primary,
               foregroundColor: Colors.white,
               padding: EdgeInsets.symmetric(vertical: 16.h),
               shape: RoundedRectangleBorder(

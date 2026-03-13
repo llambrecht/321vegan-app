@@ -13,6 +13,8 @@ import 'package:vegan_app/pages/app_pages/Profile/b12_reminder_settings_page.dar
 import 'package:vegan_app/helpers/time_counter/time_counter.dart';
 import 'package:vegan_app/widgets/homepage/stat_card.dart';
 import 'package:vegan_app/widgets/homepage/draggable_profile_bubble.dart';
+import 'package:vegan_app/services/subscription_service.dart';
+import 'package:vegan_app/pages/app_pages/Profile/subscription_page.dart';
 import 'package:confetti/confetti.dart';
 import 'package:vegan_app/widgets/wave_clipper.dart';
 import 'package:intl/intl.dart';
@@ -20,6 +22,8 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:vegan_app/services/auth_service.dart';
 import 'package:vegan_app/services/b12_reminder_service.dart';
 import 'package:vegan_app/services/badge_service.dart';
+import 'package:vegan_app/models/seasonal_theme.dart';
+import 'package:vegan_app/widgets/theme/seasonal_icon.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -370,7 +374,10 @@ class MyHomePageState extends State<MyHomePage>
                           child: ClipPath(
                             clipper: WaveClipper(),
                             child: Container(
-                                color: Theme.of(context).colorScheme.primary,
+                                color: Theme.of(context)
+                                        .extension<SeasonalTheme>()
+                                        ?.waveColor ??
+                                    Theme.of(context).colorScheme.primary,
                                 height: 480.h),
                           ),
                         ),
@@ -379,17 +386,82 @@ class MyHomePageState extends State<MyHomePage>
                           left: -72.w,
                           child: Opacity(
                             opacity: 1.0,
-                            child: Icon(
-                              Icons.sunny,
-                              size: 889.r,
-                              color: Colors.white,
-                            ),
+                            child:
+                                Theme.of(context).extension<SeasonalTheme>() !=
+                                        null
+                                    ? SeasonalIcon(
+                                        theme: Theme.of(context)
+                                            .extension<SeasonalTheme>()!)
+                                    : Icon(
+                                        Icons.sunny,
+                                        size: 889.r,
+                                        color: Colors.white,
+                                      ),
                           ),
                         ),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             SizedBox(height: 200.h),
+                            if (!SubscriptionService.isSubscribed)
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding:
+                                      EdgeInsets.only(left: 16.w, bottom: 8.h),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const SubscriptionPage(),
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 28.w, vertical: 14.h),
+                                      decoration: BoxDecoration(
+                                        gradient: const LinearGradient(
+                                          colors: [
+                                            Color(0xFF7C3AED),
+                                            Color(0xFFA855F7),
+                                          ],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                        ),
+                                        borderRadius:
+                                            BorderRadius.circular(40.r),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: const Color(0xFF7C3AED)
+                                                .withValues(alpha: 0.35),
+                                            blurRadius: 12,
+                                            offset: const Offset(0, 4),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(Icons.favorite,
+                                              color: Colors.white, size: 44.sp),
+                                          SizedBox(width: 10.w),
+                                          Text(
+                                            'Soutenir 321 Vegan',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 40.sp,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Baloo',
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                             Text(
                               "Vous êtes végane depuis",
                               style: TextStyle(
@@ -410,7 +482,9 @@ class MyHomePageState extends State<MyHomePage>
                               const Color.fromARGB(247, 255, 103, 153),
                               Colors.pinkAccent,
                               info:
-                                  "L'industrie de l'élevage cause d'immenses souffrances aux animaux en les considérant comme des objets. Choisir le véganisme, c’est refuser cette exploitation. Ici, on souligne l’effet positif que chacun peut avoir pour un monde plus juste et durable.",
+                                  "L'industrie de l'élevage cause d'immenses souffrances aux animaux en les considérant comme des objets. Choisir le véganisme, c'est refuser cette exploitation. Ici, on souligne l'effet positif que chacun peut avoir pour un monde plus juste et durable.",
+                              theme: Theme.of(context)
+                                  .extension<SeasonalTheme>(),
                             ),
                             buildStatCard(
                               context,
@@ -422,6 +496,8 @@ class MyHomePageState extends State<MyHomePage>
                               Colors.redAccent,
                               info:
                                   "L'alimentation végétale a aussi un impact sur l'environnement et permet de réduire considérablement son empreinte carbone. La quantité de CO2 économisée vient du fait que l'élevage est l'une des principales sources d'émission de gaz à effet de serre, de déforestation, de pollution de l'air et de pollution de l'eau.",
+                              theme: Theme.of(context)
+                                  .extension<SeasonalTheme>(),
                             ),
                             buildStatCard(
                               context,
@@ -433,6 +509,8 @@ class MyHomePageState extends State<MyHomePage>
                               const Color.fromARGB(197, 36, 139, 87),
                               info:
                                   "L'élevage est l'une des principales causes de déforestation. Il faut en effet énormément de place pour cultiver les céréales (notamment soja et maïs) destinés à nourrir les animaux d'élevage. Cette déforestation a des conséquences désastreuses sur la biodiversité et les communautés locales. Adopter une alimentation végétale c'est réduire la pression sur les forêts et à encourager une agriculture plus durable.",
+                              theme: Theme.of(context)
+                                  .extension<SeasonalTheme>(),
                             ),
                             buildStatCard(
                               context,
@@ -444,6 +522,8 @@ class MyHomePageState extends State<MyHomePage>
                               Colors.blueAccent,
                               info:
                                   "En choisissant d'être végétalien, vous aidez à économiser de précieuses ressources en eau. La production de produits animaux nécessite une gigantesque quantité d'eau, notamment pour l'irrigation des cultures pour les animaux d'élevage. Et cela sans parler de la polution de l'eau due aux déjections qu'ils produisent.",
+                              theme: Theme.of(context)
+                                  .extension<SeasonalTheme>(),
                             ),
                           ],
                         ),
@@ -453,7 +533,8 @@ class MyHomePageState extends State<MyHomePage>
                             child: ElevatedButton(
                               onPressed: launchCounter,
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Theme.of(context).primaryColor,
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.primary,
                                 foregroundColor: Colors.white,
                                 padding: EdgeInsets.symmetric(
                                     horizontal: 32.w, vertical: 12.h),
@@ -505,7 +586,9 @@ class MyHomePageState extends State<MyHomePage>
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 20.w, vertical: 8.h),
                                       decoration: BoxDecoration(
-                                        color: Theme.of(context).primaryColor,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
                                         borderRadius:
                                             BorderRadius.circular(20.r),
                                       ),
@@ -541,12 +624,15 @@ class MyHomePageState extends State<MyHomePage>
                           confettiController: _confettiController,
                           blastDirectionality: BlastDirectionality.explosive,
                           shouldLoop: false,
-                          colors: const [
-                            Colors.red,
-                            Colors.blue,
-                            Colors.green,
-                            Colors.yellow,
-                          ],
+                          colors: Theme.of(context)
+                                  .extension<SeasonalTheme>()
+                                  ?.confettiColors ??
+                              const [
+                                Colors.red,
+                                Colors.blue,
+                                Colors.green,
+                                Colors.yellow,
+                              ],
                         ),
                       ],
                     ),

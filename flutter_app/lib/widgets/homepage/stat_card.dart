@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:vegan_app/models/seasonal_theme.dart';
+import 'package:vegan_app/widgets/theme/snow_globe_overlay.dart';
 
 Widget buildStatCard(
   BuildContext context,
@@ -11,6 +13,7 @@ Widget buildStatCard(
   Color iconColor,
   Color cardColor, {
   String? info,
+  SeasonalTheme? theme,
 }) {
   return InkWell(
     borderRadius: BorderRadius.circular(10),
@@ -73,99 +76,117 @@ Widget buildStatCard(
     },
     child: Container(
       margin: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
-      child: Stack(
-        children: [
-          ClipPath(
-            clipper: BookDividerClipper(),
-            child: Container(
-              decoration: BoxDecoration(
-                color: cardColor,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.2),
-                    offset: const Offset(0, 2),
-                    blurRadius: 6,
-                  ),
-                ],
-              ),
-              padding: EdgeInsets.all(40.w),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          title.toUpperCase(),
-                          style: TextStyle(
-                            color: const Color.fromARGB(255, 255, 255, 255),
-                            fontSize: 35.sp,
-                            fontWeight: FontWeight.bold,
+      child: _maybeSnowGlobe(
+        theme: theme,
+        child: Stack(
+          children: [
+            ClipPath(
+              clipper: BookDividerClipper(),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: cardColor,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.2),
+                      offset: const Offset(0, 2),
+                      blurRadius: 6,
+                    ),
+                  ],
+                ),
+                padding: EdgeInsets.all(40.w),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            title.toUpperCase(),
+                            style: TextStyle(
+                              color: const Color.fromARGB(255, 255, 255, 255),
+                              fontSize: 35.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 8.sp),
-                        Row(
-                          children: <Widget>[
-                            AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 500),
-                              child: Text(
-                                '$unit',
-                                key: ValueKey<int>(unit),
-                                style: TextStyle(
-                                  fontSize: 70.sp,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
+                          SizedBox(height: 8.sp),
+                          Row(
+                            children: <Widget>[
+                              AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 500),
+                                child: Text(
+                                  '$unit',
+                                  key: ValueKey<int>(unit),
+                                  style: TextStyle(
+                                    fontSize: 70.sp,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(width: 4),
-                            AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 500),
-                              child: Text(
-                                unitName,
-                                key: ValueKey<String>(unitName),
-                                style: TextStyle(
-                                  fontSize: 50.sp,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
+                              const SizedBox(width: 4),
+                              AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 500),
+                                child: Text(
+                                  unitName,
+                                  key: ValueKey<String>(unitName),
+                                  style: TextStyle(
+                                    fontSize: 50.sp,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: iconColor,
-                      shape: BoxShape.circle,
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black26,
-                          offset: Offset(0, 2),
-                          blurRadius: 6,
-                        ),
-                      ],
-                    ),
-                    child: Center(
-                      child: Icon(
-                        icon,
-                        color: Colors.white,
-                        size: 90.dm,
+                            ],
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                ],
+                    Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: iconColor,
+                        shape: BoxShape.circle,
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black26,
+                            offset: Offset(0, 2),
+                            blurRadius: 6,
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Icon(
+                          icon,
+                          color: Colors.white,
+                          size: 90.dm,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     ),
+  );
+}
+
+Widget _maybeSnowGlobe({SeasonalTheme? theme, required Widget child}) {
+  if (theme == null) return child;
+  if (theme.snowGlobeParticleAsset == null &&
+      theme.snowGlobeParticleIcon == null &&
+      theme.particleType != ParticleType.snowflakes) {
+    return child;
+  }
+  return SnowGlobeOverlay(
+    particleAsset: theme.snowGlobeParticleAsset,
+    particleIcon: theme.snowGlobeParticleIcon,
+    particleCount: 12,
+    child: child,
   );
 }
 

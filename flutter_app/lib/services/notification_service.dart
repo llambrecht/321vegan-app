@@ -157,7 +157,7 @@ class NotificationService {
               Navigator.of(dialogContext).pop();
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('B12 prise enregistrée !'),
+                  content: Text('Bien reçu !'),
                   backgroundColor: Colors.green,
                   duration: Duration(seconds: 2),
                 ),

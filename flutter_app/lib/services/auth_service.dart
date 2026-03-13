@@ -6,6 +6,7 @@ import '../models/auth.dart';
 import '../models/user.dart';
 import '../helpers/preference_helper.dart';
 import 'dio_client.dart';
+import 'subscription_service.dart';
 
 class AuthService {
   static Map<String, String> get _headersWithApiKey => {
@@ -22,6 +23,7 @@ class AuthService {
     await _loadStoredToken();
     if (isLoggedIn) {
       await _checkAndRefreshToken();
+      await _syncUserDataToPreferences();
     }
   }
 
@@ -139,6 +141,9 @@ class AuthService {
 
         // Fetch user data and sync vegan date to local storage
         await _syncUserDataToPreferences();
+
+        // Fetch subscription status from backend
+        await SubscriptionService.checkSubscriptionStatus();
 
         return AuthResult.success(token);
       } else {
@@ -435,6 +440,7 @@ class AuthService {
 
       if (response.statusCode == 200) {
         _currentUser = User.fromJson(response.data);
+        await SubscriptionService.updateBypass(_currentUser!.subscriptionBypass);
         return AuthResult.success(_currentUser!);
       } else {
         return AuthResult.error('Failed to get user info');

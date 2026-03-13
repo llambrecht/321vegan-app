@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'api_service.dart';
@@ -32,7 +33,7 @@ class OfflineScanService {
       pendingEvents.add(json.encode(scanEvent));
       await prefs.setStringList(_pendingScanEventsKey, pendingEvents);
     } catch (e) {
-      print('Failed to save pending scan event: $e');
+      debugPrint('Failed to save pending scan event: $e');
     }
   }
 
@@ -62,7 +63,7 @@ class OfflineScanService {
       failedEvents.add(json.encode(scanEvent));
       await prefs.setStringList(_failedScanEventsKey, failedEvents);
     } catch (e) {
-      print('Failed to save failed scan event: $e');
+      debugPrint('Failed to save failed scan event: $e');
     }
   }
 
@@ -77,7 +78,7 @@ class OfflineScanService {
           .map((event) => json.decode(event) as Map<String, dynamic>)
           .toList();
     } catch (e) {
-      print('Failed to get pending scan events: $e');
+      debugPrint('Failed to get pending scan events: $e');
       return [];
     }
   }
@@ -93,7 +94,7 @@ class OfflineScanService {
           .map((event) => json.decode(event) as Map<String, dynamic>)
           .toList();
     } catch (e) {
-      print('Failed to get failed scan events: $e');
+      debugPrint('Failed to get failed scan events: $e');
       return [];
     }
   }
@@ -110,7 +111,7 @@ class OfflineScanService {
         await prefs.setStringList(_pendingScanEventsKey, pendingEvents);
       }
     } catch (e) {
-      print('Failed to remove pending scan event: $e');
+      debugPrint('Failed to remove pending scan event: $e');
     }
   }
 
@@ -126,7 +127,7 @@ class OfflineScanService {
         await prefs.setStringList(_failedScanEventsKey, failedEvents);
       }
     } catch (e) {
-      print('Failed to remove failed scan event: $e');
+      debugPrint('Failed to remove failed scan event: $e');
     }
   }
 
@@ -136,7 +137,7 @@ class OfflineScanService {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_pendingScanEventsKey);
     } catch (e) {
-      print('Failed to clear pending scan events: $e');
+      debugPrint('Failed to clear pending scan events: $e');
     }
   }
 
@@ -146,7 +147,7 @@ class OfflineScanService {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_failedScanEventsKey);
     } catch (e) {
-      print('Failed to clear failed scan events: $e');
+      debugPrint('Failed to clear failed scan events: $e');
     }
   }
 
@@ -312,7 +313,7 @@ class OfflineScanService {
           await prefs.setStringList(_failedScanEventsKey, failedEvents);
         }
       } catch (e) {
-        print('❌ Failed to retry failed scan event: $e');
+        debugPrint('❌ Failed to retry failed scan event: $e');
         // Increment retry count
         event['retry_count'] = retryCount + 1;
         final prefs = await SharedPreferences.getInstance();
@@ -326,7 +327,7 @@ class OfflineScanService {
     }
 
     if (successCount > 0) {
-      print('📤 Successfully synced $successCount scan event(s)');
+      debugPrint('📤 Successfully synced $successCount scan event(s)');
     }
 
     return (successCount, shopConfirmationsNeeded);

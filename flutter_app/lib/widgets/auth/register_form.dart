@@ -70,6 +70,7 @@ class _RegisterFormState extends State<RegisterForm> {
         );
         final loginResult = await AuthService.login(loginRequest);
 
+        if (!mounted) return;
         setState(() => _isLoading = false);
 
         if (loginResult.isSuccess) {
@@ -280,7 +281,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   'Se connecter',
                   style: TextStyle(
                     fontSize: 40.sp,
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(context).colorScheme.primary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

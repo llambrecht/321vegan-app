@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:vegan_app/models/seasonal_theme.dart';
 import 'package:vegan_app/pages/app_pages/Search/additives.dart';
 import 'package:vegan_app/pages/app_pages/Search/cosmetics.dart';
 import 'package:vegan_app/widgets/wave_clipper.dart';
@@ -31,7 +32,8 @@ class SearchPageState extends State<SearchPage> {
                 child: ClipPath(
                   clipper: WaveClipper(),
                   child: Container(
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Theme.of(context).extension<SeasonalTheme>()?.waveColor ??
+                        Theme.of(context).colorScheme.primary,
                     height: 0.19.sh,
                   ),
                 ),

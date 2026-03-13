@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/product_of_interest.dart';
 import 'api_service.dart';
@@ -26,11 +27,11 @@ class ProductsOfInterestCache {
             }
           }).catchError((e) {
             // Silently fail - cache will be updated next time
-            print('Startup cache update failed (expected if offline): $e');
+            debugPrint('Startup cache update failed (expected if offline): $e');
           });
         }
       } catch (e) {
-        print('Cache initialization error: $e');
+        debugPrint('Cache initialization error: $e');
       }
     });
   }
@@ -52,7 +53,7 @@ class ProductsOfInterestCache {
 
       return cachedProducts;
     } catch (e) {
-      print('Failed to load products of interest: $e');
+      debugPrint('Failed to load products of interest: $e');
       return [];
     }
   }
@@ -70,7 +71,7 @@ class ProductsOfInterestCache {
       final List<dynamic> jsonList = json.decode(cachedData);
       return jsonList.map((json) => ProductOfInterest.fromJson(json)).toList();
     } catch (e) {
-      print('Failed to load from cache: $e');
+      debugPrint('Failed to load from cache: $e');
       return [];
     }
   }
@@ -89,7 +90,7 @@ class ProductsOfInterestCache {
         }
       } catch (e) {
         // Silently fail - we already have cached data
-        print('Background update failed (expected if offline): $e');
+        debugPrint('Background update failed (expected if offline): $e');
       }
     });
   }
@@ -106,7 +107,7 @@ class ProductsOfInterestCache {
 
       return products;
     } catch (e) {
-      print('Force update failed: $e');
+      debugPrint('Force update failed: $e');
       // Return cached data as fallback
       return await _loadFromCache();
     }
@@ -124,7 +125,7 @@ class ProductsOfInterestCache {
       await prefs.setString(_cacheKey, jsonString);
       await prefs.setInt(_lastUpdateKey, DateTime.now().millisecondsSinceEpoch);
     } catch (e) {
-      print('Failed to save to cache: $e');
+      debugPrint('Failed to save to cache: $e');
     }
   }
 
@@ -154,7 +155,7 @@ class ProductsOfInterestCache {
       await prefs.remove(_cacheKey);
       await prefs.remove(_lastUpdateKey);
     } catch (e) {
-      print('Failed to clear cache: $e');
+      debugPrint('Failed to clear cache: $e');
     }
   }
 }

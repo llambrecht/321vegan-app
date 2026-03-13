@@ -30,6 +30,7 @@ class AdditivesPageState extends State<AdditivesPage> {
 
   Future<void> _loadLastSearch() async {
     final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
     final lastSearch = prefs.getString('lastSearch');
     if (lastSearch != null) {
       searchController.text = lastSearch;
@@ -55,7 +56,7 @@ class AdditivesPageState extends State<AdditivesPage> {
     Helper.saveLastSearch(query);
 
     if (query.isEmpty) {
-      setState(() => filteredENumbers = []);
+      if (mounted) setState(() => filteredENumbers = []);
       return;
     }
 

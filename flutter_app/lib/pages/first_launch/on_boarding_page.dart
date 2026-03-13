@@ -34,10 +34,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   Future<void> _onIntroEnd(BuildContext context) async {
+    final navigator = Navigator.of(context);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('hasSeenOnboarding', true);
     if (!mounted) return;
-    Navigator.of(context).pushReplacement(
+    navigator.pushReplacement(
       MaterialPageRoute(builder: (_) => const MyHomePage()),
     );
   }
@@ -105,23 +106,16 @@ class _OnboardingPageState extends State<OnboardingPage> {
           decoration: getPageDecorationWithGif(),
         ),
         PageViewModel(
-          titleWidget: Padding(
-            padding: EdgeInsets.only(top: 20.h),
-            child: Column(
-              children: [
-                Icon(Icons.person_add_alt_1, size: 60.sp, color: Colors.green),
-                SizedBox(height: 10.h),
-                Text(
-                  "Créez votre compte",
-                  style:
-                      TextStyle(fontSize: 80.sp, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ),
+          title: "",
           bodyWidget: Column(
             children: [
+              Icon(Icons.person_add_alt_1, size: 60.sp, color: Colors.green),
+              SizedBox(height: 10.h),
+              Text(
+                "Créez votre compte",
+                style: TextStyle(fontSize: 80.sp, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
               SizedBox(height: 16.h),
               Text(
                 "Créez un compte pour profiter de toutes les fonctionnalités de l'application",
@@ -163,14 +157,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
                           const BorderRadius.vertical(top: Radius.circular(20)),
                       child: Scaffold(
                         backgroundColor: Colors.white,
-                        body: Padding(
-                          padding: EdgeInsets.only(
-                            bottom: MediaQuery.of(ctx).viewInsets.bottom,
-                            left: 16,
-                            right: 16,
-                            top: 24,
-                          ),
+                        body: Center(
                           child: SingleChildScrollView(
+                            padding: EdgeInsets.only(
+                              bottom: MediaQuery.of(ctx).viewInsets.bottom,
+                              left: 16,
+                              right: 16,
+                              top: 24,
+                            ),
                             child: LoginForm(
                               onLoginSuccess: () {
                                 Navigator.pop(ctx);
@@ -185,7 +179,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   );
                 },
               ),
-              SizedBox(height: 24.h),
               // Button to pass
               TextButton.icon(
                 onPressed: () => _onIntroEnd(context),
@@ -205,6 +198,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           ),
           decoration: PageDecoration(
             titlePadding: EdgeInsets.zero,
+            titleTextStyle: const TextStyle(fontSize: 0),
             bodyAlignment: Alignment.center,
             pageColor: Colors.white,
             contentMargin: EdgeInsets.symmetric(horizontal: 16.w),

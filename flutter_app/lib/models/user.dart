@@ -14,6 +14,7 @@ class User {
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final List<ScannedProduct>? scannedProducts;
+  final bool subscriptionBypass;
 
   User({
     required this.id,
@@ -29,6 +30,7 @@ class User {
     this.createdAt,
     this.updatedAt,
     this.scannedProducts,
+    this.subscriptionBypass = false,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -58,6 +60,8 @@ class User {
               .map((item) => ScannedProduct.fromJson(item))
               .toList()
           : null,
+      subscriptionBypass: json['subscription_bypass'] == true ||
+          json['subscription_bypass'] == 1,
     );
   }
 

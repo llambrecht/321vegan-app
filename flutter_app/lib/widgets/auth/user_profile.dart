@@ -12,8 +12,11 @@ import '../../helpers/preference_helper.dart';
 import './edit_profile_modal.dart';
 import '../shared/social_feedback_buttons.dart';
 import '../vegandex/vegandex_modal.dart';
+import '../theme/theme_selector_modal.dart';
 import '../../pages/app_pages/Profile/b12_reminder_settings_page.dart';
+import '../../pages/app_pages/Profile/subscription_page.dart';
 import '../../services/b12_reminder_service.dart';
+import '../../services/subscription_service.dart';
 
 class UserProfile extends StatefulWidget {
   final VoidCallback? onLogout;
@@ -81,7 +84,7 @@ class _UserProfileState extends State<UserProfile> {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('B12 prise enregistrée !'),
+          content: Text('Bien reçu !'),
           backgroundColor: Colors.green,
           duration: Duration(seconds: 2),
         ),
@@ -245,8 +248,9 @@ class _UserProfileState extends State<UserProfile> {
       children: [
         _buildProfileCard(),
         SizedBox(height: 24.h),
-        _buildStatsCards(),
+        _buildSupportButton(),
         SizedBox(height: 24.h),
+        _buildStatsCards(),
         if ((_user?.nbProductsModified ?? 0) > 0 ||
             (_user?.nbCheckings ?? 0) > 0) ...[
           SizedBox(height: 24.h),
@@ -422,10 +426,150 @@ class _UserProfileState extends State<UserProfile> {
                     ),
                   ),
                 ),
+
+                // Theme selection
+                SizedBox(height: 24.h),
+                GestureDetector(
+                  onTap: _showThemeSelector,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withValues(alpha: 0.8),
+                          Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withValues(alpha: 0.6),
+                          Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withValues(alpha: 0.8),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(12.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withValues(alpha: 0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.palette,
+                          size: 64.sp,
+                          color: Colors.white,
+                        ),
+                        SizedBox(width: 12.w),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Thèmes',
+                                style: TextStyle(
+                                  fontSize: 44.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          size: 40.sp,
+                          color: Colors.white70,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSupportButton() {
+    return GestureDetector(
+      onTap: _openSubscriptionPage,
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: SubscriptionService.isSubscribed
+                ? [
+                    Colors.amber.shade600,
+                    Colors.orange.shade600,
+                  ]
+                : [
+                    Colors.pink.shade400,
+                    Colors.deepPurple.shade400,
+                  ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(12.r),
+          boxShadow: [
+            BoxShadow(
+              color: (SubscriptionService.isSubscribed
+                      ? Colors.amber
+                      : Colors.pink)
+                  .withValues(alpha: 0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+        child: Row(
+          children: [
+            Icon(
+              SubscriptionService.isSubscribed
+                  ? Icons.military_tech
+                  : Icons.favorite,
+              size: 48.sp,
+              color: Colors.white,
+            ),
+            SizedBox(width: 12.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    SubscriptionService.isSubscribed
+                        ? 'Abonnement actif'
+                        : 'Soutenir 321 Vegan',
+                    style: TextStyle(
+                      fontSize: 44.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.arrow_forward_ios,
+              size: 40.sp,
+              color: Colors.white70,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -482,7 +626,7 @@ class _UserProfileState extends State<UserProfile> {
         Expanded(
           child: _buildStatCard(
             icon: Icons.calendar_today,
-            iconColor: Theme.of(context).primaryColor,
+            iconColor: Theme.of(context).colorScheme.primary,
             title: 'Végane depuis',
             value: _user?.veganSince != null
                 ? DateFormat.yMMMd('fr_FR').format(_user!.veganSince!)
@@ -911,13 +1055,16 @@ class _UserProfileState extends State<UserProfile> {
             Container(
               padding: EdgeInsets.all(16.w),
               decoration: BoxDecoration(
-                color: const Color(0xFF1A722E).withValues(alpha: 0.1),
+                color: Theme.of(context)
+                    .colorScheme
+                    .primary
+                    .withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.settings,
                 size: 56.sp,
-                color: const Color(0xFF1A722E),
+                color: Theme.of(context).colorScheme.primary,
               ),
             ),
             SizedBox(width: 20.w),
@@ -955,6 +1102,27 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
+  void _openSubscriptionPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SubscriptionPage()),
+    ).then((_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  void _showThemeSelector() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => SizedBox(
+        height: MediaQuery.of(context).size.height * 0.85,
+        child: const ThemeSelectorModal(),
+      ),
+    );
+  }
+
   void _showVegandexModal() {
     showModalBottomSheet(
       context: context,
@@ -977,9 +1145,12 @@ class _UserProfileState extends State<UserProfile> {
           children: [
             Container(
               padding: EdgeInsets.all(16.w),
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Color(0xFF4CAF50), Color(0xFF1A722E)],
+                  colors: [
+                    Theme.of(context).colorScheme.primary,
+                    Theme.of(context).colorScheme.primary.withAlpha(150),
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),

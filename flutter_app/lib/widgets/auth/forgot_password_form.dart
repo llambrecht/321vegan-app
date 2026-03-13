@@ -191,7 +191,7 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
               'Retour à la connexion',
               style: TextStyle(
                 fontSize: 44.sp,
-                color: Theme.of(context).primaryColor,
+                color: Theme.of(context).colorScheme.primary,
                 fontWeight: FontWeight.bold,
               ),
             ),

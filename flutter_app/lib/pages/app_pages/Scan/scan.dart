@@ -18,6 +18,7 @@ import 'package:vegan_app/services/products_of_interest_cache.dart';
 import 'package:vegan_app/widgets/scaner/card_product.dart';
 import 'package:vegan_app/widgets/scaner/pending_product_info_card.dart';
 import 'package:vegan_app/widgets/scaner/info_dialog_button.dart';
+import 'package:vegan_app/models/seasonal_theme.dart';
 import 'package:vegan_app/widgets/scaner/vegan_product_info_card.dart';
 import 'package:vegan_app/widgets/scaner/shop_confirmation_modal.dart';
 import 'package:vegan_app/widgets/vegandex/vegandex_modal.dart';
@@ -1100,12 +1101,15 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
                 maxBlastForce: 100.r,
                 minBlastForce: 20.r,
                 gravity: 0.1,
-                colors: const [
-                  Colors.red,
-                  Colors.blue,
-                  Colors.green,
-                  Colors.yellow,
-                ], // Confetti colors
+                colors: Theme.of(context)
+                        .extension<SeasonalTheme>()
+                        ?.confettiColors ??
+                    const [
+                      Colors.red,
+                      Colors.blue,
+                      Colors.green,
+                      Colors.yellow,
+                    ],
               ),
             ),
           ),

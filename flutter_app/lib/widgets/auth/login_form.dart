@@ -147,7 +147,7 @@ class _LoginFormState extends State<LoginForm> {
                 'Mot de passe oublié ?',
                 style: TextStyle(
                   fontSize: 40.sp,
-                  color: Theme.of(context).primaryColor,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
             ),
@@ -201,7 +201,7 @@ class _LoginFormState extends State<LoginForm> {
                   'S\'inscrire',
                   style: TextStyle(
                     fontSize: 40.sp,
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(context).colorScheme.primary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

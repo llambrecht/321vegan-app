@@ -64,9 +64,9 @@ class _HistoryModalState extends State<HistoryModal> {
           // Header
           Container(
             padding: EdgeInsets.all(20.w),
-            decoration: const BoxDecoration(
-              color: Color(0xFF1A722E),
-              borderRadius: BorderRadius.only(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primary,
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(20.0),
                 topRight: Radius.circular(20.0),
               ),
