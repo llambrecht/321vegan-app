@@ -22,7 +22,7 @@ class ThemeHelper {
     ];
   }
 
-  // Detect current season based on astronomical dates
+  // Detect current season based on date
   static Season getCurrentSeason() {
     final now = DateTime.now();
     final month = now.month;
