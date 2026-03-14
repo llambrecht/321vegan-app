@@ -10,6 +10,8 @@ import 'dio_client.dart';
 import '../models/product_of_interest.dart';
 import '../models/product_category.dart';
 import '../models/subscription.dart';
+import '../models/shops/shop.dart';
+import '../models/shops/shop_scan_summary.dart';
 
 class ApiService {
   static String get _baseUrl =>
@@ -291,6 +293,77 @@ class ApiService {
         return (data['items'] as List<dynamic>)
             .map((item) => Partners.fromJson(item))
             .toList();
+      }
+
+      return [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  /// Get shops within a geographic bounding box (for map display)
+  static Future<List<Shop>> getShopsInArea({
+    required double minLat,
+    required double maxLat,
+    required double minLng,
+    required double maxLng,
+  }) async {
+    try {
+      final dio = await DioClient.getDio();
+      final prefs = await SharedPreferences.getInstance();
+      final accessToken = prefs.getString('access_token');
+
+      final response = await dio.get(
+        '/shops/in-area',
+        queryParameters: {
+          'min_lat': minLat,
+          'max_lat': maxLat,
+          'min_lng': minLng,
+          'max_lng': maxLng,
+        },
+        options: dio_pkg.Options(
+          headers: {
+            if (accessToken != null) 'Authorization': 'Bearer $accessToken',
+          },
+        ),
+      );
+
+      if (response.statusCode != null &&
+          response.statusCode! >= 200 &&
+          response.statusCode! < 300) {
+        final List<dynamic> data = response.data;
+        return data.map((item) => Shop.fromJson(item)).toList();
+      }
+
+      return [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  /// Get scan summary for a shop (distinct EANs with scan count and last scan date)
+  static Future<List<ShopScanSummary>> getShopProducts({
+    required int shopId,
+  }) async {
+    try {
+      final dio = await DioClient.getDio();
+      final prefs = await SharedPreferences.getInstance();
+      final accessToken = prefs.getString('access_token');
+
+      final response = await dio.get(
+        '/shops/$shopId/products',
+        options: dio_pkg.Options(
+          headers: {
+            if (accessToken != null) 'Authorization': 'Bearer $accessToken',
+          },
+        ),
+      );
+
+      if (response.statusCode != null &&
+          response.statusCode! >= 200 &&
+          response.statusCode! < 300) {
+        final List<dynamic> data = response.data;
+        return data.map((item) => ShopScanSummary.fromJson(item)).toList();
       }
 
       return [];

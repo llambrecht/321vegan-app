@@ -7,6 +7,7 @@ import 'package:motion_tab_bar_v2/motion-tab-controller.dart';
 import 'package:vegan_app/helpers/preference_helper.dart';
 import 'package:vegan_app/pages/app_pages/Partners/partners_page.dart';
 import 'package:vegan_app/pages/app_pages/Scan/scan.dart';
+import 'package:vegan_app/pages/app_pages/map.dart';
 import 'package:vegan_app/pages/app_pages/profile.dart';
 import 'package:vegan_app/pages/app_pages/search.dart';
 import 'package:vegan_app/pages/app_pages/Profile/b12_reminder_settings_page.dart';
@@ -55,7 +56,7 @@ class MyHomePageState extends State<MyHomePage>
     // Initialize with default home tab, then update based on preference
     motionTabBarController = MotionTabBarController(
       initialIndex: 1, // Default to home tab
-      length: 5,
+      length: 6,
       vsync: this,
     );
 
@@ -641,10 +642,11 @@ class MyHomePageState extends State<MyHomePage>
                   ScanPage(
                     onNavigateToProfile: () {
                       setState(() {
-                        motionTabBarController.index = 4;
+                        motionTabBarController.index = 5;
                       });
                     },
                   ),
+                  const MapPage(),
                   ProfilePage(
                     onDateSaved: _onDateSaved,
                     onLoginSuccess: _onLoginSuccess,
@@ -657,7 +659,7 @@ class MyHomePageState extends State<MyHomePage>
                   avatar: _currentAvatar,
                   onTap: () {
                     setState(() {
-                      motionTabBarController.index = 4;
+                      motionTabBarController.index = 5;
                     });
                   },
                 ),
@@ -672,6 +674,7 @@ class MyHomePageState extends State<MyHomePage>
                   "Accueil",
                   "Recherche",
                   "Scan",
+                  "Carte",
                   "Profil"
                 ],
                 initialSelectedTab: "Accueil",
@@ -698,6 +701,7 @@ class MyHomePageState extends State<MyHomePage>
                   Icons.home,
                   Icons.search,
                   Icons.qr_code_scanner,
+                  Icons.map,
                   Icons.person_sharp
                 ],
                 textStyle:
