@@ -146,6 +146,8 @@ flutter:
     - lib/assets/images/tulipe-smile.webp
     - lib/assets/images/papillon.webp
     - lib/assets/images/ruche.webp
+    # Test with la vie featured
+    - lib/assets/la-vie-logo.png
     - .env
 
   fonts:
