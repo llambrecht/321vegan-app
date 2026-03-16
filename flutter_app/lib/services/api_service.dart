@@ -227,23 +227,31 @@ class ApiService {
     }
   }
 
-  /// Update a scan event to remove location data
+  /// Update a scan event.
+  /// If [shopId] is provided, updates the shop association.
+  /// If [shopId] is null, removes location data and shop association.
   static Future<bool> updateScanEvent({
     required int scanEventId,
+    int? shopId,
   }) async {
     try {
       final url = Uri.parse('$_baseUrl/scan-events/$scanEventId');
 
-      final body = json.encode({
-        'latitude': null,
-        'longitude': null,
-        'shop_id': null,
-      });
+      final Map<String, dynamic> bodyMap;
+      if (shopId != null) {
+        bodyMap = {'shop_id': shopId};
+      } else {
+        bodyMap = {
+          'latitude': null,
+          'longitude': null,
+          'shop_id': null,
+        };
+      }
 
       final response = await http.put(
         url,
         headers: _headers,
-        body: body,
+        body: json.encode(bodyMap),
       );
 
       return response.statusCode >= 200 && response.statusCode < 300;

@@ -219,7 +219,8 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
   }
 
   void _showShopConfirmationDialog(
-      String shopName, int scanEventId, ProductOfInterest product) {
+      String shopName, int scanEventId, ProductOfInterest product,
+      {List<Map<String, dynamic>>? nearbyShops}) {
     // Stop scanner while showing modal
     controller.stop();
 
@@ -232,6 +233,7 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
           shopName: shopName,
           scanEventId: scanEventId,
           product: product,
+          nearbyShops: nearbyShops ?? [],
         );
       },
     ).then((_) {
@@ -392,10 +394,14 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
         if (shouldShowDialog) {
           final shopName = response['shop_name'] as String?;
           final scanEventId = response['id'] as int?;
+          final nearbyShops = (response['nearby_shops'] as List<dynamic>?)
+              ?.map((s) => Map<String, dynamic>.from(s as Map))
+              .toList();
 
           if (shopName != null && scanEventId != null) {
             // Show confirmation dialog for shop location
-            _showShopConfirmationDialog(shopName, scanEventId, product);
+            _showShopConfirmationDialog(shopName, scanEventId, product,
+                nearbyShops: nearbyShops);
           }
         }
       }
