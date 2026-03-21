@@ -227,6 +227,27 @@ class ApiService {
     }
   }
 
+  /// Confirm which shop the user is in by osm_id.
+  /// Creates the shop in DB if it doesn't exist and links it to the scan event.
+  static Future<bool> confirmShop({
+    required int scanEventId,
+    required String osmId,
+  }) async {
+    try {
+      final url = Uri.parse('$_baseUrl/scan-events/$scanEventId/confirm-shop');
+
+      final response = await http.post(
+        url,
+        headers: _headers,
+        body: json.encode({'osm_id': osmId}),
+      );
+
+      return response.statusCode >= 200 && response.statusCode < 300;
+    } catch (e) {
+      return false;
+    }
+  }
+
   /// Update a scan event.
   /// If [shopId] is provided, updates the shop association.
   /// If [shopId] is null, removes location data and shop association.
@@ -242,8 +263,6 @@ class ApiService {
         bodyMap = {'shop_id': shopId};
       } else {
         bodyMap = {
-          'latitude': null,
-          'longitude': null,
           'shop_id': null,
         };
       }

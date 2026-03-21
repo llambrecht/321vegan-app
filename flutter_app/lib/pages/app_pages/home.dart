@@ -22,6 +22,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:vegan_app/services/auth_service.dart';
 import 'package:vegan_app/services/b12_reminder_service.dart';
 import 'package:vegan_app/services/badge_service.dart';
+import 'package:vegan_app/services/notification_service.dart';
 import 'package:vegan_app/models/seasonal_theme.dart';
 import 'package:vegan_app/widgets/theme/seasonal_icon.dart';
 
@@ -73,6 +74,9 @@ class MyHomePageState extends State<MyHomePage>
     _loadData();
     _checkNewPartners();
     _loadAvatar();
+
+    // Listen for B12 notification taps → navigate to profile tab
+    NotificationService.navigateToProfile.addListener(_onB12NotificationTap);
   }
 
   Future<void> _initializeTabController() async {
@@ -93,8 +97,18 @@ class MyHomePageState extends State<MyHomePage>
     }
   }
 
+  void _onB12NotificationTap() {
+    if (NotificationService.navigateToProfile.value && mounted) {
+      NotificationService.navigateToProfile.value = false;
+      setState(() {
+        motionTabBarController.index = 4; // Profile tab
+      });
+    }
+  }
+
   @override
   void dispose() {
+    NotificationService.navigateToProfile.removeListener(_onB12NotificationTap);
     WidgetsBinding.instance.removeObserver(this);
     motionTabBarController.dispose();
     _confettiController.dispose();

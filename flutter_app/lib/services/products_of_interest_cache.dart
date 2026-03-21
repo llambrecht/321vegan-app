@@ -8,7 +8,7 @@ import 'api_service.dart';
 class ProductsOfInterestCache {
   static const String _cacheKey = 'products_of_interest_cache';
   static const String _lastUpdateKey = 'products_of_interest_last_update';
-  static const Duration _cacheExpiry = Duration(hours: 24);
+  static const Duration _cacheExpiry = Duration(hours: 12);
 
   /// Initialize cache at app startup as the user is most likely to have correct internet connexion
   /// Returns immediately (non-blocking) but triggers background update if needed

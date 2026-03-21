@@ -1,11 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:flutter_timezone/flutter_timezone.dart';
-import 'b12_reminder_service.dart';
-import '../main.dart' show navigatorKey;
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -16,6 +13,11 @@ class NotificationService {
       FlutterLocalNotificationsPlugin();
 
   bool _isInitialized = false;
+
+  /// Notifier that fires when a B12 notification is tapped.
+  /// Listeners (e.g. home page) should navigate to the profile tab.
+  static final ValueNotifier<bool> navigateToProfile =
+      ValueNotifier<bool>(false);
 
   /// Initialize the notification service
   Future<void> initialize() async {
@@ -53,6 +55,9 @@ class NotificationService {
       await _createNotificationChannel();
 
       _isInitialized = true;
+
+      // Handle cold start: app was launched by tapping a notification
+      await _handleAppLaunchFromNotification();
 
       if (kDebugMode) {
         print('Notification service initialized successfully');
@@ -108,6 +113,20 @@ class NotificationService {
     }
   }
 
+  /// Check if the app was launched by tapping a notification (cold start)
+  Future<void> _handleAppLaunchFromNotification() async {
+    final launchDetails =
+        await _notifications.getNotificationAppLaunchDetails();
+    if (launchDetails != null &&
+        launchDetails.didNotificationLaunchApp &&
+        launchDetails.notificationResponse != null) {
+      final payload = launchDetails.notificationResponse!.payload ?? '';
+      if (payload.startsWith('b12_reminder')) {
+        navigateToProfile.value = true;
+      }
+    }
+  }
+
   /// Handle notification tap or action button press
   void _onNotificationTap(NotificationResponse response) {
     if (kDebugMode) {
@@ -115,63 +134,11 @@ class NotificationService {
           'Notification tapped: ${response.payload}, actionId: ${response.actionId}');
     }
 
-    // Handle notification tap (opens app) - show confirmation dialog
     final payload = response.payload ?? '';
     if (payload.startsWith('b12_reminder')) {
-      _showB12ConfirmationDialog();
+      // Signal listeners to navigate to the profile page
+      navigateToProfile.value = true;
     }
-  }
-
-  /// Show a dialog asking if the user took their B12
-  void _showB12ConfirmationDialog() {
-    final context = navigatorKey.currentContext;
-    if (context == null) return;
-
-    showDialog(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        title: const Text(
-          '💊 Vitamine B12',
-          textAlign: TextAlign.center,
-        ),
-        content: const Text(
-          'Avez-vous pris votre vitamine B12 ?',
-          textAlign: TextAlign.center,
-        ),
-        actionsAlignment: MainAxisAlignment.center,
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text(
-              'Non',
-              style: TextStyle(color: Colors.grey[600]),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              B12ReminderService.recordB12Intake();
-              B12ReminderService.markNotificationReceived();
-              Navigator.of(dialogContext).pop();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Bien reçu !'),
-                  backgroundColor: Colors.green,
-                  duration: Duration(seconds: 2),
-                ),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('B12 prise ✓'),
-          ),
-        ],
-      ),
-    );
   }
 
   /// Request notification permissions

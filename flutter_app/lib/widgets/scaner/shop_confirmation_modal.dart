@@ -113,11 +113,11 @@ class _ShopConfirmationModalState extends State<ShopConfirmationModal>
     await _showThanksAndClose();
   }
 
-  Future<void> _handleSelectShop(int shopId) async {
-    // User selected an alternative shop
-    await ApiService.updateScanEvent(
+  Future<void> _handleSelectShop(String osmId) async {
+    // User selected an alternative shop - confirm via osm_id
+    await ApiService.confirmShop(
       scanEventId: widget.scanEventId,
-      shopId: shopId,
+      osmId: osmId,
     );
     await _showThanksAndClose();
   }
@@ -416,58 +416,58 @@ class _ShopConfirmationModalState extends State<ShopConfirmationModal>
                   .where((s) => s != null && s.isNotEmpty)
                   .join(', ');
 
-              return InkWell(
-                onTap: () => _handleSelectShop(shop['id'] as int),
-                borderRadius: BorderRadius.circular(12.r),
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 16.w,
-                    vertical: 14.h,
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: const Color(0xFF1A722E).withValues(alpha: 0.3),
+              return SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => _handleSelectShop(shop['osm_id'] as String),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF1A722E),
+                    foregroundColor: Colors.white,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20.w,
+                      vertical: 20.h,
                     ),
-                    borderRadius: BorderRadius.circular(12.r),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14.r),
+                    ),
+                    elevation: 4,
                   ),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
                         Icons.store,
-                        size: 40.sp,
-                        color: const Color(0xFF1A722E),
+                        size: 44.sp,
+                        color: Colors.white,
                       ),
                       SizedBox(width: 12.w),
-                      Expanded(
+                      Flexible(
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
                               name,
                               style: TextStyle(
-                                fontSize: 42.sp,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.grey[900],
+                                fontSize: 44.sp,
+                                fontWeight: FontWeight.bold,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
                             ),
                             if (subtitle.isNotEmpty)
                               Text(
                                 subtitle,
                                 style: TextStyle(
                                   fontSize: 36.sp,
-                                  color: Colors.grey[500],
+                                  color: Colors.white.withValues(alpha: 0.7),
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
                               ),
                           ],
                         ),
-                      ),
-                      Icon(
-                        Icons.chevron_right,
-                        color: Colors.grey[400],
                       ),
                     ],
                   ),

@@ -53,6 +53,7 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
   bool _showBoycott = true;
   List<String> _productsOfInterest = [];
   Map<String, ProductOfInterest> _productsOfInterestMap = {};
+  Map<String, String> _alternativeEanToMainEan = {};
   bool _scannerPausedByModal = false;
 
   @override
@@ -129,8 +130,11 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
           final shopName = confirmation['shop_name'] as String;
           final scanEventId = confirmation['scan_event_id'] as int;
 
+          // Resolve alternative EAN to main EAN if applicable
+          final mainEan = _alternativeEanToMainEan[ean] ?? ean;
+
           // Get the product info from our cached map
-          final product = _productsOfInterestMap[ean];
+          final product = _productsOfInterestMap[mainEan];
           if (product != null) {
             _showShopConfirmationDialog(shopName, scanEventId, product);
             // Wait a bit before showing the next dialog
@@ -323,25 +327,35 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
   Future<void> _loadProductsOfInterest() async {
     // Load from cache instantly, updates in background automatically
     final products = await ProductsOfInterestCache.loadProductsOfInterest();
+    final altEanMap = <String, String>{};
+    for (final p in products) {
+      for (final altEan in p.alternativeEans) {
+        altEanMap[altEan] = p.ean;
+      }
+    }
     setState(() {
       _productsOfInterest = products.map((p) => p.ean).toList();
       _productsOfInterestMap = {for (var p in products) p.ean: p};
+      _alternativeEanToMainEan = altEanMap;
     });
   }
 
   Future<void> _sendScanEventIfInteresting(String ean) async {
+    // Resolve alternative EAN to main EAN if applicable
+    final mainEan = _alternativeEanToMainEan[ean] ?? ean;
+
     // Check if this product is in the products of interest
-    if (!_productsOfInterest.contains(ean)) {
+    if (!_productsOfInterest.contains(mainEan)) {
       return;
     }
 
     // Store whether this is a new discovery before updating
     final user = AuthService.currentUser;
     final hadProductBefore =
-        user?.scannedProducts?.any((sp) => sp.ean == ean) ?? false;
+        user?.scannedProducts?.any((sp) => sp.ean == mainEan) ?? false;
 
     // Show modal if product found (don't wait for location)
-    final product = _productsOfInterestMap[ean];
+    final product = _productsOfInterestMap[mainEan];
     if (product != null && mounted) {
       // Stop scanner while showing modal
       controller.stop();
@@ -378,7 +392,7 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
       // Use offline scan service with automatic retry
       final (success, response, shouldShowDialog) =
           await OfflineScanService.postScanEventWithOfflineSupport(
-        ean: ean,
+        ean: mainEan,
         latitude: latitude,
         longitude: longitude,
         userId: userId,
