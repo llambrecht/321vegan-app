@@ -255,6 +255,10 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
 
                       // Restore button
                       _buildRestoreButton(),
+                      SizedBox(height: 24.h),
+
+                      // Legal links
+                      _buildLegalLinks(),
                     ] else ...[
                       _buildProductsUnavailable(),
                     ],
@@ -839,6 +843,41 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                 decoration: TextDecoration.underline,
               ),
             ),
+    );
+  }
+
+  Widget _buildLegalLinks() {
+    const legalUrl =
+        'https://docs.google.com/document/d/15Crd8NB5C5OwEy5KNz_HXwFPVMoSWAVO98a2PCfRl38/edit?usp=sharing';
+
+    return Column(
+      children: [
+        Text(
+          'L\'abonnement se renouvelle automatiquement sauf annulation au moins 24h avant la fin de la période en cours.',
+          style: TextStyle(
+            fontSize: 38.sp,
+            color: Colors.grey[400],
+            height: 1.4,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(height: 12.h),
+        GestureDetector(
+          onTap: () => launchUrl(
+            Uri.parse(legalUrl),
+            mode: LaunchMode.externalApplication,
+          ),
+          child: Text(
+            'Conditions d\'utilisation & Politique de confidentialité',
+            style: TextStyle(
+              fontSize: 40.sp,
+              color: Colors.grey[500],
+              decoration: TextDecoration.underline,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
     );
   }
 
