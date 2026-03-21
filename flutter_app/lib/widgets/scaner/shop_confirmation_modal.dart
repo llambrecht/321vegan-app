@@ -7,12 +7,14 @@ class ShopConfirmationModal extends StatefulWidget {
   final String shopName;
   final int scanEventId;
   final ProductOfInterest product;
+  final List<Map<String, dynamic>> nearbyShops;
 
   const ShopConfirmationModal({
     super.key,
     required this.shopName,
     required this.scanEventId,
     required this.product,
+    this.nearbyShops = const [],
   });
 
   @override
@@ -28,6 +30,7 @@ class _ShopConfirmationModalState extends State<ShopConfirmationModal>
   late Animation<double> _thanksScaleAnimation;
   late Animation<double> _thanksFadeAnimation;
   bool _showThanks = false;
+  bool _showAlternatives = false;
 
   @override
   void initState() {
@@ -93,9 +96,16 @@ class _ShopConfirmationModalState extends State<ShopConfirmationModal>
   }
 
   Future<void> _handleNo() async {
-    // User says no - update scan event to remove location
-    await ApiService.updateScanEvent(scanEventId: widget.scanEventId);
-    await _showThanksAndClose();
+    if (widget.nearbyShops.isNotEmpty) {
+      // Show alternative shops instead of nullifying
+      setState(() {
+        _showAlternatives = true;
+      });
+    } else {
+      // No alternatives available - nullify as before
+      await ApiService.updateScanEvent(scanEventId: widget.scanEventId);
+      await _showThanksAndClose();
+    }
   }
 
   Future<void> _handleYes() async {
@@ -103,9 +113,23 @@ class _ShopConfirmationModalState extends State<ShopConfirmationModal>
     await _showThanksAndClose();
   }
 
+  Future<void> _handleSelectShop(String osmId) async {
+    // User selected an alternative shop - confirm via osm_id
+    await ApiService.confirmShop(
+      scanEventId: widget.scanEventId,
+      osmId: osmId,
+    );
+    await _showThanksAndClose();
+  }
+
+  Future<void> _handleNoneOfThese() async {
+    // User says none of the shops match - nullify
+    await ApiService.updateScanEvent(scanEventId: widget.scanEventId);
+    await _showThanksAndClose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Ensure proper UTF-8 decoding of shop name
     final decodedShopName = widget.shopName;
 
     return Material(
@@ -138,149 +162,9 @@ class _ShopConfirmationModalState extends State<ShopConfirmationModal>
                     ),
                   ],
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Icon
-                    Container(
-                      width: 120.w,
-                      height: 120.w,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: const Color(0xFF1A722E).withValues(alpha: 0.1),
-                      ),
-                      child: Icon(
-                        Icons.store,
-                        size: 70.sp,
-                        color: const Color(0xFF1A722E),
-                      ),
-                    ),
-
-                    SizedBox(height: 24.h),
-
-                    // Title
-                    Text(
-                      'Confirmation du magasin',
-                      style: TextStyle(
-                        fontSize: 52.sp,
-                        fontWeight: FontWeight.w600,
-                        color: const Color(0xFF1A722E),
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-
-                    SizedBox(height: 20.h),
-
-                    // Product name highlight
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 20.w,
-                        vertical: 12.h,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[100],
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
-                      child: Text(
-                        widget.product.name,
-                        style: TextStyle(
-                          fontSize: 48.sp,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey[900],
-                        ),
-                        textAlign: TextAlign.center,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-
-                    SizedBox(height: 20.h),
-
-                    // Question text
-                    RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        style: TextStyle(
-                          fontSize: 44.sp,
-                          color: Colors.grey[700],
-                          height: 1.4,
-                        ),
-                        children: [
-                          const TextSpan(
-                              text: 'Avez-vous trouvé ce produit à\n'),
-                          TextSpan(
-                            text: decodedShopName,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: const Color(0xFF1A722E),
-                              fontSize: 46.sp,
-                            ),
-                          ),
-                          const TextSpan(text: ' ?'),
-                        ],
-                      ),
-                    ),
-
-                    SizedBox(height: 32.h),
-
-                    // Buttons row
-                    Row(
-                      children: [
-                        // No button
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: _handleNo,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.grey[300],
-                              foregroundColor: Colors.grey[800],
-                              padding: EdgeInsets.symmetric(
-                                vertical: 20.h,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16.r),
-                              ),
-                              elevation: 2,
-                            ),
-                            child: Text(
-                              'Non',
-                              style: TextStyle(
-                                fontSize: 48.sp,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        SizedBox(width: 16.w),
-
-                        // Yes button
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: _handleYes,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF1A722E),
-                              foregroundColor: Colors.white,
-                              padding: EdgeInsets.symmetric(
-                                vertical: 20.h,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16.r),
-                              ),
-                              elevation: 4,
-                            ),
-                            child: Text(
-                              'Oui',
-                              style: TextStyle(
-                                fontSize: 48.sp,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                child: _showAlternatives
+                    ? _buildAlternativesContent()
+                    : _buildConfirmationContent(decodedShopName),
               ),
             ),
           ),
@@ -322,6 +206,303 @@ class _ShopConfirmationModalState extends State<ShopConfirmationModal>
             ),
         ],
       ),
+    );
+  }
+
+  Widget _buildConfirmationContent(String decodedShopName) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Icon
+        Container(
+          width: 120.w,
+          height: 120.w,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: const Color(0xFF1A722E).withValues(alpha: 0.1),
+          ),
+          child: Icon(
+            Icons.store,
+            size: 70.sp,
+            color: const Color(0xFF1A722E),
+          ),
+        ),
+
+        SizedBox(height: 24.h),
+
+        // Title
+        Text(
+          'Confirmation du magasin',
+          style: TextStyle(
+            fontSize: 52.sp,
+            fontWeight: FontWeight.w600,
+            color: const Color(0xFF1A722E),
+          ),
+          textAlign: TextAlign.center,
+        ),
+
+        SizedBox(height: 20.h),
+
+        // Product name highlight
+        Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: 20.w,
+            vertical: 12.h,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.grey[100],
+            borderRadius: BorderRadius.circular(12.r),
+          ),
+          child: Text(
+            widget.product.name,
+            style: TextStyle(
+              fontSize: 48.sp,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[900],
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+
+        SizedBox(height: 20.h),
+
+        // Question text
+        RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+            style: TextStyle(
+              fontSize: 44.sp,
+              color: Colors.grey[700],
+              height: 1.4,
+            ),
+            children: [
+              const TextSpan(
+                  text: 'Avez-vous trouvé ce produit à\n'),
+              TextSpan(
+                text: decodedShopName,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF1A722E),
+                  fontSize: 46.sp,
+                ),
+              ),
+              const TextSpan(text: ' ?'),
+            ],
+          ),
+        ),
+
+        SizedBox(height: 32.h),
+
+        // Buttons row
+        Row(
+          children: [
+            // No button
+            Expanded(
+              child: ElevatedButton(
+                onPressed: _handleNo,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey[300],
+                  foregroundColor: Colors.grey[800],
+                  padding: EdgeInsets.symmetric(
+                    vertical: 20.h,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16.r),
+                  ),
+                  elevation: 2,
+                ),
+                child: Text(
+                  'Non',
+                  style: TextStyle(
+                    fontSize: 48.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+
+            SizedBox(width: 16.w),
+
+            // Yes button
+            Expanded(
+              child: ElevatedButton(
+                onPressed: _handleYes,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF1A722E),
+                  foregroundColor: Colors.white,
+                  padding: EdgeInsets.symmetric(
+                    vertical: 20.h,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16.r),
+                  ),
+                  elevation: 4,
+                ),
+                child: Text(
+                  'Oui',
+                  style: TextStyle(
+                    fontSize: 48.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAlternativesContent() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Icon
+        Container(
+          width: 120.w,
+          height: 120.w,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: const Color(0xFF1A722E).withValues(alpha: 0.1),
+          ),
+          child: Icon(
+            Icons.store_mall_directory,
+            size: 70.sp,
+            color: const Color(0xFF1A722E),
+          ),
+        ),
+
+        SizedBox(height: 24.h),
+
+        // Title
+        Text(
+          'Autres magasins à proximité',
+          style: TextStyle(
+            fontSize: 48.sp,
+            fontWeight: FontWeight.w600,
+            color: const Color(0xFF1A722E),
+          ),
+          textAlign: TextAlign.center,
+        ),
+
+        SizedBox(height: 16.h),
+
+        Text(
+          'Étiez-vous dans l\'un de ces magasins ?',
+          style: TextStyle(
+            fontSize: 40.sp,
+            color: Colors.grey[600],
+          ),
+          textAlign: TextAlign.center,
+        ),
+
+        SizedBox(height: 24.h),
+
+        // Shop list
+        ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: 300.h),
+          child: ListView.separated(
+            shrinkWrap: true,
+            itemCount: widget.nearbyShops.length,
+            separatorBuilder: (_, __) => SizedBox(height: 8.h),
+            itemBuilder: (context, index) {
+              final shop = widget.nearbyShops[index];
+              final name = shop['name'] as String? ?? 'Magasin inconnu';
+              final address = shop['address'] as String?;
+              final city = shop['city'] as String?;
+              final subtitle = [address, city]
+                  .where((s) => s != null && s.isNotEmpty)
+                  .join(', ');
+
+              return SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => _handleSelectShop(shop['osm_id'] as String),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF1A722E),
+                    foregroundColor: Colors.white,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20.w,
+                      vertical: 20.h,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14.r),
+                    ),
+                    elevation: 4,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.store,
+                        size: 44.sp,
+                        color: Colors.white,
+                      ),
+                      SizedBox(width: 12.w),
+                      Flexible(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              name,
+                              style: TextStyle(
+                                fontSize: 44.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                            ),
+                            if (subtitle.isNotEmpty)
+                              Text(
+                                subtitle,
+                                style: TextStyle(
+                                  fontSize: 36.sp,
+                                  color: Colors.white.withValues(alpha: 0.7),
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+
+        SizedBox(height: 20.h),
+
+        // "None of these" button
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: _handleNoneOfThese,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.grey[300],
+              foregroundColor: Colors.grey[800],
+              padding: EdgeInsets.symmetric(vertical: 16.h),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+              elevation: 2,
+            ),
+            child: Text(
+              'Aucun de ceux-ci',
+              style: TextStyle(
+                fontSize: 44.sp,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

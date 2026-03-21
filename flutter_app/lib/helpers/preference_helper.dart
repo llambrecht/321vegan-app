@@ -268,7 +268,7 @@ class PreferencesHelper {
   // Get the last update timestamp for partners
   static Future<DateTime?> getPartnersLastUpdate() async {
     // Change this date when new partners added
-    return DateTime(2026, 2, 22);
+    return DateTime(2026, 3, 20);
   }
 
   // Mark partners page as visited

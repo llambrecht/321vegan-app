@@ -62,9 +62,10 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
+    return AutofillGroup(
+      child: Form(
+        key: _formKey,
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
@@ -94,6 +95,7 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
             TextFormField(
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
+              autofillHints: const [AutofillHints.email],
               decoration: InputDecoration(
                 labelText: 'Email',
                 hintText: 'votre@email.com',
@@ -196,7 +198,8 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
               ),
             ),
           ),
-        ],
+          ],
+        ),
       ),
     );
   }
