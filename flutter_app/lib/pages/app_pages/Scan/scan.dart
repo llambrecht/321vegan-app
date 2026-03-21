@@ -376,6 +376,9 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
       // Restart scanner after modal is closed
       controller.start();
 
+      // Optimistically update scanned products locally
+      AuthService.addScannedProductLocally(mainEan);
+
       // Wait for location to be fetched and send scan event
       final locationData = await locationFuture;
       final latitude = locationData['latitude'];
