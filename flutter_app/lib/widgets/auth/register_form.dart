@@ -105,9 +105,10 @@ class _RegisterFormState extends State<RegisterForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
+    return AutofillGroup(
+      child: Form(
+        key: _formKey,
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
@@ -125,6 +126,7 @@ class _RegisterFormState extends State<RegisterForm> {
           TextFormField(
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
+            autofillHints: const [AutofillHints.email],
             decoration: InputDecoration(
               labelText: 'Email',
               hintText: 'votre@email.com',
@@ -149,6 +151,7 @@ class _RegisterFormState extends State<RegisterForm> {
           // Nickname field
           TextFormField(
             controller: _nicknameController,
+            autofillHints: const [AutofillHints.username],
             decoration: InputDecoration(
               labelText: 'Nom d\'utilisateur',
               hintText: 'Votre pseudo',
@@ -173,6 +176,7 @@ class _RegisterFormState extends State<RegisterForm> {
           TextFormField(
             controller: _passwordController,
             obscureText: _obscurePassword,
+            autofillHints: const [AutofillHints.newPassword],
             decoration: InputDecoration(
               labelText: 'Mot de passe',
               prefixIcon: const Icon(Icons.lock_outlined),
@@ -204,6 +208,7 @@ class _RegisterFormState extends State<RegisterForm> {
           TextFormField(
             controller: _confirmPasswordController,
             obscureText: _obscureConfirmPassword,
+            autofillHints: const [AutofillHints.newPassword],
             decoration: InputDecoration(
               labelText: 'Confirmer le mot de passe',
               prefixIcon: const Icon(Icons.lock_outlined),
@@ -288,7 +293,8 @@ class _RegisterFormState extends State<RegisterForm> {
               ),
             ],
           ),
-        ],
+          ],
+        ),
       ),
     );
   }
