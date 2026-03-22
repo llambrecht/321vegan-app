@@ -162,6 +162,7 @@ class _ProductInfoFormModalState extends State<ProductInfoFormModal> {
               SizedBox(height: 6.h),
               TextField(
                 controller: _nameController,
+                textCapitalization: TextCapitalization.sentences,
                 maxLength: 200,
                 decoration: InputDecoration(
                   hintText: 'Ex: Galettes de légumes',
@@ -188,6 +189,7 @@ class _ProductInfoFormModalState extends State<ProductInfoFormModal> {
               SizedBox(height: 6.h),
               TextField(
                 controller: _brandController,
+                textCapitalization: TextCapitalization.words,
                 maxLength: 200,
                 decoration: InputDecoration(
                   hintText: 'Ex: Bjorg',

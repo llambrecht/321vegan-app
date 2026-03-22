@@ -229,23 +229,50 @@ class ApiService {
     }
   }
 
-  /// Update a scan event to remove location data
+  /// Confirm which shop the user is in by osm_id.
+  /// Creates the shop in DB if it doesn't exist and links it to the scan event.
+  static Future<bool> confirmShop({
+    required int scanEventId,
+    required String osmId,
+  }) async {
+    try {
+      final url = Uri.parse('$_baseUrl/scan-events/$scanEventId/confirm-shop');
+
+      final response = await http.post(
+        url,
+        headers: _headers,
+        body: json.encode({'osm_id': osmId}),
+      );
+
+      return response.statusCode >= 200 && response.statusCode < 300;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Update a scan event.
+  /// If [shopId] is provided, updates the shop association.
+  /// If [shopId] is null, removes location data and shop association.
   static Future<bool> updateScanEvent({
     required int scanEventId,
+    int? shopId,
   }) async {
     try {
       final url = Uri.parse('$_baseUrl/scan-events/$scanEventId');
 
-      final body = json.encode({
-        'latitude': null,
-        'longitude': null,
-        'shop_id': null,
-      });
+      final Map<String, dynamic> bodyMap;
+      if (shopId != null) {
+        bodyMap = {'shop_id': shopId};
+      } else {
+        bodyMap = {
+          'shop_id': null,
+        };
+      }
 
       final response = await http.put(
         url,
         headers: _headers,
-        body: body,
+        body: json.encode(bodyMap),
       );
 
       return response.statusCode >= 200 && response.statusCode < 300;
@@ -299,6 +326,20 @@ class ApiService {
     } catch (e) {
       return [];
     }
+  }
+
+  /// Get the total number of active subscriptions
+  static Future<int?> getSubscriptionCount() async {
+    try {
+      final url = Uri.parse('$_baseUrl/subscriptions/count');
+      final response = await http.get(url, headers: _headers);
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['count'] + 60 as int;
+      }
+    } catch (_) {}
+    return null;
   }
 
   /// Get shops within a geographic bounding box (for map display)

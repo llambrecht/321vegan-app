@@ -10,6 +10,7 @@ class ProductOfInterest {
   final DateTime updatedAt;
   final String categoryName;
   final String brandName;
+  final List<String> alternativeEans;
 
   ProductOfInterest({
     required this.ean,
@@ -23,6 +24,7 @@ class ProductOfInterest {
     required this.updatedAt,
     required this.categoryName,
     required this.brandName,
+    this.alternativeEans = const [],
   });
 
   factory ProductOfInterest.fromJson(Map<String, dynamic> json) {
@@ -42,6 +44,10 @@ class ProductOfInterest {
           : DateTime.now(),
       categoryName: json['category_name'] ?? '',
       brandName: json['brand_name'] ?? '',
+      alternativeEans: (json['alternative_eans'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
     );
   }
 
@@ -58,6 +64,7 @@ class ProductOfInterest {
       'updated_at': updatedAt.toIso8601String(),
       'category_name': categoryName,
       'brand_name': brandName,
+      'alternative_eans': alternativeEans,
     };
   }
 }

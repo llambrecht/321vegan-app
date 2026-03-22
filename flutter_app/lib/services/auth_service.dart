@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import '../models/auth.dart';
 import '../models/user.dart';
+import '../models/scanned_product.dart';
 import '../helpers/preference_helper.dart';
 import 'dio_client.dart';
 import 'subscription_service.dart';
@@ -118,6 +119,20 @@ class AuthService {
 
   // Get current user
   static User? get currentUser => _currentUser;
+
+  // Optimistically add/update a scanned product locally (before backend confirms)
+  static void addScannedProductLocally(String ean) {
+    final user = _currentUser;
+    if (user == null) return;
+    final list = user.scannedProducts;
+    if (list == null) return;
+    final index = list.indexWhere((sp) => sp.ean == ean);
+    if (index >= 0) {
+      list[index] = ScannedProduct(ean: ean, scanCount: list[index].scanCount + 1);
+    } else {
+      list.add(ScannedProduct(ean: ean, scanCount: 1));
+    }
+  }
 
   // Login
   static Future<AuthResult<AuthToken>> login(LoginRequest request) async {
