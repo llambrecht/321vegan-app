@@ -270,6 +270,25 @@ class _ShopDetailSheetState extends State<ShopDetailSheet> {
 
     return Row(
       children: [
+        Container(
+          width: 100.w,
+          height: 12.h,
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(6.r),
+          ),
+          child: FractionallySizedBox(
+            alignment: Alignment.centerLeft,
+            widthFactor: score,
+            child: Container(
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: BorderRadius.circular(6.r),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(width: 8.w),
         Text(
           '$percent%',
           style: TextStyle(
@@ -278,11 +297,11 @@ class _ShopDetailSheetState extends State<ShopDetailSheet> {
             color: color,
           ),
         ),
-        SizedBox(width: 6.w),
+        SizedBox(width: 4.w),
         Text(
-          'probabilité de présence estimée',
+          'probabilité de présence',
           style: TextStyle(
-            fontSize: 42.sp,
+            fontSize: 38.sp,
             color: Colors.grey[500],
           ),
         ),
@@ -295,8 +314,7 @@ class _ShopDetailSheetState extends State<ShopDetailSheet> {
     );
   }
 
-  Widget _buildScoreDetails(
-      ShopScanSummary summary, bool isNotFound, bool isThanked) {
+  Widget _buildScoreDetails(ShopScanSummary summary, bool isNotFound) {
     // TODO: pass real notFoundDates from backend
     final List<DateTime> notFoundDates = [];
 
@@ -306,28 +324,45 @@ class _ShopDetailSheetState extends State<ShopDetailSheet> {
     final relevantCount =
         notFoundDates.where((d) => d.isAfter(lastScanDate)).length;
 
-    return Padding(
-      padding: EdgeInsets.only(top: 6.h),
+    final score = _findabilityScore(summary);
+    final color = _scoreColor(score);
+
+    return Container(
+      margin: EdgeInsets.only(top: 8.h),
+      padding: EdgeInsets.all(12.r),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(
+          color: color.withValues(alpha: 0.15),
+        ),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildDetailLine(
             Icons.schedule,
             'Dernier scan il y a ${summary.daysSinceLastScan} jours',
+            Colors.blueGrey,
           ),
+          SizedBox(height: 6.h),
           _buildDetailLine(
             Icons.bar_chart,
             'Scanné ${summary.scanCount} fois',
+            Colors.indigo,
           ),
+          SizedBox(height: 6.h),
           _buildDetailLine(
             Icons.search_off,
             relevantCount > 0
                 ? '$relevantCount signalement(s) depuis le dernier scan'
-                : 'Aucun signalement d\'absence depuis le dernier scan',
+                : 'Aucun signalement d\'absence',
+            relevantCount > 0 ? Colors.orange : Colors.green,
           ),
-          SizedBox(height: 8.h),
-          Wrap(
-            spacing: 8.w,
+          SizedBox(height: 12.h),
+          Divider(height: 1.h, color: color.withValues(alpha: 0.15)),
+          SizedBox(height: 10.h),
+          Row(
             children: [
               _ActionChip(
                 icon: Icons.search_off,
@@ -346,21 +381,15 @@ class _ShopDetailSheetState extends State<ShopDetailSheet> {
                 },
               ),
               SizedBox(width: 12.w),
-              _ActionChip(
-                icon: Icons.favorite_outline,
-                label: 'Merci',
-                isActive: isThanked,
-                activeColor: Colors.pink,
-                onTap: () {
-                  setState(() {
-                    if (isThanked) {
-                      _thankedEans.remove(summary.ean);
-                    } else {
-                      _thankedEans.add(summary.ean);
-                    }
-                  });
-                  // TODO: send to backend
-                },
+              Flexible(
+                child: Text(
+                  'Vu ? Scannez-le !',
+                  style: TextStyle(
+                    fontSize: 36.sp,
+                    fontStyle: FontStyle.italic,
+                    color: Colors.grey[500],
+                  ),
+                ),
               ),
             ],
           ),
@@ -369,110 +398,105 @@ class _ShopDetailSheetState extends State<ShopDetailSheet> {
     );
   }
 
-  Widget _buildDetailLine(IconData icon, String text) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 2.h),
-      child: Row(
-        children: [
-          Icon(icon, size: 42.r, color: Colors.grey[500]),
-          SizedBox(width: 6.w),
-          Flexible(
-            child: Text(
-              text,
-              style: TextStyle(fontSize: 38.sp, color: Colors.grey[600]),
-            ),
+  Widget _buildDetailLine(IconData icon, String text, Color iconColor) {
+    return Row(
+      children: [
+        Icon(icon, size: 42.r, color: iconColor.withValues(alpha: 0.7)),
+        SizedBox(width: 8.w),
+        Flexible(
+          child: Text(
+            text,
+            style: TextStyle(fontSize: 38.sp, color: Colors.grey[700]),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   Widget _buildProductRow(ShopScanSummary summary) {
     final product = _productsMap[summary.ean];
     final isNotFound = _notFoundEans.contains(summary.ean);
-    final isThanked = _thankedEans.contains(summary.ean);
 
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 10.h),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8.r),
-            child: SizedBox(
-              width: 200.w,
-              height: 200.w,
-              child: product != null && product.image.isNotEmpty
-                  ? CachedNetworkImage(
-                      imageUrl: '$_baseUrl/${product.image}',
-                      fit: BoxFit.contain,
-                      placeholder: (_, __) => Container(
-                        color: Colors.grey[200],
-                        child: Icon(Icons.image, color: Colors.grey[400]),
-                      ),
-                      errorWidget: (_, __, ___) => Container(
-                        color: Colors.grey[200],
-                        child: Icon(Icons.image, color: Colors.grey[400]),
-                      ),
-                    )
-                  : Container(
-                      color: Colors.grey[200],
-                      child: Icon(Icons.image, color: Colors.grey[400]),
-                    ),
-            ),
-          ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text.rich(
-                  TextSpan(
-                    children: [
-                      TextSpan(
-                        text: product?.name ?? summary.ean,
-                        style: TextStyle(
-                          fontSize: 52.sp,
-                          fontWeight: FontWeight.w600,
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _detailExpandedEan =
+              _detailExpandedEan == summary.ean ? null : summary.ean;
+        });
+      },
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 10.h),
+        child: Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8.r),
+              child: SizedBox(
+                width: 200.w,
+                height: 200.w,
+                child: product != null && product.image.isNotEmpty
+                    ? CachedNetworkImage(
+                        imageUrl: '$_baseUrl/${product.image}',
+                        fit: BoxFit.contain,
+                        placeholder: (_, __) => Container(
+                          color: Colors.grey[200],
+                          child: Icon(Icons.image, color: Colors.grey[400]),
                         ),
+                        errorWidget: (_, __, ___) => Container(
+                          color: Colors.grey[200],
+                          child: Icon(Icons.image, color: Colors.grey[400]),
+                        ),
+                      )
+                    : Container(
+                        color: Colors.grey[200],
+                        child: Icon(Icons.image, color: Colors.grey[400]),
                       ),
-                      if (product?.brandName != null &&
-                          product!.brandName.isNotEmpty)
+              ),
+            ),
+            SizedBox(width: 12.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text.rich(
+                    TextSpan(
+                      children: [
                         TextSpan(
-                          text: '  ${product.brandName}',
+                          text: product?.name ?? summary.ean,
                           style: TextStyle(
-                            fontSize: 40.sp,
-                            color: Colors.grey[600],
+                            fontSize: 52.sp,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
-                    ],
+                        if (product?.brandName != null &&
+                            product!.brandName.isNotEmpty)
+                          TextSpan(
+                            text: '  ${product.brandName}',
+                            style: TextStyle(
+                              fontSize: 40.sp,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                      ],
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                SizedBox(height: 4.h),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _detailExpandedEan = _detailExpandedEan == summary.ean
-                          ? null
-                          : summary.ean;
-                    });
-                  },
-                  child: _buildScorePill(summary),
-                ),
-                AnimatedCrossFade(
-                  firstChild: const SizedBox.shrink(),
-                  secondChild:
-                      _buildScoreDetails(summary, isNotFound, isThanked),
-                  crossFadeState: _detailExpandedEan == summary.ean
-                      ? CrossFadeState.showSecond
-                      : CrossFadeState.showFirst,
-                  duration: const Duration(milliseconds: 200),
-                ),
-              ],
+                  SizedBox(height: 4.h),
+                  _buildScorePill(summary),
+                  AnimatedCrossFade(
+                    firstChild: const SizedBox.shrink(),
+                    secondChild: _buildScoreDetails(summary, isNotFound),
+                    crossFadeState: _detailExpandedEan == summary.ean
+                        ? CrossFadeState.showSecond
+                        : CrossFadeState.showFirst,
+                    duration: const Duration(milliseconds: 200),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
