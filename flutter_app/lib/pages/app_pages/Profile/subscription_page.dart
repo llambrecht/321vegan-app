@@ -9,6 +9,7 @@ import '../../../services/auth_service.dart';
 import '../../../widgets/auth/forgot_password_form.dart';
 import '../../../widgets/auth/login_form.dart';
 import '../../../widgets/auth/register_form.dart';
+import '../../../widgets/subscription_goal_widget.dart';
 
 class SubscriptionPage extends StatefulWidget {
   const SubscriptionPage({super.key});
@@ -204,11 +205,15 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                       _buildBypassCard(primaryColor),
                     SizedBox(height: 16.h),
                     _buildManageSubscriptionButton(),
+                    SizedBox(height: 24.h),
+                    const SubscriptionGoalWidget(),
                     SizedBox(height: 32.h),
                   ],
 
                   // Header illustration
                   if (!isSubscribed) ...[
+                    const SubscriptionGoalWidget(),
+                    SizedBox(height: 24.h),
                     _buildHeader(primaryColor),
                     SizedBox(height: 32.h),
 
@@ -392,28 +397,8 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
   Widget _buildHeader(Color primaryColor) {
     return Column(
       children: [
-        Container(
-          padding: EdgeInsets.all(28.w),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                primaryColor.withValues(alpha: 0.1),
-                primaryColor.withValues(alpha: 0.05),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(
-            Icons.favorite,
-            size: 160.sp,
-            color: primaryColor,
-          ),
-        ),
-        SizedBox(height: 20.h),
         Text(
-          'Soutenez le projet',
+          'Débloquez des thèmes exclusifs !',
           style: TextStyle(
             fontSize: 60.sp,
             fontWeight: FontWeight.bold,
@@ -422,7 +407,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
         ),
         SizedBox(height: 8.h),
         Text(
-          'Aidez-nous à grandir et à rendre le véganisme facile pour encore plus de monde et débloquez des thèmes exclusifs !',
+          'Et aidez-nous à grandir et à rendre le véganisme facile pour encore plus de monde.',
           style: TextStyle(
             fontSize: 40.sp,
             color: Colors.grey[500],

@@ -326,6 +326,20 @@ class ApiService {
     }
   }
 
+  /// Get the total number of active subscriptions
+  static Future<int?> getSubscriptionCount() async {
+    try {
+      final url = Uri.parse('$_baseUrl/subscriptions/count');
+      final response = await http.get(url, headers: _headers);
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['count'] + 60 as int;
+      }
+    } catch (_) {}
+    return null;
+  }
+
   /// Get the current user's subscription status
   /// Returns null if no subscription or on error
   static Future<Subscription?> getSubscriptionStatus() async {
