@@ -3,7 +3,6 @@ import 'dart:io' show File;
 import 'package:dio/dio.dart' as dio_pkg;
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vegan_app/models/partners/partners.dart';
 import 'auth_service.dart';
 import 'dio_client.dart';
@@ -75,8 +74,7 @@ class ApiService {
   }) async {
     try {
       final dio = await DioClient.getDio();
-      final prefs = await SharedPreferences.getInstance();
-      final accessToken = prefs.getString('access_token');
+      final accessToken = AuthService.accessToken;
 
       final formData = dio_pkg.FormData.fromMap({
         'file': await dio_pkg.MultipartFile.fromFile(
@@ -108,8 +106,7 @@ class ApiService {
   static Future<int?> getProductIdByEan({required String ean}) async {
     try {
       final dio = await DioClient.getDio();
-      final prefs = await SharedPreferences.getInstance();
-      final accessToken = prefs.getString('access_token');
+      final accessToken = AuthService.accessToken;
 
       final response = await dio.get(
         '/products/ean/$ean',
@@ -345,8 +342,7 @@ class ApiService {
   static Future<Subscription?> getSubscriptionStatus() async {
     try {
       final dio = await DioClient.getDio();
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('access_token');
+      final token = AuthService.accessToken;
 
       final response = await dio.get(
         '/subscriptions/me',
@@ -376,8 +372,7 @@ class ApiService {
     String? purchaseToken,
   }) async {
     final dio = await DioClient.getDio();
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('access_token');
+    final token = AuthService.accessToken;
 
     final Map<String, dynamic> data = {
       'platform': platform,
