@@ -7,6 +7,10 @@ import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:vegan_app/models/shops/shop.dart';
 import 'package:vegan_app/services/api_service.dart';
+import 'package:vegan_app/services/auth_service.dart';
+import 'package:vegan_app/services/subscription_service.dart';
+import 'package:vegan_app/widgets/map/map_access_overlay.dart';
+import 'package:vegan_app/widgets/map/map_filter_sheet.dart';
 import 'package:vegan_app/widgets/map/shop_detail_sheet.dart';
 
 class MapPage extends StatefulWidget {
@@ -20,6 +24,8 @@ class _MapPageState extends State<MapPage> {
   final MapController _mapController = MapController();
   List<Shop> _shops = [];
   bool _isLoading = true;
+  Set<String> _selectedEans = {};
+
   @override
   void initState() {
     super.initState();
@@ -40,9 +46,9 @@ class _MapPageState extends State<MapPage> {
             timeLimit: Duration(seconds: 5),
           ),
         );
-        // TODO : Use real center
         //center = LatLng(position.latitude, position.longitude);
-        center = const LatLng(48.58079475665418, 7.757090271210848);
+        // TODO : Use real center
+        center = LatLng(48.58079475665418, 7.757090271210848);
       }
     } catch (_) {
       // Keep France fallback
@@ -59,12 +65,24 @@ class _MapPageState extends State<MapPage> {
     setState(() => _isLoading = true);
 
     final bounds = _mapController.camera.visibleBounds;
-    final shops = await ApiService.getShopsInArea(
-      minLat: bounds.south,
-      maxLat: bounds.north,
-      minLng: bounds.west,
-      maxLng: bounds.east,
-    );
+    final List<Shop> shops;
+
+    if (_selectedEans.isNotEmpty) {
+      shops = await ApiService.getShopsFilteredByProducts(
+        eans: _selectedEans.toList(),
+        minLat: bounds.south,
+        maxLat: bounds.north,
+        minLng: bounds.west,
+        maxLng: bounds.east,
+      );
+    } else {
+      shops = await ApiService.getShopsInArea(
+        minLat: bounds.south,
+        maxLat: bounds.north,
+        minLng: bounds.west,
+        maxLng: bounds.east,
+      );
+    }
 
     if (mounted) {
       setState(() {
@@ -72,6 +90,26 @@ class _MapPageState extends State<MapPage> {
         _isLoading = false;
       });
     }
+  }
+
+  void _showFilterSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => SizedBox(
+        height: MediaQuery.of(context).size.height * 0.85,
+        child: MapFilterSheet(
+          selectedEans: _selectedEans,
+          onApply: (newSelection) {
+            setState(() => _selectedEans = newSelection);
+            _loadShops();
+          },
+        ),
+      ),
+    );
   }
 
   void _onMapEvent(MapEvent event) {
@@ -203,13 +241,84 @@ class _MapPageState extends State<MapPage> {
                 child: CircularProgressIndicator(),
               ),
             ),
+          if (_selectedEans.isNotEmpty)
+            Positioned(
+              top: 50,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: GestureDetector(
+                  onTap: _showFilterSheet,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 14.w, vertical: 7.h),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary,
+                      borderRadius: BorderRadius.circular(20.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.15),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.filter_list,
+                            size: 42.sp, color: Colors.white),
+                        SizedBox(width: 6.w),
+                        Text(
+                          '${_selectedEans.length} filtre${_selectedEans.length > 1 ? 's' : ''} actif${_selectedEans.length > 1 ? 's' : ''}',
+                          style: TextStyle(
+                            fontSize: 42.sp,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        SizedBox(width: 8.w),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() => _selectedEans = {});
+                            _loadShops();
+                          },
+                          child: Icon(Icons.close,
+                              size: 42.sp, color: Colors.white70),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          if (!AuthService.isLoggedIn || !SubscriptionService.isSubscribed)
+            MapAccessOverlay(
+              onAccessGranted: () => setState(() {}),
+            ),
         ],
       ),
       floatingActionButton: Padding(
         padding: EdgeInsets.only(bottom: 60.h),
-        child: FloatingActionButton(
-          onPressed: _recenterMap,
-          child: const Icon(Icons.my_location),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            FloatingActionButton(
+              heroTag: 'filter',
+              onPressed: _showFilterSheet,
+              child: Badge(
+                isLabelVisible: _selectedEans.isNotEmpty,
+                label: Text(_selectedEans.length.toString()),
+                child: const Icon(Icons.filter_list),
+              ),
+            ),
+            SizedBox(height: 10.h),
+            FloatingActionButton(
+              heroTag: 'location',
+              onPressed: _recenterMap,
+              child: const Icon(Icons.my_location),
+            ),
+          ],
         ),
       ),
     );

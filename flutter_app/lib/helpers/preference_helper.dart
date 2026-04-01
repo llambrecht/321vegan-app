@@ -320,6 +320,25 @@ class PreferencesHelper {
     return prefs.getInt(_totalScanCountKey) ?? 0;
   }
 
+  // Product not-found report methods
+  static String _notFoundReportKey(String ean, int shopId) =>
+      'not_found_report_${ean}_$shopId';
+
+  static Future<void> saveProductNotFoundReport(
+      String ean, int shopId) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+        _notFoundReportKey(ean, shopId), DateTime.now().toIso8601String());
+  }
+
+  static Future<DateTime?> getProductNotFoundReportedAt(
+      String ean, int shopId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final stored = prefs.getString(_notFoundReportKey(ean, shopId));
+    if (stored == null) return null;
+    return DateTime.tryParse(stored);
+  }
+
   // B12 popup notification methods
   static const String _b12PopupShownKey = 'b12_popup_shown';
 
