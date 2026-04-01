@@ -337,7 +337,7 @@ class _MapFilterSheetState extends State<MapFilterSheet> {
         ),
         // Apply button
         Padding(
-          padding: EdgeInsets.fromLTRB(20.w, 8.h, 20.w, 24.h),
+          padding: EdgeInsets.fromLTRB(20.w, 8.h, 20.w, MediaQuery.of(context).padding.bottom + 24.h),
           child: SizedBox(
             width: double.infinity,
             child: ElevatedButton(

@@ -46,9 +46,7 @@ class _MapPageState extends State<MapPage> {
             timeLimit: Duration(seconds: 5),
           ),
         );
-        //center = LatLng(position.latitude, position.longitude);
-        // TODO : Use real center
-        center = LatLng(48.58079475665418, 7.757090271210848);
+        center = LatLng(position.latitude, position.longitude);
       }
     } catch (_) {
       // Keep France fallback

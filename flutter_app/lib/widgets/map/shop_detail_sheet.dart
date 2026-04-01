@@ -185,7 +185,7 @@ class _ShopDetailSheetState extends State<ShopDetailSheet>
               left: 24.w,
               right: 24.w,
               top: 12.h,
-              bottom: MediaQuery.of(ctx).viewInsets.bottom + 24.h,
+              bottom: MediaQuery.of(ctx).viewInsets.bottom + MediaQuery.of(ctx).padding.bottom + 24.h,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -845,7 +845,6 @@ class _ShopDetailSheetState extends State<ShopDetailSheet>
                 fontWeight: FontWeight.w500,
               ),
             ),
-
           ],
         ),
       ),
