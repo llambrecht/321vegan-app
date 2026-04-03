@@ -20,21 +20,38 @@ class MapPage extends StatefulWidget {
   State<MapPage> createState() => _MapPageState();
 }
 
-class _MapPageState extends State<MapPage> {
+class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   final MapController _mapController = MapController();
   List<Shop> _shops = [];
   bool _isLoading = true;
   Set<String> _selectedEans = {};
+  LatLng? _initialCenter;
+  LatLng? _userLocation;
+  late final AnimationController _pulseController;
+  late final Animation<double> _pulseAnimation;
 
   @override
   void initState() {
     super.initState();
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat();
+    _pulseAnimation = Tween<double>(begin: 8, end: 20).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeOut),
+    );
     _initLocation();
+  }
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    super.dispose();
   }
 
   Future<void> _initLocation() async {
     // Fallback center in the center of hexagon
-    LatLng center = const LatLng(48.58079475665418, 7.757090271210848);
+    LatLng center = const LatLng(46.231604072873, 2.495977205153891);
 
     try {
       final permission = await Geolocator.checkPermission();
@@ -47,13 +64,19 @@ class _MapPageState extends State<MapPage> {
           ),
         );
         center = LatLng(position.latitude, position.longitude);
+        if (mounted) setState(() => _userLocation = center);
       }
     } catch (_) {
       // Keep France fallback
     }
 
     if (mounted) {
-      _mapController.move(center, 16);
+      if (_initialCenter == null) {
+        setState(() => _initialCenter = center);
+      } else {
+        _mapController.move(center, 16);
+        _loadShops();
+      }
     }
   }
 
@@ -162,18 +185,29 @@ class _MapPageState extends State<MapPage> {
   }
 
   void _recenterMap() {
-    _initLocation();
+    if (_userLocation != null) {
+      _mapController.move(_userLocation!, 16);
+      _loadShops();
+    } else {
+      _initLocation();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_initialCenter == null) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return Scaffold(
       body: Stack(
         children: [
           FlutterMap(
             mapController: _mapController,
             options: MapOptions(
-              initialCenter: const LatLng(48.58079475665418, 7.757090271210848),
+              initialCenter: _initialCenter!,
               initialZoom: 16,
               onMapEvent: _onMapEvent,
               onMapReady: _onMapReady,
@@ -194,6 +228,29 @@ class _MapPageState extends State<MapPage> {
                   TextSourceAttribution('Made with FlutterMap'),
                 ],
               ),
+              if (_userLocation != null)
+                AnimatedBuilder(
+                  animation: _pulseAnimation,
+                  builder: (context, _) => CircleLayer(
+                    circles: [
+                      CircleMarker(
+                        point: _userLocation!,
+                        radius: _pulseAnimation.value,
+                        color: Theme.of(context).colorScheme.primary.withValues(
+                          alpha: 0.3 * (1 - (_pulseAnimation.value - 8) / 12),
+                        ),
+                        borderStrokeWidth: 0,
+                      ),
+                      CircleMarker(
+                        point: _userLocation!,
+                        radius: 7,
+                        color: Theme.of(context).colorScheme.primary,
+                        borderColor: Colors.white,
+                        borderStrokeWidth: 2,
+                      ),
+                    ],
+                  ),
+                ),
               MarkerClusterLayerWidget(
                 options: MarkerClusterLayerOptions(
                   maxClusterRadius: 80,
@@ -229,6 +286,58 @@ class _MapPageState extends State<MapPage> {
                 ),
               ),
             ],
+          ),
+          Positioned(
+            right: 24.w,
+            bottom: 100,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 12.h),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.15),
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  GestureDetector(
+                    onTap: _showFilterSheet,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 8.h),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.search, color: Theme.of(context).colorScheme.primary, size: 100.sp),
+                          SizedBox(height: 2.h),
+                          Text('Rechercher', style: TextStyle(fontSize: 28.sp, color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w600)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(height: 1, width: 36.w, color: Colors.grey.shade300),
+                  GestureDetector(
+                    onTap: _recenterMap,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 8.h),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.my_location, color: Colors.grey, size: 100.sp),
+                          SizedBox(height: 2.h),
+                          Text('Recentrer', style: TextStyle(fontSize: 28.sp, color: Colors.grey, fontWeight: FontWeight.w600)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
           if (_isLoading)
             const Positioned(
@@ -295,29 +404,6 @@ class _MapPageState extends State<MapPage> {
               onAccessGranted: () => setState(() {}),
             ),
         ],
-      ),
-      floatingActionButton: Padding(
-        padding: EdgeInsets.only(bottom: 60.h),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            FloatingActionButton(
-              heroTag: 'filter',
-              onPressed: _showFilterSheet,
-              child: Badge(
-                isLabelVisible: _selectedEans.isNotEmpty,
-                label: Text(_selectedEans.length.toString()),
-                child: const Icon(Icons.filter_list),
-              ),
-            ),
-            SizedBox(height: 10.h),
-            FloatingActionButton(
-              heroTag: 'location',
-              onPressed: _recenterMap,
-              child: const Icon(Icons.my_location),
-            ),
-          ],
-        ),
       ),
     );
   }
