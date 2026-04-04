@@ -686,6 +686,47 @@ class ApiService {
     }
   }
 
+  /// Create a new shop
+  static Future<bool> postShop({
+    required String name,
+    required double latitude,
+    required double longitude,
+    String address = '',
+    String city = '',
+    String country = '',
+    String shopType = 'supermarket',
+  }) async {
+    try {
+      final dio = await DioClient.getDio();
+      final prefs = await SharedPreferences.getInstance();
+      final accessToken = prefs.getString('access_token');
+
+      final response = await dio.post(
+        '/shops/',
+        data: {
+          'name': name,
+          'latitude': latitude,
+          'longitude': longitude,
+          if (address.isNotEmpty) 'address': address,
+          if (city.isNotEmpty) 'city': city,
+          if (country.isNotEmpty) 'country': country,
+          'shop_type': shopType,
+        },
+        options: dio_pkg.Options(
+          headers: {
+            if (accessToken != null) 'Authorization': 'Bearer $accessToken',
+          },
+        ),
+      );
+
+      return response.statusCode != null &&
+          response.statusCode! >= 200 &&
+          response.statusCode! < 300;
+    } catch (e) {
+      return false;
+    }
+  }
+
   /// Verify a purchase receipt with the backend
   /// Returns the subscription if verification succeeded, null otherwise
   static Future<Subscription?> verifySubscription({

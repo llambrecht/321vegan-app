@@ -9,6 +9,7 @@ import 'package:vegan_app/models/shops/shop.dart';
 import 'package:vegan_app/services/api_service.dart';
 import 'package:vegan_app/services/auth_service.dart';
 import 'package:vegan_app/services/subscription_service.dart';
+import 'package:vegan_app/widgets/map/create_shop_sheet.dart';
 import 'package:vegan_app/widgets/map/map_access_overlay.dart';
 import 'package:vegan_app/widgets/map/map_filter_sheet.dart';
 import 'package:vegan_app/widgets/map/shop_detail_sheet.dart';
@@ -24,6 +25,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   final MapController _mapController = MapController();
   List<Shop> _shops = [];
   bool _isLoading = true;
+  bool _isPicking = false;
   Set<String> _selectedEans = {};
   LatLng? _initialCenter;
   LatLng? _userLocation;
@@ -184,6 +186,25 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     );
   }
 
+  void _enterPickMode() {
+    setState(() => _isPicking = true);
+  }
+
+  void _onCreateHere() {
+    final coords = _mapController.camera.center;
+    setState(() => _isPicking = false);
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => CreateShopSheet(coordinates: coords),
+    ).then((created) {
+      if (created == true) _loadShops();
+    });
+  }
+
   void _recenterMap() {
     if (_userLocation != null) {
       _mapController.move(_userLocation!, 16);
@@ -287,6 +308,99 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
               ),
             ],
           ),
+          if (_isPicking) ...[
+            // Fixed pin at map center — tip points at the exact center
+            Align(
+              alignment: Alignment.center,
+              child: Transform.translate(
+                offset: const Offset(0, -24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.9),
+                        borderRadius: BorderRadius.circular(8.r),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.1),
+                            blurRadius: 4,
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        'Sélectionnez le milieu du bâtiment',
+                        style: TextStyle(fontSize: 32.sp, color: Colors.black87),
+                      ),
+                    ),
+                    Icon(
+                      Icons.location_pin,
+                      color: Theme.of(context).colorScheme.primary,
+                      size: 48,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            // Instruction label
+            Positioned(
+              top: 60,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 7.h),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.6),
+                    borderRadius: BorderRadius.circular(20.r),
+                  ),
+                  child: Text(
+                    'Déplacez la carte pour positionner le magasin',
+                    style: TextStyle(fontSize: 34.sp, color: Colors.white),
+                  ),
+                ),
+              ),
+            ),
+            // "Créer ici" + "Annuler" buttons
+            Positioned(
+              bottom: 100,
+              left: 0,
+              right: 0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  OutlinedButton(
+                    onPressed: () => setState(() => _isPicking = false),
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      side: BorderSide(color: Colors.grey.shade400),
+                      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24.r),
+                      ),
+                    ),
+                    child: Text('Annuler', style: TextStyle(fontSize: 36.sp, color: Colors.grey.shade700)),
+                  ),
+                  SizedBox(width: 12.w),
+                  ElevatedButton.icon(
+                    onPressed: _onCreateHere,
+                    icon: const Icon(Icons.add_location_alt, size: 20),
+                    label: Text('Créer ici', style: TextStyle(fontSize: 36.sp, fontWeight: FontWeight.w600)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24.r),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          if (!_isPicking)
           Positioned(
             right: 24.w,
             bottom: 100,
@@ -316,6 +430,21 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                           Icon(Icons.search, color: Theme.of(context).colorScheme.primary, size: 100.sp),
                           SizedBox(height: 2.h),
                           Text('Rechercher', style: TextStyle(fontSize: 28.sp, color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w600)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(height: 1, width: 36.w, color: Colors.grey.shade300),
+                  GestureDetector(
+                    onTap: _enterPickMode,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 8.h),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.add_location_alt, color: Theme.of(context).colorScheme.primary, size: 100.sp),
+                          SizedBox(height: 2.h),
+                          Text('Créer', style: TextStyle(fontSize: 28.sp, color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w600)),
                         ],
                       ),
                     ),
@@ -391,7 +520,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                             _loadShops();
                           },
                           child: Icon(Icons.close,
-                              size: 42.sp, color: Colors.white70),
+                              size: 60.sp, color: Colors.white70),
                         ),
                       ],
                     ),
