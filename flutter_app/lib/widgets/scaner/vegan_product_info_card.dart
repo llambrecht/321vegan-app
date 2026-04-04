@@ -164,7 +164,6 @@ class VeganProductInfoCard extends StatelessWidget {
     if (brand != null && brand is String) {
       final brandList =
           brand.split(',').map((e) => e.trim().toLowerCase()).toList();
-
       return brandList.any((brand) => bdsBrands.contains(brand.toLowerCase()));
     }
     return false;
@@ -175,7 +174,6 @@ class VeganProductInfoCard extends StatelessWidget {
     final bool isBDS = isOnBDSList();
 
     return Container(
-      height: 700.h,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [Colors.white, Colors.grey.shade200],
@@ -183,10 +181,7 @@ class VeganProductInfoCard extends StatelessWidget {
           end: Alignment.bottomCenter,
         ),
         borderRadius: BorderRadius.circular(30),
-        border: Border.all(
-          color: Colors.green,
-          width: 3,
-        ),
+        border: Border.all(color: Colors.green, width: 3),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.15),
@@ -196,7 +191,7 @@ class VeganProductInfoCard extends StatelessWidget {
           ),
         ],
       ),
-      child: SingleChildScrollView(
+      child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 10),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -216,32 +211,25 @@ class VeganProductInfoCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  (() {
-                    final brand = productInfo?['brand'];
-                    if (brand != null && brand is String && brand.isNotEmpty) {
-                      String formattedBrand =
-                          '${brand[0].toUpperCase()}${brand.substring(1)}';
-                      if (formattedBrand.length > 30) {
-                        formattedBrand =
-                            '${formattedBrand.substring(0, 30)}...';
-                      }
-                      return formattedBrand;
-                    }
-                    return 'Marque inconnue';
-                  })(),
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontStyle: FontStyle.italic,
-                    color: Colors.grey.shade600,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
+            Text(
+              (() {
+                final brand = productInfo?['brand'];
+                if (brand != null && brand is String && brand.isNotEmpty) {
+                  String formattedBrand =
+                      '${brand[0].toUpperCase()}${brand.substring(1)}';
+                  if (formattedBrand.length > 30) {
+                    formattedBrand = '${formattedBrand.substring(0, 30)}...';
+                  }
+                  return formattedBrand;
+                }
+                return 'Marque inconnue';
+              })(),
+              style: TextStyle(
+                fontSize: 18,
+                fontStyle: FontStyle.italic,
+                color: Colors.grey.shade600,
+                fontWeight: FontWeight.w500,
+              ),
             ),
             const SizedBox(height: 16),
             Row(
@@ -249,8 +237,7 @@ class VeganProductInfoCard extends StatelessWidget {
               children: [
                 if (productInfo?['biodynamie'] != true)
                   TweenAnimationBuilder<double>(
-                    key: ValueKey(productInfo?[
-                        'name']), // Use a unique key for each product
+                    key: ValueKey(productInfo?['name']),
                     duration: const Duration(milliseconds: 1000),
                     tween: Tween(begin: 0.8, end: 1.0),
                     curve: Curves.elasticOut,
@@ -258,7 +245,7 @@ class VeganProductInfoCard extends StatelessWidget {
                       return Transform.scale(
                         scale: scale,
                         child: Text(
-                          "Vegan !",
+                          'Vegan !',
                           style: TextStyle(
                             fontSize: 80.sp,
                             fontWeight: FontWeight.bold,
@@ -268,7 +255,6 @@ class VeganProductInfoCard extends StatelessWidget {
                       );
                     },
                   ),
-
                 if (isBDS && showBoycott) ...[
                   const SizedBox(width: 8),
                   ElevatedButton(
@@ -298,11 +284,7 @@ class VeganProductInfoCard extends StatelessWidget {
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
-                          Icons.info_outline,
-                          color: Colors.white,
-                          size: 20,
-                        ),
+                        Icon(Icons.info_outline, color: Colors.white, size: 20),
                         SizedBox(width: 6),
                         Text(
                           'Boycott',
@@ -316,7 +298,6 @@ class VeganProductInfoCard extends StatelessWidget {
                     ),
                   ),
                 ],
-                // If its biodynamie
                 if (!isBDS && productInfo?['biodynamie'] == true) ...[
                   const SizedBox(width: 8),
                   ElevatedButton(
@@ -326,7 +307,7 @@ class VeganProductInfoCard extends StatelessWidget {
                         builder: (context) => const InfoModal(
                           title: 'Biodynamie',
                           description:
-                              "La biodynamie est une méthode agricole qui utilise des préparations d’origine animale, telles que des cornes de vache ou des organes d’animaux, dans ses pratiques de culture. Cette approche est issue de l’anthroposophie, un courant ésotérique aux dérives parfois considérées comme sectaires. En raison de l’utilisation d’éléments animaux et de son ancrage idéologique, nous ne considérons pas les produits issus de la biodynamie comme compatibles avec les principes du véganisme.",
+                              "La biodynamie est une méthode agricole qui utilise des préparations d'origine animale, telles que des cornes de vache ou des organes d'animaux, dans ses pratiques de culture. Cette approche est issue de l'anthroposophie, un courant ésotérique aux dérives parfois considérées comme sectaires. En raison de l'utilisation d'éléments animaux et de son ancrage idéologique, nous ne considérons pas les produits issus de la biodynamie comme compatibles avec les principes du véganisme.",
                         ),
                       );
                     },
@@ -336,17 +317,13 @@ class VeganProductInfoCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: Column(
-                      children: [
-                        Text(
-                          '🚫 Biodynamie',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 60.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+                    child: Text(
+                      '🚫 Biodynamie',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 60.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],

@@ -75,6 +75,18 @@ class PreferencesHelper {
         true; // Default to true to show boycott
   }
 
+  // Save 'show scores' preference
+  static Future<void> setShowScoresPref(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('product_scores_enabled', value);
+  }
+
+  // Load 'show scores' preference
+  static Future<bool> getShowScoresPref() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('product_scores_enabled') ?? true;
+  }
+
   // Method to add or remove a code based on success status
   static Future<void> addCodeToPreferences(String? code, bool success) async {
     if (code == null) return;

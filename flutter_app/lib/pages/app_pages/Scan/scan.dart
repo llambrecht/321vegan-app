@@ -25,6 +25,8 @@ import 'package:vegan_app/widgets/vegandex/vegandex_modal.dart';
 import 'package:vegan_app/widgets/vegandex/product_found_modal.dart';
 import 'package:vegan_app/widgets/auth/register_form.dart';
 import 'package:vegan_app/widgets/auth/login_form.dart';
+import 'package:vegan_app/services/subscription_service.dart';
+import 'package:vegan_app/widgets/scaner/product_scores_section.dart';
 
 class ScanPage extends StatefulWidget {
   final VoidCallback? onNavigateToProfile;
@@ -51,6 +53,7 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
   final nonVeganCardKey = GlobalKey<NonVeganProductInfoCardState>();
   bool _openOnScanPage = false;
   bool _showBoycott = true;
+  bool _showScores = true;
   List<String> _productsOfInterest = [];
   Map<String, ProductOfInterest> _productsOfInterestMap = {};
   Map<String, String> _alternativeEanToMainEan = {};
@@ -95,6 +98,7 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
     _loadScanHistory();
     _loadOpenOnScanPagePref();
     _loadShowBoycottPref();
+    _loadShowScoresPref();
     // Load products from already-populated cache (populated at app startup)
     _loadProductsOfInterest();
 
@@ -324,6 +328,20 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
     });
   }
 
+  Future<void> _loadShowScoresPref() async {
+    final value = await PreferencesHelper.getShowScoresPref();
+    setState(() {
+      _showScores = value;
+    });
+  }
+
+  Future<void> _setShowScoresPref(bool value) async {
+    await PreferencesHelper.setShowScoresPref(value);
+    setState(() {
+      _showScores = value;
+    });
+  }
+
   Future<void> _loadProductsOfInterest() async {
     // Load from cache instantly, updates in background automatically
     final products = await ProductsOfInterestCache.loadProductsOfInterest();
@@ -486,6 +504,8 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
                 _showBoycott = value;
               });
             },
+            initialShowScores: _showScores,
+            onShowScoresChanged: _setShowScoresPref,
           ),
         );
       },
@@ -844,104 +864,9 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
                 ),
               ),
             ),
-          // Add the floating button for scan history
-          Positioned(
-            top: 0.36.sh,
-            left: 20,
-            child: SizedBox(
-              width: 0.20.sw,
-              height: 0.05.sh,
-              child: FloatingActionButton(
-                onPressed: () {
-                  controller.stop(); // Stop the scanner when opening the modal
-                  setState(() {
-                    productInfo = null;
-                  });
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    backgroundColor: Colors.transparent,
-                    builder: (context) => SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.9,
-                      child: HistoryModal(
-                        scanHistory: scanHistory,
-                      ),
-                    ),
-                  ).then((_) {
-                    controller
-                        .start(); // Restart the scanner when the modal is closed
-                  });
-                },
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.history,
-                      color: Colors.white,
-                      size: 40.sp,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      "Historique",
-                      style: TextStyle(color: Colors.white, fontSize: 30.sp),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          // Add the floating button for sent products
-          Positioned(
-            top: 0.36.sh,
-            right: 20,
-            child: SizedBox(
-              width: 0.20.sw,
-              height: 0.05.sh,
-              child: FloatingActionButton(
-                onPressed: () {
-                  // Stop the scanner when opening the modal
-                  controller.stop();
-                  setState(() {
-                    productInfo = null;
-                  });
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    backgroundColor: Colors.transparent,
-                    builder: (context) => SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.9,
-                      child: const SentProductsModal(),
-                    ),
-                  ).then((_) {
-                    controller
-                        .start(); // Restart the scanner when the modal is closed
-                  });
-                },
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.switch_access_shortcut_add_outlined,
-                      color: Colors.white,
-                      size: 40.sp,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      "Mes envois",
-                      style: TextStyle(color: Colors.white, fontSize: 30.sp),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
           // Add the floating button for Vegandex
           Positioned(
-            top: 200.h,
+            top: 180.h,
             right: 20,
             child: Container(
               width: 0.25.sw,
@@ -1033,6 +958,20 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
               ),
             ),
           ),
+          // Floating score bar — visible in camera area for vegan products only
+          if (productInfo?['is_vegan'] == 'true' &&
+              productInfo?['code'] != null)
+            Positioned(
+              top: 0.35.sh,
+              left: 16,
+              right: 16,
+              child: ProductScoresSection(
+                barcode: productInfo!['code'] as String,
+                isSubscribed: SubscriptionService.isSubscribed,
+                enabled: _showScores,
+                onDisable: () => _setShowScoresPref(false),
+              ),
+            ),
           // Result card with bottom margin
           if (productInfo != null)
             Positioned(
@@ -1133,6 +1072,96 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
                       Colors.green,
                       Colors.yellow,
                     ],
+              ),
+            ),
+          ),
+          // Add the floating button for scan history
+          Positioned(
+            top: 200.h,
+            left: 170.w,
+            child: Container(
+              padding: EdgeInsets.all(8.w),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.2),
+                    spreadRadius: 1,
+                    blurRadius: 6,
+                    offset: const Offset(0, 1),
+                  ),
+                ],
+              ),
+              child: GestureDetector(
+                onTap: () {
+                  controller.stop();
+                  setState(() {
+                    productInfo = null;
+                  });
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (context) => SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.9,
+                      child: HistoryModal(
+                        scanHistory: scanHistory,
+                      ),
+                    ),
+                  ).then((_) {
+                    controller.start();
+                  });
+                },
+                child: Icon(
+                  Icons.history,
+                  color: Colors.black54,
+                  size: 80.sp,
+                ),
+              ),
+            ),
+          ),
+          // Add the floating button for sent products
+          Positioned(
+            top: 200.h,
+            left: 280.w,
+            child: Container(
+              padding: EdgeInsets.all(8.w),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.2),
+                    spreadRadius: 1,
+                    blurRadius: 6,
+                    offset: const Offset(0, 1),
+                  ),
+                ],
+              ),
+              child: GestureDetector(
+                onTap: () {
+                  controller.stop();
+                  setState(() {
+                    productInfo = null;
+                  });
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (context) => SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.9,
+                      child: const SentProductsModal(),
+                    ),
+                  ).then((_) {
+                    controller.start();
+                  });
+                },
+                child: Icon(
+                  Icons.switch_access_shortcut_add_outlined,
+                  color: Colors.black54,
+                  size: 80.sp,
+                ),
               ),
             ),
           ),
