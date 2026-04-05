@@ -4,7 +4,7 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'auth_service.dart';
 
 /// HTTP client with automatic cookie management for HTTPOnly cookies
 /// Used for authentication with refresh tokens stored in cookies
@@ -63,24 +63,22 @@ class DioClient {
           _isRefreshing = true;
 
           try {
-            // Attempt to refresh the token
-            final response = await _dio!.post('/auth/refresh');
+            // Attempt to refresh the token (with dedicated timeout)
+            final response = await _dio!.post(
+              '/auth/refresh',
+              options: Options(
+                sendTimeout: const Duration(seconds: 10),
+                receiveTimeout: const Duration(seconds: 10),
+              ),
+            );
 
             if (response.statusCode == 200 &&
                 response.data['access_token'] != null) {
               final newAccessToken = response.data['access_token'];
               debugPrint('✅ Token refreshed successfully');
 
-              // Store the new token with expiration
-              final prefs = await SharedPreferences.getInstance();
-              await prefs.setString('access_token', newAccessToken);
-
-              // Store expiration time (default 30 minutes)
-              final expiresIn = response.data['expires_in'] ?? 1800;
-              final expiresAt =
-                  DateTime.now().add(Duration(seconds: expiresIn));
-              await prefs.setString(
-                  'token_expires_at', expiresAt.toIso8601String());
+              // Sync token to AuthService in-memory cache + SharedPreferences
+              await AuthService.updateTokenFromInterceptor(newAccessToken);
 
               // Update the original request with new token
               error.requestOptions.headers['Authorization'] =
@@ -90,19 +88,21 @@ class DioClient {
               final retryResponse = await _dio!.fetch(error.requestOptions);
 
               // Process all queued requests with the new token
-              for (var queued in _requestsWaitingForRefresh) {
-                queued.options.headers['Authorization'] =
-                    'Bearer $newAccessToken';
-                try {
-                  final queuedResponse = await _dio!.fetch(queued.options);
-                  queued.handler.resolve(queuedResponse);
-                } catch (e) {
-                  queued.handler.reject(
-                      DioException(requestOptions: queued.options, error: e));
-                }
-              }
+              final queued = List.of(_requestsWaitingForRefresh);
               _requestsWaitingForRefresh.clear();
               _isRefreshing = false;
+
+              for (var q in queued) {
+                q.options.headers['Authorization'] =
+                    'Bearer $newAccessToken';
+                try {
+                  final queuedResponse = await _dio!.fetch(q.options);
+                  q.handler.resolve(queuedResponse);
+                } catch (e) {
+                  q.handler.reject(
+                      DioException(requestOptions: q.options, error: e));
+                }
+              }
 
               return handler.resolve(retryResponse);
             } else {
@@ -110,7 +110,11 @@ class DioClient {
             }
           } catch (refreshError) {
             debugPrint('❌ Token refresh failed: $refreshError');
+
+            // Always reset flag and drain queue before returning
             _isRefreshing = false;
+            final queued = List.of(_requestsWaitingForRefresh);
+            _requestsWaitingForRefresh.clear();
 
             // Only clear tokens on actual authentication errors (401)
             // Keep user logged in on network errors (API down, timeout, etc.)
@@ -126,31 +130,27 @@ class DioClient {
                   refreshError.type == DioExceptionType.receiveTimeout ||
                   refreshError.type == DioExceptionType.connectionError ||
                   refreshError.type == DioExceptionType.unknown) {
-                // Network error, server down, timeout, etc.
                 debugPrint(
                     '⚠️ Network/timeout error during token refresh - keeping user logged in');
               } else {
-                // Other server errors (5xx, etc.) - keep user logged in
                 debugPrint(
                     '⚠️ Server error during token refresh - keeping user logged in');
               }
             } else {
-              // Non-Dio exceptions are likely network issues
               debugPrint(
                   '⚠️ Unexpected error during token refresh - keeping user logged in');
             }
 
             if (shouldLogout) {
-              // Clear stored tokens and cookies only on auth failure
-              final prefs = await SharedPreferences.getInstance();
-              await prefs.remove('access_token');
+              // Sync logout to AuthService in-memory cache + SharedPreferences
+              await AuthService.clearTokenFromInterceptor();
               await clearCookies();
             }
 
             // Reject all queued requests
-            for (var queued in _requestsWaitingForRefresh) {
-              queued.handler.reject(DioException(
-                requestOptions: queued.options,
+            for (var q in queued) {
+              q.handler.reject(DioException(
+                requestOptions: q.options,
                 error: shouldLogout
                     ? 'Authentication expired'
                     : 'Network error - please try again',
@@ -159,7 +159,6 @@ class DioClient {
                     : DioExceptionType.connectionError,
               ));
             }
-            _requestsWaitingForRefresh.clear();
 
             return handler.reject(error);
           }

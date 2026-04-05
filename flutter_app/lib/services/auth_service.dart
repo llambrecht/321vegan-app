@@ -19,6 +19,20 @@ class AuthService {
   static User? _currentUser;
   static DateTime? _tokenExpiresAt;
 
+  /// Expose access token for Dio interceptor and ApiService
+  static String? get accessToken => _accessToken;
+
+  /// Called by DioClient interceptor after a successful token refresh
+  static Future<void> updateTokenFromInterceptor(String newToken,
+      {int expiresInSeconds = 1800}) async {
+    await _storeToken(newToken, expiresInSeconds: expiresInSeconds);
+  }
+
+  /// Called by DioClient interceptor when refresh fails with 401
+  static Future<void> clearTokenFromInterceptor() async {
+    await _clearToken();
+  }
+
   // Initialize the service and check for stored tokens
   static Future<void> init() async {
     await _loadStoredToken();
@@ -462,10 +476,13 @@ class AuthService {
       }
     } on DioException catch (e) {
       if (e.response?.statusCode == 401) {
-        // Token refresh is now handled automatically by the Dio interceptor
-        debugPrint('❌ Authentication expired');
-        await _clearToken();
-        await DioClient.clearCookies();
+        // Interceptor already cleared tokens if refresh failed with 401.
+        // Only clear here if _accessToken is still set (interceptor didn't handle it).
+        if (_accessToken != null) {
+          debugPrint('❌ Authentication expired');
+          await _clearToken();
+          await DioClient.clearCookies();
+        }
         return AuthResult.error('AUTH_EXPIRED');
       }
 

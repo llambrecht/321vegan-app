@@ -7,7 +7,11 @@
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
-	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<string>fr</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>fr</string>
+	</array>
 	<key>CFBundleDisplayName</key>
 	<string>321 Vegan</string>
 	<key>CFBundleExecutable</key>

@@ -75,11 +75,15 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal>
       _isLoading = false;
     });
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_pageController.hasClients) {
-        _pageController.jumpToPage(initialIndex);
-      }
-    });
+    // Recreate the PageController with the correct initial page
+    // to avoid triggering onPageChanged (which disables auto theme)
+    _pageController.removeListener(_onPageScroll);
+    _pageController.dispose();
+    _pageController = PageController(
+      viewportFraction: 0.75,
+      initialPage: initialIndex,
+    );
+    _pageController.addListener(_onPageScroll);
   }
 
   Future<void> _saveThemeSettings() async {
