@@ -536,7 +536,7 @@ class MyHomePageState extends State<MyHomePage>
                               const Color.fromARGB(255, 97, 166, 250),
                               Colors.blueAccent,
                               info:
-                                  "En choisissant d'être végétalien, vous aidez à économiser de précieuses ressources en eau. La production de produits animaux nécessite une gigantesque quantité d'eau, notamment pour l'irrigation des cultures pour les animaux d'élevage. Et cela sans parler de la polution de l'eau due aux déjections qu'ils produisent.",
+                                  "En choisissant d'être végétalien, vous aidez à économiser de précieuses ressources en eau. La production de produits animaux nécessite une gigantesque quantité d'eau, notamment pour l'irrigation des cultures pour les animaux d'élevage. Et cela sans parler de la pollution de l'eau due aux déjections qu'ils produisent.",
                               theme: Theme.of(context)
                                   .extension<SeasonalTheme>(),
                             ),
