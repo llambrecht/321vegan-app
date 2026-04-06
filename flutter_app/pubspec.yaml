@@ -16,7 +16,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 3.5.1+1
+version: 3.6.4+1
 
 environment:
   sdk: ">=3.6.0 <4.0.0"
@@ -73,6 +73,9 @@ dependencies:
   in_app_review: ^2.0.9
   upgrader: ^11.3.0
   sensors_plus: ^7.0.0
+  flutter_map: ^8.2.2
+  latlong2: ^0.9.1
+  flutter_map_marker_cluster: ^8.2.2
 
 dev_dependencies:
   flutter_test:
@@ -143,6 +146,21 @@ flutter:
     - lib/assets/images/tulipe-smile.webp
     - lib/assets/images/papillon.webp
     - lib/assets/images/ruche.webp
+    # Test with la vie featured
+    - lib/assets/la-vie-logo.png
+    # Nutriscores / Green-score
+    - lib/assets/images/nutri-eco-scores/nutriA.webp
+    - lib/assets/images/nutri-eco-scores/nutriB.webp
+    - lib/assets/images/nutri-eco-scores/nutriC.webp
+    - lib/assets/images/nutri-eco-scores/nutriD.webp
+    - lib/assets/images/nutri-eco-scores/nutriE.webp
+    - lib/assets/images/nutri-eco-scores/green-score-a-plus.webp
+    - lib/assets/images/nutri-eco-scores/green-score-a.webp
+    - lib/assets/images/nutri-eco-scores/green-score-b.webp
+    - lib/assets/images/nutri-eco-scores/green-score-c.webp
+    - lib/assets/images/nutri-eco-scores/green-score-d.webp
+    - lib/assets/images/nutri-eco-scores/green-score-e.webp
+    - lib/assets/images/nutri-eco-scores/green-score-f.webp
     - .env
 
   fonts:

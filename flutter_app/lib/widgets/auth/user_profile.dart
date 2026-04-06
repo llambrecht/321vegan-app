@@ -38,6 +38,7 @@ class _UserProfileState extends State<UserProfile> {
   String? _selectedAvatar;
   bool _openOnScanPage = false;
   bool _showBoycott = true;
+  bool _showScores = true;
   List<DateTime> _b12History = [];
 
   final List<String> _availableAvatars = [
@@ -141,10 +142,12 @@ class _UserProfileState extends State<UserProfile> {
   Future<void> _loadPreferences() async {
     final openOnScanPage = await PreferencesHelper.getOpenOnScanPagePref();
     final showBoycott = await PreferencesHelper.getShowBoycottPref();
+    final showScores = await PreferencesHelper.getShowScoresPref();
     if (mounted) {
       setState(() {
         _openOnScanPage = openOnScanPage;
         _showBoycott = showBoycott;
+        _showScores = showScores;
       });
     }
   }
@@ -168,6 +171,12 @@ class _UserProfileState extends State<UserProfile> {
             onShowBoycottChanged: (value) {
               setState(() {
                 _showBoycott = value;
+              });
+            },
+            initialShowScores: _showScores,
+            onShowScoresChanged: (value) {
+              setState(() {
+                _showScores = value;
               });
             },
           ),

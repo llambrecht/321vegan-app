@@ -75,6 +75,18 @@ class PreferencesHelper {
         true; // Default to true to show boycott
   }
 
+  // Save 'show scores' preference
+  static Future<void> setShowScoresPref(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('product_scores_enabled', value);
+  }
+
+  // Load 'show scores' preference
+  static Future<bool> getShowScoresPref() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('product_scores_enabled') ?? true;
+  }
+
   // Method to add or remove a code based on success status
   static Future<void> addCodeToPreferences(String? code, bool success) async {
     if (code == null) return;
@@ -318,6 +330,25 @@ class PreferencesHelper {
   static Future<int> getTotalScanCount() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getInt(_totalScanCountKey) ?? 0;
+  }
+
+  // Product not-found report methods
+  static String _notFoundReportKey(String ean, int shopId) =>
+      'not_found_report_${ean}_$shopId';
+
+  static Future<void> saveProductNotFoundReport(
+      String ean, int shopId) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+        _notFoundReportKey(ean, shopId), DateTime.now().toIso8601String());
+  }
+
+  static Future<DateTime?> getProductNotFoundReportedAt(
+      String ean, int shopId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final stored = prefs.getString(_notFoundReportKey(ean, shopId));
+    if (stored == null) return null;
+    return DateTime.tryParse(stored);
   }
 
   // B12 popup notification methods
