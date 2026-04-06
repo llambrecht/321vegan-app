@@ -227,7 +227,7 @@ class _ShopDetailSheetState extends State<ShopDetailSheet>
                   }),
                 ),
                 SizedBox(height: 20.h),
-                TextField(
+                TextFormField(
                   controller: commentController,
                   maxLines: 3,
                   decoration: InputDecoration(
@@ -235,6 +235,7 @@ class _ShopDetailSheetState extends State<ShopDetailSheet>
                     border: const OutlineInputBorder(),
                     labelStyle: TextStyle(fontSize: 44.sp),
                   ),
+                  textCapitalization: TextCapitalization.sentences,
                   style: TextStyle(fontSize: 44.sp),
                 ),
                 SizedBox(height: 24.h),

@@ -281,6 +281,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                 options: MarkerClusterLayerOptions(
                   maxClusterRadius: 80,
                   size: const Size(40, 40),
+                  showPolygon: false,
                   markers: _shops.map((shop) {
                     return Marker(
                       point: LatLng(shop.latitude, shop.longitude),
