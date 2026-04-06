@@ -773,7 +773,7 @@ class MyHomePageState extends State<MyHomePage>
     if (targetTime != null) {
       duration = DateTime.now().difference(targetTime);
     }
-    final int days = duration.inDays;
+    final double days = duration.inMinutes / 1440.0;
     final int animalUnit = (days * animalPer).toInt();
     final int co2Unit = (days * co2Per).toInt();
     final int waterUnit = (days * waterPer).toInt();
