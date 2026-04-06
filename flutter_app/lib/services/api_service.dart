@@ -3,6 +3,7 @@ import 'dart:io' show File;
 import 'package:dio/dio.dart' as dio_pkg;
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vegan_app/models/partners/partners.dart';
 import 'auth_service.dart';
 import 'dio_client.dart';

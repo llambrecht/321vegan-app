@@ -185,7 +185,7 @@ class _ShopDetailSheetState extends State<ShopDetailSheet>
               left: 24.w,
               right: 24.w,
               top: 12.h,
-              bottom: MediaQuery.of(ctx).viewInsets.bottom + MediaQuery.of(ctx).padding.bottom + 24.h,
+              bottom: MediaQuery.of(ctx).viewInsets.bottom + MediaQuery.of(ctx).padding.bottom + 64.h,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -336,7 +336,7 @@ class _ShopDetailSheetState extends State<ShopDetailSheet>
 
     return ListView(
       controller: scrollController,
-      padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 64.h),
+      padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 64.h + MediaQuery.of(context).padding.bottom),
       children: [
         if (grouped.isEmpty)
           Padding(
@@ -720,7 +720,7 @@ class _ShopDetailSheetState extends State<ShopDetailSheet>
 
     return ListView(
       controller: scrollController,
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      padding: EdgeInsets.fromLTRB(16.w, 24.h, 16.w, 24.h + MediaQuery.of(context).padding.bottom),
       children: [
         _buildMyReviewSection(),
         SizedBox(height: 16.h),
