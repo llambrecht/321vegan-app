@@ -192,7 +192,7 @@ class SettingsModalState extends State<SettingsModal> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Afficher Nutriscore & Green-score\u00ae',
+                        'Afficher Nutriscore & Green-score®',
                         style: TextStyle(
                           fontSize: 40.sp,
                           fontWeight: FontWeight.w600,
