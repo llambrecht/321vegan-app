@@ -30,8 +30,9 @@ import 'package:vegan_app/widgets/scaner/product_scores_section.dart';
 
 class ScanPage extends StatefulWidget {
   final VoidCallback? onNavigateToProfile;
+  final VoidCallback? onLoginSuccess;
 
-  const ScanPage({super.key, this.onNavigateToProfile});
+  const ScanPage({super.key, this.onNavigateToProfile, this.onLoginSuccess});
 
   @override
   ScanPageState createState() => ScanPageState();
@@ -743,6 +744,7 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
               child: _AuthSheetContent(
                 onSuccess: () {
                   Navigator.of(context).pop();
+                  widget.onLoginSuccess?.call();
                 },
               ),
             ),

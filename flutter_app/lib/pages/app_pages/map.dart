@@ -15,7 +15,9 @@ import 'package:vegan_app/widgets/map/map_filter_sheet.dart';
 import 'package:vegan_app/widgets/map/shop_detail_sheet.dart';
 
 class MapPage extends StatefulWidget {
-  const MapPage({super.key});
+  final VoidCallback? onLoginSuccess;
+
+  const MapPage({super.key, this.onLoginSuccess});
 
   @override
   State<MapPage> createState() => _MapPageState();
@@ -56,7 +58,10 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     LatLng center = const LatLng(46.231604072873, 2.495977205153891);
 
     try {
-      final permission = await Geolocator.checkPermission();
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
       if (permission == LocationPermission.always ||
           permission == LocationPermission.whileInUse) {
         final position = await Geolocator.getCurrentPosition(
@@ -531,6 +536,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
           if (!AuthService.isLoggedIn || !SubscriptionService.isSubscribed)
             MapAccessOverlay(
               onAccessGranted: () => setState(() {}),
+              onLoginSuccess: widget.onLoginSuccess,
             ),
         ],
       ),

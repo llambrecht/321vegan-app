@@ -659,8 +659,9 @@ class MyHomePageState extends State<MyHomePage>
                         motionTabBarController.index = 5;
                       });
                     },
+                    onLoginSuccess: _onLoginSuccess,
                   ),
-                  const MapPage(),
+                  MapPage(onLoginSuccess: _onLoginSuccess),
                   ProfilePage(
                     onDateSaved: _onDateSaved,
                     onLoginSuccess: _onLoginSuccess,

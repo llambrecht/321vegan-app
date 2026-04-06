@@ -10,8 +10,9 @@ import 'package:vegan_app/widgets/auth/register_form.dart';
 
 class MapAccessOverlay extends StatefulWidget {
   final VoidCallback onAccessGranted;
+  final VoidCallback? onLoginSuccess;
 
-  const MapAccessOverlay({super.key, required this.onAccessGranted});
+  const MapAccessOverlay({super.key, required this.onAccessGranted, this.onLoginSuccess});
 
   @override
   State<MapAccessOverlay> createState() => _MapAccessOverlayState();
@@ -38,6 +39,7 @@ class _MapAccessOverlayState extends State<MapAccessOverlay> {
                 initialShowRegister: showRegister,
                 onSuccess: () {
                   Navigator.of(context).pop();
+                  widget.onLoginSuccess?.call();
                   if (SubscriptionService.isSubscribed) {
                     widget.onAccessGranted();
                   } else if (mounted) {
