@@ -686,7 +686,7 @@ class MyHomePageState extends State<MyHomePage>
                 labels: const [
                   "Promos",
                   "Accueil",
-                  "Recherche",
+                  "🔎",
                   "Scan",
                   "Carte",
                   "Profil"

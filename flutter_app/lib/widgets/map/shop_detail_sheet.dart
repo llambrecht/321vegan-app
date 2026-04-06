@@ -1031,13 +1031,15 @@ class _ShopDetailSheetState extends State<ShopDetailSheet>
                       ),
                     ],
                   ),
-                  if (shop.address != null || shop.city != null)
                     Padding(
                       padding: EdgeInsets.only(top: 4.h, left: 32.w),
                       child: Text(
-                        [shop.address, shop.city]
-                            .where((s) => s != null)
-                            .join(', '),
+                        () {
+                          final address = [shop.address, shop.city]
+                              .where((s) => s != null)
+                              .join(', ');
+                          return address.isEmpty ? 'Adresse inconnue' : address;
+                        }(),
                         style: TextStyle(
                           fontSize: 50.sp,
                           color: Colors.grey[600],
