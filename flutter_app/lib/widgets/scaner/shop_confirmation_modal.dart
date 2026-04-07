@@ -8,6 +8,9 @@ class ShopConfirmationModal extends StatefulWidget {
   final int scanEventId;
   final ProductOfInterest product;
   final List<Map<String, dynamic>> nearbyShops;
+  /// The OSM ID of the primary proposed shop, if it hasn't been linked yet.
+  /// When present, tapping "Yes" will call confirmShop to create and link it.
+  final String? shopOsmId;
 
   const ShopConfirmationModal({
     super.key,
@@ -15,6 +18,7 @@ class ShopConfirmationModal extends StatefulWidget {
     required this.scanEventId,
     required this.product,
     this.nearbyShops = const [],
+    this.shopOsmId,
   });
 
   @override
@@ -109,7 +113,14 @@ class _ShopConfirmationModalState extends State<ShopConfirmationModal>
   }
 
   Future<void> _handleYes() async {
-    // User confirms - do nothing, location is already saved
+    // If the shop wasn't linked yet (OSM-only), confirm it now so it gets
+    // created in DB and associated with the scan event.
+    if (widget.shopOsmId != null) {
+      await ApiService.confirmShop(
+        scanEventId: widget.scanEventId,
+        osmId: widget.shopOsmId!,
+      );
+    }
     await _showThanksAndClose();
   }
 

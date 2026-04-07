@@ -229,7 +229,7 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
 
   void _showShopConfirmationDialog(
       String shopName, int scanEventId, ProductOfInterest product,
-      {List<Map<String, dynamic>>? nearbyShops}) {
+      {List<Map<String, dynamic>>? nearbyShops, String? shopOsmId}) {
     // Stop scanner while showing modal
     controller.stop();
 
@@ -243,6 +243,7 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
           scanEventId: scanEventId,
           product: product,
           nearbyShops: nearbyShops ?? [],
+          shopOsmId: shopOsmId,
         );
       },
     ).then((_) {
@@ -402,7 +403,7 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
       final locationData = await locationFuture;
       final latitude = locationData['latitude'];
       final longitude = locationData['longitude'];
-
+      
       if (latitude == null || longitude == null) {
         // No location, we dont send
         return;
@@ -434,10 +435,19 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
               ?.map((s) => Map<String, dynamic>.from(s as Map))
               .toList();
 
+          // If no shop was linked yet (OSM-only), the primary shop is the
+          // first entry in nearbyShops — pass its osm_id so the modal can
+          // confirm it when the user taps "Yes".
+          final String? shopOsmId = (response['shop_id'] == null &&
+                  nearbyShops != null &&
+                  nearbyShops.isNotEmpty)
+              ? nearbyShops.first['osm_id'] as String?
+              : null;
+
           if (shopName != null && scanEventId != null) {
             // Show confirmation dialog for shop location
             _showShopConfirmationDialog(shopName, scanEventId, product,
-                nearbyShops: nearbyShops);
+                nearbyShops: nearbyShops, shopOsmId: shopOsmId);
           }
         }
       }

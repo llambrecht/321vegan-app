@@ -171,7 +171,7 @@ class ApiService {
   /// Get all interesting products (products of interest)
   static Future<List<ProductOfInterest>> getInterestingProducts() async {
     try {
-      final url = Uri.parse('$_baseUrl/interesting-products');
+      final url = Uri.parse('$_baseUrl/interesting-products/');
 
       final response = await http.get(
         url,
