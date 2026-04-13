@@ -28,6 +28,7 @@ class _ShopDetailSheetState extends State<ShopDetailSheet>
   bool _isLoadingProducts = true;
   bool _unscannedExpanded = false;
   final Set<String> _notFoundEans = {};
+  final Set<String> _foundEans = {};
   String? _detailExpandedEan;
 
   // Reviews tab state
@@ -77,11 +78,17 @@ class _ShopDetailSheetState extends State<ShopDetailSheet>
 
     final now = DateTime.now();
     final persistedNotFound = <String>{};
+    final persistedFound = <String>{};
     for (final summary in summaries) {
-      final reportedAt = await PreferencesHelper.getProductNotFoundReportedAt(
+      final notFoundAt = await PreferencesHelper.getProductNotFoundReportedAt(
           summary.ean, widget.shop.id);
-      if (reportedAt != null && now.difference(reportedAt).inHours < 24) {
+      if (notFoundAt != null && now.difference(notFoundAt).inHours < 24) {
         persistedNotFound.add(summary.ean);
+      }
+      final foundAt = await PreferencesHelper.getProductFoundReportedAt(
+          summary.ean, widget.shop.id);
+      if (foundAt != null && now.difference(foundAt).inHours < 24) {
+        persistedFound.add(summary.ean);
       }
     }
 
@@ -90,8 +97,23 @@ class _ShopDetailSheetState extends State<ShopDetailSheet>
         _scanSummaries = summaries;
         _productsMap = {for (var p in products) p.ean: p};
         _notFoundEans.addAll(persistedNotFound);
+        _foundEans.addAll(persistedFound);
         _isLoadingProducts = false;
       });
+    }
+  }
+
+  Future<void> _reportFound(String ean) async {
+    final success = await ApiService.postProductFoundReport(
+      ean: ean,
+      shopId: widget.shop.id,
+    );
+    if (success) {
+      await PreferencesHelper.saveProductFoundReport(ean, widget.shop.id);
+      if (mounted) setState(() => _foundEans.add(ean));
+      final summaries =
+          await ApiService.getShopProducts(shopId: widget.shop.id);
+      if (mounted) setState(() => _scanSummaries = summaries);
     }
   }
 
@@ -569,22 +591,23 @@ class _ShopDetailSheetState extends State<ShopDetailSheet>
                   onTap: () => _reportNotFound(summary.ean),
                   child: Container(
                     padding:
-                        EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+                        EdgeInsets.symmetric(horizontal: 18.w, vertical: 12.h),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20.r),
-                      border: Border.all(color: Colors.grey[350]!),
+                      color: Colors.red[50],
+                      border: Border.all(color: Colors.red[300]!),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(Icons.search_off,
-                            size: 44.r, color: Colors.grey[600]),
+                            size: 44.r, color: Colors.red[400]),
                         SizedBox(width: 4.w),
                         Text(
                           'Pas trouvé',
                           style: TextStyle(
                             fontSize: 42.sp,
-                            color: Colors.grey[600],
+                            color: Colors.red[400],
                           ),
                         ),
                       ],
@@ -592,16 +615,50 @@ class _ShopDetailSheetState extends State<ShopDetailSheet>
                   ),
                 ),
                 SizedBox(width: 12.w),
-                Flexible(
-                  child: Text(
-                    'Vu ? Scannez-le !',
-                    style: TextStyle(
-                      fontSize: 36.sp,
-                      fontStyle: FontStyle.italic,
-                      color: Colors.grey[500],
+                if (_foundEans.contains(summary.ean))
+                  Row(
+                    children: [
+                      Icon(Icons.check_circle,
+                          size: 44.r, color: Colors.green.withValues(alpha: 0.8)),
+                      SizedBox(width: 6.w),
+                      Text(
+                        'Présence signalée',
+                        style: TextStyle(
+                          fontSize: 42.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.green,
+                        ),
+                      ),
+                    ],
+                  )
+                else
+                  GestureDetector(
+                    onTap: () => _reportFound(summary.ean),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 18.w, vertical: 12.h),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20.r),
+                        color: Colors.green[50],
+                        border: Border.all(color: Colors.green[400]!),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.search,
+                              size: 44.r, color: Colors.green[600]),
+                          SizedBox(width: 4.w),
+                          Text(
+                            'Trouvé',
+                            style: TextStyle(
+                              fontSize: 42.sp,
+                              color: Colors.green[600],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
         ],

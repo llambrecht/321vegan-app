@@ -351,6 +351,24 @@ class PreferencesHelper {
     return DateTime.tryParse(stored);
   }
 
+  // Product found-report methods
+  static String _foundReportKey(String ean, int shopId) =>
+      'found_report_${ean}_$shopId';
+
+  static Future<void> saveProductFoundReport(String ean, int shopId) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+        _foundReportKey(ean, shopId), DateTime.now().toIso8601String());
+  }
+
+  static Future<DateTime?> getProductFoundReportedAt(
+      String ean, int shopId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final stored = prefs.getString(_foundReportKey(ean, shopId));
+    if (stored == null) return null;
+    return DateTime.tryParse(stored);
+  }
+
   // B12 popup notification methods
   static const String _b12PopupShownKey = 'b12_popup_shown';
 

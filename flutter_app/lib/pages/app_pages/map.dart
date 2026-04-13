@@ -241,8 +241,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
             children: [
               TileLayer(
                 urlTemplate:
-                    'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png',
-                subdomains: const ['a', 'b', 'c', 'd'],
+                    'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                 userAgentPackageName: 'fr.321vegan.app',
               ),
               const RichAttributionWidget(
@@ -250,8 +249,6 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                 alignment: AttributionAlignment.bottomLeft,
                 attributions: [
                   TextSourceAttribution('OpenStreetMap contributors'),
-                  TextSourceAttribution('CARTO'),
-                  TextSourceAttribution('Made with FlutterMap'),
                 ],
               ),
               if (_userLocation != null)

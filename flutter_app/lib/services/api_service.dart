@@ -492,6 +492,40 @@ class ApiService {
     }
   }
 
+  /// Report a product as found in a shop
+  /// [ean] - The product's barcode
+  /// [shopId] - The shop's ID
+  /// Returns true on success or if already reported (409)
+  static Future<bool> postProductFoundReport({
+    required String ean,
+    required int shopId,
+  }) async {
+    try {
+      final dio = await DioClient.getDio();
+      final prefs = await SharedPreferences.getInstance();
+      final accessToken = prefs.getString('access_token');
+
+      final response = await dio.post(
+        '/product-found-reports/',
+        data: {'ean': ean, 'shop_id': shopId},
+        options: dio_pkg.Options(
+          headers: {
+            if (accessToken != null) 'Authorization': 'Bearer $accessToken',
+          },
+        ),
+      );
+
+      return response.statusCode != null &&
+          (response.statusCode! >= 200 && response.statusCode! < 300 ||
+              response.statusCode == 409);
+    } on dio_pkg.DioException catch (e) {
+      if (e.response?.statusCode == 409) return true;
+      return false;
+    } catch (e) {
+      return false;
+    }
+  }
+
   /// Get the current user's subscription status
   /// Returns null if no subscription or on error
   static Future<Subscription?> getSubscriptionStatus() async {
