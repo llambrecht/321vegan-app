@@ -66,9 +66,19 @@ class MyAppState extends State<MyApp> {
     useMaterial3: true,
   );
 
+  late final Upgrader _upgrader;
+
   @override
   void initState() {
     super.initState();
+    const appcastURL =
+        'https://raw.githubusercontent.com/llambrecht/321vegan_appcast/main/appcast.xml';
+    _upgrader = Upgrader(
+      storeController: UpgraderStoreController(
+        onAndroid: () => UpgraderAppcastStore(appcastURL: appcastURL),
+        oniOS: () => UpgraderAppcastStore(appcastURL: appcastURL),
+      ),
+    );
     _loadTheme();
   }
 
@@ -85,14 +95,6 @@ class MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    const appcastURL =
-        'https://raw.githubusercontent.com/llambrecht/321vegan_appcast/main/appcast.xml';
-    final upgrader = Upgrader(
-      storeController: UpgraderStoreController(
-        onAndroid: () => UpgraderAppcastStore(appcastURL: appcastURL),
-        oniOS: () => UpgraderAppcastStore(appcastURL: appcastURL),
-      ),
-    );
     return ScreenUtilInit(
       designSize: const Size(1170, 2532),
       builder: (context, child) => MediaQuery(
@@ -104,7 +106,7 @@ class MyAppState extends State<MyApp> {
           debugShowCheckedModeBanner: false,
           theme: _currentTheme,
           home: UpgradeAlert(
-            upgrader: upgrader,
+            upgrader: _upgrader,
             child: const FirstLaunchChecker(),
           ),
           localizationsDelegates: const [
