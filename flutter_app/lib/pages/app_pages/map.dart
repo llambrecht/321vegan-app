@@ -1,10 +1,14 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_cache/flutter_map_cache.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:http_cache_file_store/http_cache_file_store.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:vegan_app/models/shops/shop.dart';
 import 'package:vegan_app/services/api_service.dart';
 import 'package:vegan_app/services/auth_service.dart';
@@ -32,6 +36,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   Set<String> _selectedEans = {};
   LatLng? _initialCenter;
   LatLng? _userLocation;
+  CachedTileProvider? _tileProvider;
   late final AnimationController _pulseController;
   late final Animation<double> _pulseAnimation;
 
@@ -45,7 +50,23 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     _pulseAnimation = Tween<double>(begin: 8, end: 20).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.easeOut),
     );
+    _initTileCache();
     _initLocation();
+  }
+
+  Future<void> _initTileCache() async {
+    final dir = await getTemporaryDirectory();
+    final store = FileCacheStore(
+      '${dir.path}${Platform.pathSeparator}MapTiles',
+    );
+    if (mounted) {
+      setState(() {
+        _tileProvider = CachedTileProvider(
+          maxStale: const Duration(days: 30),
+          store: store,
+        );
+      });
+    }
   }
 
   @override
@@ -289,6 +310,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                 urlTemplate:
                     'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                 userAgentPackageName: 'fr.321vegan.app',
+                tileProvider: _tileProvider,
               ),
               const RichAttributionWidget(
                 showFlutterMapAttribution: false,
