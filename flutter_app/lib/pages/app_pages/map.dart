@@ -28,6 +28,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   List<Shop> _shops = [];
   bool _isLoading = true;
   bool _isPicking = false;
+  bool _isCentered = false;
   Set<String> _selectedEans = {};
   LatLng? _initialCenter;
   LatLng? _userLocation;
@@ -54,8 +55,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   }
 
   Future<void> _initLocation() async {
-    // Fallback center in the center of hexagon
-    LatLng center = const LatLng(46.231604072873, 2.495977205153891);
+    const LatLng franceFallback = LatLng(46.231604072873, 2.495977205153891);
 
     try {
       LocationPermission permission = await Geolocator.checkPermission();
@@ -64,27 +64,68 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
       }
       if (permission == LocationPermission.always ||
           permission == LocationPermission.whileInUse) {
+        // Fast path: last known position renders the map immediately
+        final lastKnown = await Geolocator.getLastKnownPosition();
+        if (lastKnown != null && mounted) {
+          final pos = LatLng(lastKnown.latitude, lastKnown.longitude);
+          final wasAlreadyRendered = _initialCenter != null;
+          setState(() {
+            _userLocation = pos;
+            _isCentered = true;
+            _initialCenter ??= pos;
+          });
+          if (wasAlreadyRendered) {
+            _mapController.move(pos, 16);
+          }
+          // Refine with accurate GPS in background without blocking the map
+          _fetchAccuratePosition();
+          return;
+        }
+
+        // No last known — wait for GPS (first launch or cleared cache)
         final position = await Geolocator.getCurrentPosition(
           locationSettings: const LocationSettings(
             accuracy: LocationAccuracy.medium,
-            timeLimit: Duration(seconds: 5),
+            timeLimit: Duration(seconds: 8),
           ),
         );
-        center = LatLng(position.latitude, position.longitude);
-        if (mounted) setState(() => _userLocation = center);
+        if (mounted) {
+          final pos = LatLng(position.latitude, position.longitude);
+          final wasAlreadyRendered = _initialCenter != null;
+          setState(() {
+            _userLocation = pos;
+            _isCentered = true;
+            _initialCenter ??= pos;
+          });
+          if (wasAlreadyRendered) {
+            _mapController.move(pos, 16);
+            _loadShops();
+          }
+          return;
+        }
       }
-    } catch (_) {
-      // Keep France fallback
-    }
+    } catch (_) {}
 
-    if (mounted) {
-      if (_initialCenter == null) {
-        setState(() => _initialCenter = center);
-      } else {
-        _mapController.move(center, 16);
-        _loadShops();
-      }
+    if (mounted && _initialCenter == null) {
+      setState(() => _initialCenter = franceFallback);
     }
+  }
+
+  Future<void> _fetchAccuratePosition() async {
+    try {
+      final position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.medium,
+          timeLimit: Duration(seconds: 10),
+        ),
+      );
+      if (!mounted) return;
+      final pos = LatLng(position.latitude, position.longitude);
+      setState(() => _userLocation = pos);
+      if (_isCentered) {
+        _mapController.move(pos, _mapController.camera.zoom);
+      }
+    } catch (_) {}
   }
 
   Future<void> _loadShops() async {
@@ -142,6 +183,10 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
 
   void _onMapEvent(MapEvent event) {
     if (event is MapEventMoveEnd) {
+      // Only mark as not centered when the user manually moves the map
+      if (event.source != MapEventSource.mapController && _isCentered) {
+        setState(() => _isCentered = false);
+      }
       _loadShops();
     }
   }
@@ -212,6 +257,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
 
   void _recenterMap() {
     if (_userLocation != null) {
+      setState(() => _isCentered = true);
       _mapController.move(_userLocation!, 16);
       _loadShops();
     } else {
@@ -453,19 +499,27 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                     ),
                   ),
                   Container(height: 1, width: 36.w, color: Colors.grey.shade300),
-                  GestureDetector(
-                    onTap: _recenterMap,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 8.h),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.my_location, color: Colors.grey, size: 100.sp),
-                          SizedBox(height: 2.h),
-                          Text('Recentrer', style: TextStyle(fontSize: 28.sp, color: Colors.grey, fontWeight: FontWeight.w600)),
-                        ],
-                      ),
-                    ),
+                  Builder(
+                    builder: (context) {
+                      final canRecenter = _userLocation != null && !_isCentered;
+                      final color = canRecenter
+                          ? Theme.of(context).colorScheme.primary
+                          : Colors.grey;
+                      return GestureDetector(
+                        onTap: canRecenter ? _recenterMap : null,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 8.h),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.my_location, color: color, size: 100.sp),
+                              SizedBox(height: 2.h),
+                              Text('Recentrer', style: TextStyle(fontSize: 28.sp, color: color, fontWeight: FontWeight.w600)),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),

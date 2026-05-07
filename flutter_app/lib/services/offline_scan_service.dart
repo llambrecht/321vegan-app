@@ -256,6 +256,8 @@ class OfflineScanService {
               'ean': event['ean'],
               'shop_name': shopName,
               'scan_event_id': scanEventId,
+              'nearby_shops': response['nearby_shops'],
+              'shop_id': response['shop_id'],
             });
           }
         }
@@ -301,6 +303,8 @@ class OfflineScanService {
               'ean': event['ean'],
               'shop_name': shopName,
               'scan_event_id': scanEventId,
+              'nearby_shops': response['nearby_shops'],
+              'shop_id': response['shop_id'],
             });
           }
         } else {

@@ -59,6 +59,7 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
   Map<String, ProductOfInterest> _productsOfInterestMap = {};
   Map<String, String> _alternativeEanToMainEan = {};
   bool _scannerPausedByModal = false;
+  bool _isRetrying = false;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -110,43 +111,49 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
     });
   }
 
-  /// Retry pending scans when app starts
+  /// Retry pending scans when app starts or resumes
   Future<void> _retryPendingScans() async {
-    // First update pending count
-    final pendingCount = await OfflineScanService.getPendingCount();
+    if (_isRetrying) return;
+    _isRetrying = true;
+    try {
+      final pendingCount = await OfflineScanService.getPendingCount();
+      if (pendingCount == 0) return;
 
-    // If there are pending scans, try to sync them
-    if (pendingCount > 0) {
       final (successCount, shopConfirmations) =
           await OfflineScanService.retryPendingScans();
 
-      // Show shop confirmation dialogs for successfully synced scans
       if (successCount > 0 && mounted) {
-        // Refresh user data to get updated scanned products
         if (AuthService.isLoggedIn) {
           AuthService.getCurrentUser();
         }
 
-        // Show shop confirmation dialogs sequentially
         for (final confirmation in shopConfirmations) {
           if (!mounted) break;
 
           final ean = confirmation['ean'] as String;
           final shopName = confirmation['shop_name'] as String;
           final scanEventId = confirmation['scan_event_id'] as int;
+          final nearbyShops = (confirmation['nearby_shops'] as List<dynamic>?)
+              ?.map((s) => Map<String, dynamic>.from(s as Map))
+              .toList();
+          final shopId = confirmation['shop_id'];
+          final String? shopOsmId = (shopId == null &&
+                  nearbyShops != null &&
+                  nearbyShops.isNotEmpty)
+              ? nearbyShops.first['osm_id'] as String?
+              : null;
 
-          // Resolve alternative EAN to main EAN if applicable
           final mainEan = _alternativeEanToMainEan[ean] ?? ean;
-
-          // Get the product info from our cached map
           final product = _productsOfInterestMap[mainEan];
           if (product != null) {
-            _showShopConfirmationDialog(shopName, scanEventId, product);
-            // Wait a bit before showing the next dialog
+            _showShopConfirmationDialog(shopName, scanEventId, product,
+                nearbyShops: nearbyShops, shopOsmId: shopOsmId);
             await Future.delayed(const Duration(milliseconds: 500));
           }
         }
       }
+    } finally {
+      _isRetrying = false;
     }
   }
 
