@@ -44,6 +44,7 @@ class MyHomePageState extends State<MyHomePage>
   final TextEditingController _dateController = TextEditingController();
   bool _hasNewPartners = false;
   late AnimationController _partnersAnimationController;
+  late AnimationController _shineController;
   String? _currentAvatar;
 
   @override
@@ -71,6 +72,11 @@ class MyHomePageState extends State<MyHomePage>
       duration: const Duration(milliseconds: 1000),
       vsync: this,
     )..repeat(reverse: true);
+
+    _shineController = AnimationController(
+      duration: const Duration(milliseconds: 3500),
+      vsync: this,
+    )..repeat();
 
     _loadData();
     _checkNewPartners();
@@ -114,6 +120,7 @@ class MyHomePageState extends State<MyHomePage>
     motionTabBarController.dispose();
     _confettiController.dispose();
     _partnersAnimationController.dispose();
+    _shineController.dispose();
     _timer.cancel();
     _dateController.dispose();
     super.dispose();
@@ -433,45 +440,87 @@ class MyHomePageState extends State<MyHomePage>
                                         ),
                                       );
                                     },
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 28.w, vertical: 14.h),
-                                      decoration: BoxDecoration(
-                                        gradient: const LinearGradient(
-                                          colors: [
-                                            Color(0xFF7C3AED),
-                                            Color(0xFFA855F7),
-                                          ],
-                                          begin: Alignment.topLeft,
-                                          end: Alignment.bottomRight,
-                                        ),
-                                        borderRadius:
-                                            BorderRadius.circular(40.r),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: const Color(0xFF7C3AED)
-                                                .withValues(alpha: 0.35),
-                                            blurRadius: 12,
-                                            offset: const Offset(0, 4),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(Icons.favorite,
-                                              color: Colors.white, size: 44.sp),
-                                          SizedBox(width: 10.w),
-                                          Text(
-                                            'Soutenir 321 Vegan',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 40.sp,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: 'Baloo',
+                                    child: ClipRRect(
+                                      borderRadius:
+                                          BorderRadius.circular(40.r),
+                                      child: AnimatedBuilder(
+                                        animation: _shineController,
+                                        builder: (context, child) {
+                                          final t = CurvedAnimation(
+                                            parent: _shineController,
+                                            curve: const Interval(0.0, 0.35,
+                                                curve: Curves.easeInOut),
+                                          ).value;
+                                          final shinePos = -1.5 + t * 3.0;
+                                          return Stack(
+                                            children: [
+                                              child!,
+                                              Positioned.fill(
+                                                child: IgnorePointer(
+                                                  child: DecoratedBox(
+                                                    decoration: BoxDecoration(
+                                                      gradient: LinearGradient(
+                                                        begin: Alignment(
+                                                            shinePos - 0.4, -1),
+                                                        end: Alignment(
+                                                            shinePos + 0.4, 1),
+                                                        colors: [
+                                                          Colors.transparent,
+                                                          Colors.white
+                                                              .withValues(
+                                                                  alpha: 0.28),
+                                                          Colors.transparent,
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 28.w, vertical: 14.h),
+                                          decoration: BoxDecoration(
+                                            gradient: const LinearGradient(
+                                              colors: [
+                                                Color(0xFF7C3AED),
+                                                Color(0xFFA855F7),
+                                              ],
+                                              begin: Alignment.topLeft,
+                                              end: Alignment.bottomRight,
                                             ),
+                                            borderRadius:
+                                                BorderRadius.circular(40.r),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: const Color(0xFF7C3AED)
+                                                    .withValues(alpha: 0.35),
+                                                blurRadius: 12,
+                                                offset: const Offset(0, 4),
+                                              ),
+                                            ],
                                           ),
-                                        ],
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(Icons.favorite,
+                                                  color: Colors.white,
+                                                  size: 44.sp),
+                                              SizedBox(width: 10.w),
+                                              Text(
+                                                'Soutenir 321 Vegan',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 40.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontFamily: 'Baloo',
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),

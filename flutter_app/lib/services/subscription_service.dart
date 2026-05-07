@@ -67,14 +67,13 @@ class SubscriptionService {
     // Load cached subscription status
     await _loadCachedStatus();
 
-    // Query available products
-    await queryProducts();
+    // Run network-dependent operations in background — don't block app startup
+    unawaited(queryProducts());
 
     // If logged in, check subscription status from backend
     if (AuthService.isLoggedIn) {
-      await checkSubscriptionStatus();
-      // Retry any pending receipts from previous sessions
-      await _retryPendingReceipts();
+      unawaited(checkSubscriptionStatus());
+      unawaited(_retryPendingReceipts());
     }
   }
 

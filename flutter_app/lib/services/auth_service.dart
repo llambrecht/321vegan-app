@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,8 +39,9 @@ class AuthService {
   static Future<void> init() async {
     await _loadStoredToken();
     if (isLoggedIn) {
-      await _checkAndRefreshToken();
-      await _syncUserDataToPreferences();
+      // Run network calls in background — don't block app startup
+      unawaited(_checkAndRefreshToken());
+      unawaited(_syncUserDataToPreferences());
     }
   }
 
