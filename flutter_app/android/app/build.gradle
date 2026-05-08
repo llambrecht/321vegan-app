@@ -24,7 +24,7 @@ if (keystorePropertiesFile.exists()) {
 
 def flutterVersionCode = "126"
 
-def flutterVersionName = "4.0.3"
+def flutterVersionName = "4.1.0"
 
 
 android {
