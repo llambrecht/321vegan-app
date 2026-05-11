@@ -11,6 +11,7 @@ import '../../pages/app_pages/Scan/settings_modal.dart';
 import '../../helpers/preference_helper.dart';
 import './edit_profile_modal.dart';
 import '../shared/social_feedback_buttons.dart';
+import '../shared/shine_wrapper.dart';
 import '../vegandex/vegandex_modal.dart';
 import '../theme/theme_selector_modal.dart';
 import '../../pages/app_pages/Profile/b12_reminder_settings_page.dart';
@@ -517,7 +518,9 @@ class _UserProfileState extends State<UserProfile> {
   Widget _buildSupportButton() {
     return GestureDetector(
       onTap: _openSubscriptionPage,
-      child: Container(
+      child: ShineWrapper(
+        borderRadius: 12,
+        child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: SubscriptionService.isSubscribed
@@ -580,7 +583,7 @@ class _UserProfileState extends State<UserProfile> {
           ],
         ),
       ),
-    );
+    ));
   }
 
   void _openEditProfileModal() {

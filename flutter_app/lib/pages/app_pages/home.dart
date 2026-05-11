@@ -26,6 +26,7 @@ import 'package:vegan_app/services/badge_service.dart';
 import 'package:vegan_app/services/notification_service.dart';
 import 'package:vegan_app/models/seasonal_theme.dart';
 import 'package:vegan_app/widgets/theme/seasonal_icon.dart';
+import 'package:vegan_app/widgets/shared/shine_wrapper.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -44,7 +45,6 @@ class MyHomePageState extends State<MyHomePage>
   final TextEditingController _dateController = TextEditingController();
   bool _hasNewPartners = false;
   late AnimationController _partnersAnimationController;
-  late AnimationController _shineController;
   String? _currentAvatar;
 
   @override
@@ -72,11 +72,6 @@ class MyHomePageState extends State<MyHomePage>
       duration: const Duration(milliseconds: 1000),
       vsync: this,
     )..repeat(reverse: true);
-
-    _shineController = AnimationController(
-      duration: const Duration(milliseconds: 3500),
-      vsync: this,
-    )..repeat();
 
     _loadData();
     _checkNewPartners();
@@ -120,7 +115,6 @@ class MyHomePageState extends State<MyHomePage>
     motionTabBarController.dispose();
     _confettiController.dispose();
     _partnersAnimationController.dispose();
-    _shineController.dispose();
     _timer.cancel();
     _dateController.dispose();
     super.dispose();
@@ -440,46 +434,9 @@ class MyHomePageState extends State<MyHomePage>
                                         ),
                                       );
                                     },
-                                    child: ClipRRect(
-                                      borderRadius:
-                                          BorderRadius.circular(40.r),
-                                      child: AnimatedBuilder(
-                                        animation: _shineController,
-                                        builder: (context, child) {
-                                          final t = CurvedAnimation(
-                                            parent: _shineController,
-                                            curve: const Interval(0.0, 0.35,
-                                                curve: Curves.easeInOut),
-                                          ).value;
-                                          final shinePos = -1.5 + t * 3.0;
-                                          return Stack(
-                                            children: [
-                                              child!,
-                                              Positioned.fill(
-                                                child: IgnorePointer(
-                                                  child: DecoratedBox(
-                                                    decoration: BoxDecoration(
-                                                      gradient: LinearGradient(
-                                                        begin: Alignment(
-                                                            shinePos - 0.4, -1),
-                                                        end: Alignment(
-                                                            shinePos + 0.4, 1),
-                                                        colors: [
-                                                          Colors.transparent,
-                                                          Colors.white
-                                                              .withValues(
-                                                                  alpha: 0.28),
-                                                          Colors.transparent,
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                        child: Container(
+                                    child: ShineWrapper(
+                                      borderRadius: 40,
+                                      child: Container(
                                           padding: EdgeInsets.symmetric(
                                               horizontal: 28.w, vertical: 14.h),
                                           decoration: BoxDecoration(
@@ -525,7 +482,6 @@ class MyHomePageState extends State<MyHomePage>
                                     ),
                                   ),
                                 ),
-                              ),
                             Text(
                               "Vous êtes végane depuis",
                               style: TextStyle(
