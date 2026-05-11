@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:vegan_app/helpers/preference_helper.dart';
 import 'package:vegan_app/models/boycott_data.dart';
 
@@ -31,6 +33,58 @@ class _InfoModalState extends State<InfoModal> {
     _showBoycott = widget.initialBoycottValue ?? true;
   }
 
+  Widget _buildRichReason(String reason, List<String> sources) {
+    final pattern = RegExp(r'\[(\d+)\]');
+    final spans = <InlineSpan>[];
+    int lastEnd = 0;
+
+    for (final m in pattern.allMatches(reason)) {
+      if (m.start > lastEnd) {
+        spans.add(TextSpan(text: reason.substring(lastEnd, m.start)));
+      }
+      final index = int.parse(m.group(1)!) - 1;
+      if (index >= 0 && index < sources.length) {
+        final url = sources[index];
+        spans.add(WidgetSpan(
+          alignment: PlaceholderAlignment.middle,
+          child: GestureDetector(
+            onTap: () => launchUrl(
+              Uri.parse(url),
+              mode: LaunchMode.externalApplication,
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 4.h),
+              child: Text(
+                '[${index + 1}]',
+                style: TextStyle(
+                  fontSize: 38.sp,
+                  color: Colors.orange.shade700,
+                  decoration: TextDecoration.underline,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+        ));
+      }
+      lastEnd = m.end;
+    }
+    if (lastEnd < reason.length) {
+      spans.add(TextSpan(text: reason.substring(lastEnd)));
+    }
+
+    return Text.rich(
+      TextSpan(
+        style: TextStyle(
+          fontSize: 40.sp,
+          color: Colors.black87,
+          height: 1.4,
+        ),
+        children: spans,
+      ),
+    );
+  }
+
   Future<void> _toggleBoycott(bool value) async {
     await PreferencesHelper.setShowBoycottPref(value);
     setState(() {
@@ -42,101 +96,148 @@ class _InfoModalState extends State<InfoModal> {
   @override
   Widget build(BuildContext context) {
     final match = widget.boycottMatch;
+    final bool isBoycott = match != null;
+
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       padding: EdgeInsets.only(
-        left: 20,
-        right: 20,
-        top: 12,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+        left: 24.w,
+        right: 24.w,
+        top: 12.h,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 24.h,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 40,
-            height: 4,
+            width: 40.w,
+            height: 4.h,
             decoration: BoxDecoration(
               color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: BorderRadius.circular(2.r),
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 20.h),
           Flexible(
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (match != null) ...[
-                    Text(
-                      match.brandDisplay,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    if (match.groupName != null) ...[
-                      const SizedBox(height: 4),
-                      Text(
-                        'Appartient au groupe ${match.groupName}',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontStyle: FontStyle.italic,
-                          color: Colors.grey[600],
+                  Row(
+                    children: [
+                      Container(
+                        width: 64.w,
+                        height: 64.w,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.orange.shade50,
                         ),
-                        textAlign: TextAlign.center,
+                        child: Icon(
+                          isBoycott
+                              ? Icons.warning_amber_rounded
+                              : Icons.info_outline,
+                          size: 56.sp,
+                          color: Colors.orange.shade700,
+                        ),
+                      ),
+                      SizedBox(width: 12.w),
+                      Expanded(
+                        child: Text(
+                          isBoycott ? 'Marque à éviter' : 'Information',
+                          style: TextStyle(
+                            fontSize: 60.sp,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                        ),
                       ),
                     ],
-                    const SizedBox(height: 12),
+                  ),
+                  SizedBox(height: 20.h),
+                  if (match != null) ...[
                     Container(
-                      padding: const EdgeInsets.all(12),
+                      width: double.infinity,
+                      padding: EdgeInsets.all(16.w),
                       decoration: BoxDecoration(
                         color: Colors.orange.shade50,
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(12.r),
                         border: Border.all(color: Colors.orange.shade200),
                       ),
-                      child: Text(
-                        match.reason,
-                        style: const TextStyle(fontSize: 14),
-                        textAlign: TextAlign.center,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            match.brandDisplay,
+                            style: TextStyle(
+                              fontSize: 48.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          if (match.groupName != null) ...[
+                            SizedBox(height: 4.h),
+                            Text(
+                              'Appartient au groupe ${match.groupName}',
+                              style: TextStyle(
+                                fontSize: 36.sp,
+                                fontStyle: FontStyle.italic,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                          SizedBox(height: 10.h),
+                          _buildRichReason(match.reason, match.sources),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    const Divider(),
+                    SizedBox(height: 16.h),
+                    Divider(color: Colors.grey[200]),
+                    SizedBox(height: 16.h),
                   ],
-                  const SizedBox(height: 8),
                   Text(
                     widget.description,
                     style: TextStyle(
-                      fontSize: match != null ? 13 : 16,
-                      color: match != null ? Colors.grey[600] : Colors.black87,
+                      fontSize: 36.sp,
+                      color: Colors.grey[600],
+                      height: 1.5,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                   if (widget.showBoycottToggle) ...[
-                    const SizedBox(height: 24),
+                    SizedBox(height: 20.h),
                     Container(
-                      padding: const EdgeInsets.all(12),
+                      padding: EdgeInsets.all(16.w),
                       decoration: BoxDecoration(
-                        color: Colors.grey[100],
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.grey[300]!),
+                        color: Colors.grey[50],
+                        borderRadius: BorderRadius.circular(12.r),
+                        border: Border.all(color: Colors.grey[200]!),
                       ),
                       child: Row(
                         children: [
                           Expanded(
-                            child: Text(
-                              'Afficher les mentions Boycott',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.grey[800],
-                              ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Afficher les mentions Boycott',
+                                  style: TextStyle(
+                                    fontSize: 40.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                SizedBox(height: 4.h),
+                                Text(
+                                  'Vous pourrez réactiver cette option dans les paramètres',
+                                  style: TextStyle(
+                                    fontSize: 30.sp,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           Switch(
@@ -145,17 +246,37 @@ class _InfoModalState extends State<InfoModal> {
                             activeThumbColor: Colors.white,
                             activeTrackColor: const Color(0xFF1A722E),
                             inactiveThumbColor: Colors.white,
-                            inactiveTrackColor: Colors.grey[400],
+                            inactiveTrackColor: Colors.grey[300],
                           ),
                         ],
                       ),
                     ),
                   ],
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('Fermer'),
+                  SizedBox(height: 24.h),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF1A722E),
+                        foregroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(vertical: 16.h),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14.r),
+                        ),
+                        elevation: 2,
+                      ),
+                      
+                      child: Text(
+                        'Fermer',
+                        style: TextStyle(
+                          fontSize: 48.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
                   ),
+                  SizedBox(height: 100.h)
                 ],
               ),
             ),

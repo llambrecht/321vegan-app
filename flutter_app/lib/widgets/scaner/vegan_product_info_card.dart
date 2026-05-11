@@ -139,19 +139,19 @@ class VeganProductInfoCard extends StatelessWidget {
                         vertical: 8,
                       ),
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
                           'À éviter',
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 18,
+                            fontSize: 60.sp,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(width: 4),
-                        Icon(Icons.chevron_right, color: Colors.white, size: 20),
+                        const SizedBox(width: 4),
+                        const Icon(Icons.info_outline, color: Colors.white, size: 20),
                       ],
                     ),
                   ),
@@ -176,14 +176,22 @@ class VeganProductInfoCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: Text(
-                      '🚫 Biodynamie',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 60.sp,
-                        fontWeight: FontWeight.bold,
+                    child: 
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                      Text(
+                        '🚫 Biodynamie',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 60.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
+                        const SizedBox(width: 4),
+                        const Icon(Icons.info_outline, color: Colors.white, size: 20),
+                      ]
+                    )
                   ),
                 ],
               ],
