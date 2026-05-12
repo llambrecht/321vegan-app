@@ -544,13 +544,19 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
 
   Future<void> _checkVeganStatusOffline(String barcode) async {
     final product = await ProductInfoHelper.getProductInfo(barcode);
-    // Add EAN-8 warning flag if barcode is 8 digits
     if (barcode.length == 8) {
       product['is_ean8'] = true;
     }
     setState(() {
       productInfo = product;
     });
+
+    final isVegan = product['is_vegan'];
+    if ((isVegan == 'true' || isVegan == 'false') &&
+        AuthService.isLoggedIn &&
+        !SubscriptionService.isSubscribed) {
+      await PreferencesHelper.incrementMembershipHitScanCount();
+    }
   }
 
   bool isValidEAN13(String barcode) {

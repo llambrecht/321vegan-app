@@ -27,6 +27,8 @@ import 'package:vegan_app/services/notification_service.dart';
 import 'package:vegan_app/models/seasonal_theme.dart';
 import 'package:vegan_app/widgets/theme/seasonal_icon.dart';
 import 'package:vegan_app/widgets/shared/shine_wrapper.dart';
+import 'package:vegan_app/pages/app_pages/Scan/membership_prompt_dialog.dart';
+import 'package:video_player/video_player.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -92,10 +94,53 @@ class MyHomePageState extends State<MyHomePage>
     }
   }
 
+  Future<void> _checkMembershipPrompt() async {
+    if (!AuthService.isLoggedIn) return;
+    if (SubscriptionService.isSubscribed) return;
+
+    final pending = await PreferencesHelper.isMembershipPromptPending();
+    if (!pending) return;
+
+    await PreferencesHelper.clearMembershipPromptPending();
+
+    if (!mounted) return;
+
+    // Pre-initialize video before opening dialog so it plays immediately
+    final videoController = VideoPlayerController.asset(
+      'lib/assets/abonnement-popup-vid.mp4',
+    );
+    await videoController.initialize();
+    videoController.setLooping(true);
+    videoController.setVolume(0);
+    videoController.play();
+
+    if (!mounted) {
+      videoController.dispose();
+      return;
+    }
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => MembershipPromptDialog(
+        videoController: videoController,
+        onSupport: () {
+          Navigator.of(context).pop();
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const SubscriptionPage()),
+          );
+        },
+        onLater: () => Navigator.of(context).pop(),
+      ),
+    );
+  }
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       B12ReminderService.checkAndRescheduleIfNeeded();
+      _checkMembershipPrompt();
     }
   }
 
@@ -132,6 +177,8 @@ class MyHomePageState extends State<MyHomePage>
 
     // Check and show B12 popup if needed
     _checkAndShowB12Popup();
+
+    _checkMembershipPrompt();
   }
 
   void _onDateSaved(DateTime date) {
@@ -707,8 +754,8 @@ class MyHomePageState extends State<MyHomePage>
                   // Check for new badges when Accueil tab is selected
                   if (value == 1) {
                     _checkForNewBadges();
-                    // Reload avatar when returning to home tab
                     _loadAvatar();
+                    _checkMembershipPrompt();
                   }
                   // Mark partners as visited when tab is selected
                   if (value == 0 && _hasNewPartners) {
