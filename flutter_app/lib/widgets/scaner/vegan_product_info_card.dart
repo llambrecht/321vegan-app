@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vegan_app/helpers/helper.dart';
+import 'package:vegan_app/models/boycott_data.dart';
 import 'package:vegan_app/widgets/scaner/info_modal.dart';
 
 class VeganProductInfoCard extends StatelessWidget {
@@ -15,164 +16,18 @@ class VeganProductInfoCard extends StatelessWidget {
     this.onBoycottToggleChanged,
   });
 
-  // This is a temporary solution to check if a brand is boycott.
-  // Todo : Find a better solution; like using a json file with more infos for each manufacturer or a database ?
-  static const List<String> bdsBrands = [
-    // ==== Mars Group ====
-    'mars',
-    'dove',
-    'bounty',
-    'ben\'s original',
-    'ben\'s',
-    'skittles',
-    'm&m\'s',
-    'snickers',
-    'ebly',
-    'suzi wan',
-    'marmite',
-    // ==== Carrefour Group ====
-    'carrefour',
-    'reflets de france',
-    'tex',
-    'grand jury',
-
-    // ==== Coca-Cola Company ====
-    'coca-cola',
-    'coca cola',
-    'fanta',
-    'sprite',
-    'tropico',
-    'minute maid',
-    'powerade',
-    'monster',
-    'fuze tea',
-    'fuzetea',
-    'innocent',
-    'vitaminwater',
-
-    // ==== PepsiCo ====
-    'pepsico',
-    'pepsi',
-    'sabra',
-    'lays',
-    'lay\'s',
-    'quaker',
-    'doritos',
-    'bénénuts',
-    'benenuts',
-    'rockstar',
-    'montain dew',
-    '7up',
-    'tropicana',
-    'lipton',
-    'quaker',
-
-    // ==== Nestlé ====
-    'nestlé',
-    'nestle',
-    'maizena',
-    'maïzena',
-    'marmite',
-    'garden gourmet',
-    'maggi',
-    'nescafé',
-    'nesquick',
-    'nesquik',
-    'perrier',
-    'vitel',
-    'san pellegrino',
-    'ferrero',
-
-    // ==== Unilever ====
-    'unilever',
-    'knorr',
-    'maille',
-    'lipton',
-    'amora',
-    'hellmann\'s',
-    'hellmanns',
-    'ben & jerry\'s',
-    'ben & jerrys',
-    'ben&jerry\'s',
-    'elephant',
-    'éléphant',
-    'eléphant',
-    'the vegetarian butcher',
-
-    // ==== L'Oréal ====
-    'l\'oréal',
-    'l\'oreal',
-    'loréal',
-    'loreal',
-    'garnier',
-
-    // ==== Walmart Group ====
-    'walmart',
-
-    // ==== Tesco ====
-    'tesco',
-
-    // ==== Lidl (and sub-brands) ====
-    'lidl',
-    'snack day',
-    'freshona',
-    'favorina',
-    'deluxe',
-    'cien',
-    'solevita',
-    'sondey',
-    'vemondo',
-    'crownfield',
-
-    // ==== Mondelez ====
-    'mondelez',
-    'oreo',
-    'belvita',
-    'cote d\'or',
-    'côte d\'or',
-    'lu',
-    'belin',
-    'heudebert',
-    'poulain',
-    'sour patch',
-
-    // ==== Danone ====
-    'danone',
-    'materne',
-    'alpro',
-    'volvic',
-    'evian',
-    'bledina',
-
-    // ==== Others ====
-    'starbucks',
-    'la grande épicerie paris',
-    'osem',
-    'ahava',
-    'sodastream',
-    'oatly',
-    'old el paso',
-    'redefine meat',
-    'henaff',
-    'hénaff',
-    'redbull',
-    'red bull',
-    'maayane',
-  ];
-
-  bool isOnBDSList() {
+  BoycottMatch? getBoycottMatch() {
     final brand = productInfo?['brand'];
-    if (brand != null && brand is String) {
-      final brandList =
-          brand.split(',').map((e) => e.trim().toLowerCase()).toList();
-      return brandList.any((brand) => bdsBrands.contains(brand.toLowerCase()));
+    if (brand != null && brand is String && brand.isNotEmpty) {
+      return BoycottData.findBrand(brand);
     }
-    return false;
+    return null;
   }
 
   @override
   Widget build(BuildContext context) {
-    final bool isBDS = isOnBDSList();
+    final BoycottMatch? boycottMatch = getBoycottMatch();
+    final bool isBoycotted = boycottMatch != null;
 
     return Container(
       decoration: BoxDecoration(
@@ -256,16 +111,18 @@ class VeganProductInfoCard extends StatelessWidget {
                       );
                     },
                   ),
-                if (isBDS && showBoycott) ...[
+                if (isBoycotted && showBoycott) ...[
                   const SizedBox(width: 8),
                   ElevatedButton(
                     onPressed: () {
-                      showDialog(
+                      showModalBottomSheet(
                         context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
                         builder: (context) => InfoModal(
-                          title: 'Boycott',
                           description:
-                              "Les produits notés 'Boycott' sont des produits de marques qui ont des actions néfastes pour l'environnement, la santé, le droits des animaux ou les droits humains. Nous vous encourageons à boycotter ces marques pour soutenir des pratiques éthiques et responsables.",
+                              "Les produits notés 'À éviter' sont des produits de marques qui ont des actions néfastes pour l'environnement, la santé, les droits des animaux ou les droits humains. Nous vous encourageons à boycotter ces marques pour soutenir des pratiques éthiques et responsables.",
+                          boycottMatch: boycottMatch,
                           showBoycottToggle: true,
                           initialBoycottValue: showBoycott,
                           onBoycottToggleChanged: onBoycottToggleChanged,
@@ -282,31 +139,32 @@ class VeganProductInfoCard extends StatelessWidget {
                         vertical: 8,
                       ),
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.info_outline, color: Colors.white, size: 20),
-                        SizedBox(width: 6),
                         Text(
-                          'Boycott',
+                          'À éviter',
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 18,
+                            fontSize: 60.sp,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
+                        const SizedBox(width: 4),
+                        const Icon(Icons.info_outline, color: Colors.white, size: 20),
                       ],
                     ),
                   ),
                 ],
-                if (!isBDS && productInfo?['biodynamie'] == true) ...[
+                if (!isBoycotted && productInfo?['biodynamie'] == true) ...[
                   const SizedBox(width: 8),
                   ElevatedButton(
                     onPressed: () {
-                      showDialog(
+                      showModalBottomSheet(
                         context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
                         builder: (context) => const InfoModal(
-                          title: 'Biodynamie',
                           description:
                               "La biodynamie est une méthode agricole qui utilise des préparations d'origine animale, telles que des cornes de vache ou des organes d'animaux, dans ses pratiques de culture. Cette approche est issue de l'anthroposophie, un courant ésotérique aux dérives parfois considérées comme sectaires. En raison de l'utilisation d'éléments animaux et de son ancrage idéologique, nous ne considérons pas les produits issus de la biodynamie comme compatibles avec les principes du véganisme.",
                         ),
@@ -318,14 +176,22 @@ class VeganProductInfoCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: Text(
-                      '🚫 Biodynamie',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 60.sp,
-                        fontWeight: FontWeight.bold,
+                    child: 
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                      Text(
+                        '🚫 Biodynamie',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 60.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
+                        const SizedBox(width: 4),
+                        const Icon(Icons.info_outline, color: Colors.white, size: 20),
+                      ]
+                    )
                   ),
                 ],
               ],

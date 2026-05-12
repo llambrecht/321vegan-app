@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -27,6 +28,7 @@ import 'package:vegan_app/widgets/auth/register_form.dart';
 import 'package:vegan_app/widgets/auth/login_form.dart';
 import 'package:vegan_app/services/subscription_service.dart';
 import 'package:vegan_app/widgets/scaner/product_scores_section.dart';
+import 'package:vegan_app/pages/app_pages/Scan/account_prompt_dialog.dart';
 
 class ScanPage extends StatefulWidget {
   final VoidCallback? onNavigateToProfile;
@@ -542,13 +544,19 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
 
   Future<void> _checkVeganStatusOffline(String barcode) async {
     final product = await ProductInfoHelper.getProductInfo(barcode);
-    // Add EAN-8 warning flag if barcode is 8 digits
     if (barcode.length == 8) {
       product['is_ean8'] = true;
     }
     setState(() {
       productInfo = product;
     });
+
+    final isVegan = product['is_vegan'];
+    if ((isVegan == 'true' || isVegan == 'false') &&
+        AuthService.isLoggedIn &&
+        !SubscriptionService.isSubscribed) {
+      await PreferencesHelper.incrementMembershipHitScanCount();
+    }
   }
 
   bool isValidEAN13(String barcode) {
@@ -559,6 +567,204 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
     }
     int checksum = (10 - (sum % 10)) % 10;
     return checksum == int.parse(barcode[12]);
+  }
+
+  bool isValidEAN8(String barcode) {
+    int sum = 0;
+    for (int i = 0; i < 7; i++) {
+      int digit = int.parse(barcode[i]);
+      sum += (i % 2 == 0) ? digit : digit * 3;
+    }
+    int checksum = (10 - (sum % 10)) % 10;
+    return checksum == int.parse(barcode[7]);
+  }
+
+  void _simulateScan(String rawValue) {
+    var barcodeValue = rawValue.trim();
+    if (barcodeValue.length == 12) {
+      barcodeValue = '0$barcodeValue';
+    }
+    if (barcodeValue.isEmpty) return;
+    if (_lastScannedBarcode == barcodeValue) {
+      _lastScannedBarcode = ''; // allow re-scanning same barcode in debug
+    }
+    _handleBarcode(BarcodeCapture(
+      barcodes: [Barcode(rawValue: barcodeValue)],
+    ));
+  }
+
+  void _showManualEanDialog() {
+    final textController = TextEditingController();
+
+    bool isValid(String raw) {
+      String normalized = raw;
+      if (normalized.length == 12) normalized = '0$normalized';
+      if (normalized.length == 13 && isValidEAN13(normalized)) return true;
+      if (normalized.length == 8 && isValidEAN8(normalized)) return true;
+      return false;
+    }
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        String? errorText;
+        return StatefulBuilder(
+          builder: (ctx, setStateDialog) {
+            void submit() {
+              final raw = textController.text.trim();
+              if (isValid(raw)) {
+                Navigator.of(ctx).pop();
+                _simulateScan(raw);
+              } else {
+                setStateDialog(() => errorText = 'Code-barres invalide (EAN-8 ou EAN-13)');
+              }
+            }
+
+            return Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+              ),
+              padding: EdgeInsets.only(
+                left: 24,
+                right: 24,
+                top: 12,
+                bottom: MediaQuery.of(ctx).viewInsets.bottom + 28,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Icon(Icons.qr_code_2, size: 32, color: Colors.grey.shade700),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Saisir un code-barres',
+                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              'Si le scan par caméra est impossible,\nsaisissez le code manuellement.',
+                              style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  TextField(
+                    controller: textController,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    autofocus: true,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 3,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: '3017620422003',
+                      hintStyle: TextStyle(
+                        color: Colors.grey.shade300,
+                        fontWeight: FontWeight.normal,
+                        letterSpacing: 2,
+                      ),
+                      errorText: errorText,
+                      errorStyle: const TextStyle(fontSize: 13),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: Colors.grey.shade300),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: Colors.grey.shade300),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: Color(0xFF1A722E), width: 2),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: Colors.red),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: Colors.red, width: 2),
+                      ),
+                    ),
+                    onChanged: (_) {
+                      if (errorText != null) setStateDialog(() => errorText = null);
+                    },
+                    onSubmitted: (_) => submit(),
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.of(ctx).pop(),
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            side: BorderSide(color: Colors.grey.shade300),
+                            foregroundColor: Colors.grey.shade700,
+                          ),
+                          child: const Text('Annuler', style: TextStyle(fontSize: 15)),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: submit,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF1A722E),
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 0,
+                          ),
+                          child: const Text('Scanner', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
   void _handleBarcode(BarcodeCapture event) {
@@ -623,118 +829,7 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
 
     showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(28.r),
-          ),
-          child: Container(
-            padding: EdgeInsets.all(32.w),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(28.r),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  padding: EdgeInsets.all(24.w),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .primary
-                        .withValues(alpha: 0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.person_add,
-                    size: 100.sp,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-                SizedBox(height: 24.h),
-                Text(
-                  'Créez votre compte !',
-                  style: TextStyle(
-                    fontSize: 56.sp,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey[800],
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 16.h),
-                Text(
-                  'Accédez à toutes les fonctionnalités de l\'application en créant gratuitement votre compte !',
-                  style: TextStyle(
-                    fontSize: 42.sp,
-                    color: Colors.grey[600],
-                    height: 1.4,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 32.h),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () async {
-                          await PreferencesHelper.markAccountPromptDismissed();
-                          if (context.mounted) {
-                            Navigator.of(context).pop();
-                          }
-                        },
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.grey[600],
-                          side: BorderSide(color: Colors.grey[300]!, width: 2),
-                          padding: EdgeInsets.symmetric(vertical: 20.h),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.r),
-                          ),
-                        ),
-                        child: Text(
-                          'Plus tard',
-                          style: TextStyle(
-                            fontSize: 44.sp,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 16.w),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          await PreferencesHelper.markAccountPromptDismissed();
-                          if (context.mounted) {
-                            Navigator.of(context).pop();
-                            _showAuthBottomSheet();
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.primary,
-                          foregroundColor: Colors.white,
-                          padding: EdgeInsets.symmetric(vertical: 20.h),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.r),
-                          ),
-                        ),
-                        child: Text(
-                          'Créer un compte',
-                          style: TextStyle(
-                            fontSize: 44.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+      builder: (_) => AccountPromptDialog(onCreateAccount: _showAuthBottomSheet),
     ).then((_) {
       controller.start();
     });
@@ -1180,6 +1275,33 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
                   Icons.switch_access_shortcut_add_outlined,
                   color: Colors.black54,
                   size: 80.sp,
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 100.h,
+            right: 20,
+            child: Container(
+              padding: EdgeInsets.all(8.w),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.2),
+                    spreadRadius: 1,
+                    blurRadius: 6,
+                    offset: const Offset(0, 1),
+                  ),
+                ],
+              ),
+              child: GestureDetector(
+                onTap: _showManualEanDialog,
+                child: Icon(
+                  Icons.keyboard_outlined,
+                  color: Colors.black54,
+                  size: 90.sp,
                 ),
               ),
             ),
