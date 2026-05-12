@@ -55,13 +55,12 @@ class BoycottData {
     BoycottGroup(
       name: 'Mars Group',
       reason:
-          'Mars est l\'un des plus grands pollueurs de plastiques au monde.[1] Le groupe a également été lié au travail des enfants dans ses filières cacao en Afrique,[2][3] à de la déforestation et à de la fixation illégale des prix. Mars a continué ses activités en Russie après l\'invasion de l\'Ukraine,[4] ce qui lui a valu d\'être nommé sponsor international de la guerre par le gouvernement ukrainien.[5]',
+          'Mars est l\'un des plus grands pollueurs de plastiques au monde.[1] Le groupe a également été lié au travail des enfants dans ses filières cacao en Afrique,[2][3] à de la déforestation et à de la fixation illégale des prix. Mars a continué ses activités en Russie après l\'invasion de l\'Ukraine.[4]',
       sources: [
         'https://brandaudit.breakfreefromplastic.org/brand-audit-2023/',
         'https://www.business-humanrights.org/en/latest-news/nestle-mars-among-firms-named-in-cocoa-child-labour-suit/',
         'https://eu.usatoday.com/story/money/2023/12/01/mars-child-labor-cbs-investigation-findings-response/71769249007/',
         'https://www.business-humanrights.org/en/latest-news/us-co-mars-leases-40000-sqm-warehouse-in-russia-despite-pledges-to-halt-investments/',
-        'https://nazk.gov.ua/en/news/you-re-not-you-when-you-continue-to-work-in-the-russian-federation-the-nacp-added-pepsico-and-mars-to-the-list-of-international-sponsors-of-the-war/',
       ],
       brands: [
         BoycottBrand('mars', 'Mars'),
@@ -86,7 +85,7 @@ class BoycottData {
     BoycottGroup(
       name: 'Carrefour Group',
       reason:
-          'Carrefour a mis en danger ses employés, et ses chaînes d\'approvisionnement ont été liées à de l\'esclavage moderne,[1] de la maltraitance animale et de la déforestation illégale en Amazonie.[2] L\'enseigne a aussi discriminé des clients LGBT[3] Carrefour figure sur la liste de boycott du mouvement BDS depuis 2022 : l\'enseigne a conclu un partenariat de franchise avec Yenot Bitan, une chaîne israélienne dont des magasins sont implantés dans des colonies illégales en Cisjordanie et à Jérusalem-Est occupée.[5]',
+          'Les chaînes d\'approvisionnement de Carrefour ont été liées à de l\'esclavage moderne,[1] de la maltraitance animale et de la déforestation illégale en Amazonie.[2] L\'enseigne a aussi discriminé des clients LGBT[3] Carrefour figure sur la liste de boycott du mouvement BDS depuis 2022 : l\'enseigne a conclu un partenariat de franchise avec Yenot Bitan, une chaîne israélienne dont des magasins sont implantés dans des colonies illégales en Cisjordanie et à Jérusalem-Est occupée.[5]',
       sources: [
         'https://web.archive.org/web/20200428183820/https://www.theguardian.com/global-development/2014/jun/10/supermarket-prawns-thailand-produced-slave-labour',
         'https://www.lefigaro.fr/flash-eco/deforestation-en-amazonie-carrefour-interpelle-sur-ses-fournisseurs-20220905',
