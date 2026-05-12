@@ -161,18 +161,20 @@ class CosmeticsPageState extends State<CosmeticsPage> {
               ),
             ),
             const SizedBox(height: 8),
-            if (!cosmetic.vegan) _buildVeganAlert(),
-            const SizedBox(height: 8),
-            _buildStatusRow(
-              icon: cosmetic.vegan ? Icons.check_circle : Icons.info,
-              color: cosmetic.vegan ? Colors.green : Colors.orange,
-              text: cosmetic.vegan ? "100% Vegan" : "Vérifiez le produit",
-            ),
+            if (!cosmetic.vegan && cosmetic.crueltyFree) ...[
+              _buildVeganAlert(),
+              const SizedBox(height: 8),
+            ],
+            if (cosmetic.crueltyFree)
+              _buildStatusRow(
+                icon: cosmetic.vegan ? Icons.check_circle : Icons.info,
+                color: cosmetic.vegan ? Colors.green : Colors.orange,
+                text: cosmetic.vegan ? "100% Vegan" : "Vérifiez le produit",
+              ),
             _buildStatusRow(
               icon: cosmetic.crueltyFree ? Icons.check_circle : Icons.close,
               color: cosmetic.crueltyFree ? Colors.green : Colors.red,
-              text:
-                  cosmetic.crueltyFree ? "Cruelty-Free 🐰" : "Pas cruelty-free",
+              text: cosmetic.crueltyFree ? "Cruelty-Free 🐰" : "Pas cruelty-free",
             ),
           ],
         ),
