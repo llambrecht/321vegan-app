@@ -83,7 +83,7 @@ class _MembershipPromptDialogState extends State<MembershipPromptDialog> {
                       ),
                       SizedBox(height: 12.h),
                       Text(
-                        'Vous utilisez l\'application régulièrement. Aidez-nous à la maintenir et à l\'améliorer en devenant membre !',
+                        'Vous aimez l\'application ? Aidez-nous à la maintenir et à l\'améliorer en devenant membre !',
                         style: TextStyle(
                           fontSize: 36.sp,
                           color: Colors.grey[600],
