@@ -154,7 +154,7 @@ class BoycottData {
     BoycottGroup(
       name: 'Nestlé',
       reason:
-          'Le groupe Nestlé est mis en cause pour travail des enfants dans ses filières cacao en Afrique de l\'Ouest,[1][2] et pour avoir remis en question le droit à l\'eau potable en cherchant à privatiser des sources naturelles dans des régions vulnérables.[3] En France, ils ont fait de l\'enfuissement illégal de déchets, menant à des montagnes de plastiques.[4]',
+          'Le groupe Nestlé est mis en cause pour travail des enfants dans ses filières cacao en Afrique de l\'Ouest,[1][2] et pour avoir remis en question le droit à l\'eau potable en cherchant à privatiser des sources naturelles dans des régions vulnérables.[3] En France, ils ont fait de l\'enfouissement illégal de déchets, menant à des montagnes de plastiques.[4]',
       sources: [
         'https://web.archive.org/web/20081226141935/http://news.bbc.co.uk/1/hi/world/africa/1272522.stm',
         'https://web.archive.org/web/20090114115945/http://news.bbc.co.uk/2/hi/africa/1311982.stm',
