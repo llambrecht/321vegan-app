@@ -1,6 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:upgrader/upgrader.dart';
 import 'package:vegan_app/helpers/database_helper.dart';
+import 'package:vegan_app/widgets/shared/update_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:vegan_app/models/b12_reminder_settings.dart';
 import 'helpers/first_time_launch.dart';
@@ -105,7 +106,7 @@ class MyAppState extends State<MyApp> {
           title: '321 Vegan',
           debugShowCheckedModeBanner: false,
           theme: _currentTheme,
-          home: UpgradeAlert(
+          home: CustomUpgradeAlert(
             upgrader: _upgrader,
             child: const FirstLaunchChecker(),
           ),
