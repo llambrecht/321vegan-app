@@ -161,6 +161,29 @@ class ValidatorService {
     }
   }
 
+  // DELETE /products/{id}
+  static Future<bool> deleteProduct(int id) async {
+    try {
+      final dio = await DioClient.getDio();
+      final token = AuthService.accessToken;
+
+      final response = await dio.delete(
+        '/products/$id',
+        options: dio_pkg.Options(
+          headers: {
+            if (token != null) 'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      return response.statusCode != null &&
+          response.statusCode! >= 200 &&
+          response.statusCode! < 300;
+    } catch (_) {
+      return false;
+    }
+  }
+
   // OpenFoodFacts product data
   static Future<OffProductData> fetchOffData(String ean) async {
     try {

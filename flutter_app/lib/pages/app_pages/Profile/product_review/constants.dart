@@ -18,7 +18,7 @@ const nonVeganIngredients = [
   'arômes', 'arômes naturels', 'vitamines', "cire d'abeille"
 ];
 
-const maybeVeganSelectableIngredients = ['arômes', 'arômes naturels', 'vitamines' 'la clarification', 'exhausteurs de goût'];
+const maybeVeganSelectableIngredients = ['arômes', 'arômes naturels', 'vitamines', 'la clarification', 'exhausteurs de goût'];
 
 // Use for highlight in validating products
 const nonVeganIngredientKeywords = [
@@ -52,6 +52,8 @@ const nonVeganIngredientKeywords = [
   "veau",
   "miel", "honey",
   "crème", "creme", "cream",
+  "bonite",
+  "collagène", "collagen"
 ];
 
 const maybeVeganIngredientKeywords = [

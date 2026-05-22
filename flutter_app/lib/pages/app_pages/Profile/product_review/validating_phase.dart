@@ -42,6 +42,7 @@ class _ValidatingPhaseState extends State<ValidatingPhase> {
   String? _selectedStatus;
   ValidatorBrand? _selectedBrand;
   String? _offBrandQuery;
+  final ScrollController _scrollCtrl = ScrollController();
   final TextEditingController _nameCtrl = TextEditingController();
   final TextEditingController _descCtrl = TextEditingController();
   final TextEditingController _problemCtrl = TextEditingController();
@@ -87,6 +88,7 @@ class _ValidatingPhaseState extends State<ValidatingPhase> {
       _offData = null;
       _loadingOff = true;
     });
+    if (_scrollCtrl.hasClients) _scrollCtrl.jumpTo(0);
     _fetchOff();
   }
 
@@ -128,6 +130,7 @@ class _ValidatingPhaseState extends State<ValidatingPhase> {
 
   @override
   void dispose() {
+    _scrollCtrl.dispose();
     _nameCtrl.dispose();
     _descCtrl.dispose();
     _problemCtrl.dispose();
@@ -165,6 +168,119 @@ class _ValidatingPhaseState extends State<ValidatingPhase> {
       widget.onComplete();
     } else {
       _showSnack('Erreur lors de l\'enregistrement', isError: true);
+    }
+  }
+
+  Future<void> _delete() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.transparent,
+      builder: (ctx) => Material(
+        type: MaterialType.transparency,
+        child: Stack(
+          children: [
+            Container(color: Colors.black.withValues(alpha: 0.7)),
+            Center(
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 40.w),
+                padding: EdgeInsets.all(32.w),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(28.r),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.2),
+                      blurRadius: 40,
+                      offset: const Offset(0, 20),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 160.w,
+                      height: 160.w,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.red[50],
+                        border: Border.all(color: Colors.red[200]!, width: 3),
+                      ),
+                      child: Icon(Icons.delete_outline, size: 80.sp, color: Colors.red[700]),
+                    ),
+                    SizedBox(height: 28.h),
+                    Text(
+                      'Supprimer ce produit ?',
+                      style: TextStyle(
+                        fontSize: 52.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey[900],
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 12.h),
+                    Text(
+                      '${widget.product.name ?? widget.product.ean}\n\nCette action est irréversible.',
+                      style: TextStyle(fontSize: 40.sp, color: Colors.grey[600]),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 36.h),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () => Navigator.of(ctx).pop(false),
+                            style: OutlinedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(vertical: 18.h),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16.r),
+                              ),
+                            ),
+                            child: Text('Annuler',
+                                style: TextStyle(fontSize: 42.sp, fontWeight: FontWeight.w600)),
+                          ),
+                        ),
+                        SizedBox(width: 16.w),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () => Navigator.of(ctx).pop(true),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red[700],
+                              foregroundColor: Colors.white,
+                              padding: EdgeInsets.symmetric(vertical: 18.h),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16.r),
+                              ),
+                              elevation: 4,
+                            ),
+                            child: Text('Supprimer',
+                                style: TextStyle(fontSize: 42.sp, fontWeight: FontWeight.bold)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ) ?? false;
+
+    if (!confirmed || !mounted) return;
+
+    setState(() => _submitting = true);
+    final ok = await ValidatorService.deleteProduct(widget.product.id);
+
+    if (!mounted) return;
+    setState(() => _submitting = false);
+
+    if (ok) {
+      widget.onComplete();
+    } else {
+      _showSnack('Erreur lors de la suppression', isError: true);
     }
   }
 
@@ -225,6 +341,7 @@ class _ValidatingPhaseState extends State<ValidatingPhase> {
         _buildProgressBar(percent),
         Expanded(
           child: SingleChildScrollView(
+            controller: _scrollCtrl,
             padding: EdgeInsets.all(24.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -639,7 +756,7 @@ class _ValidatingPhaseState extends State<ValidatingPhase> {
 
           Divider(color: Colors.grey[200], height: 40.h),
 
-          // ── État ──
+          // ── State ──
           _formLabel('État', required: true),
           SizedBox(height: 12.h),
           Wrap(
@@ -677,7 +794,7 @@ class _ValidatingPhaseState extends State<ValidatingPhase> {
 
           Divider(color: Colors.grey[100], height: 40.h),
 
-          // ── Statut ──
+          // ── Status ──
           _formLabel('Statut', required: true),
           SizedBox(height: 12.h),
           Wrap(
@@ -715,7 +832,7 @@ class _ValidatingPhaseState extends State<ValidatingPhase> {
 
           Divider(color: Colors.grey[100], height: 40.h),
 
-          // ── Marque ──
+          // ── Brand ──
           _formLabel('Marque', required: _selectedStatus != 'NOT_FOUND'),
           SizedBox(height: 12.h),
           BrandSelect(
@@ -730,8 +847,8 @@ class _ValidatingPhaseState extends State<ValidatingPhase> {
 
           Divider(color: Colors.grey[100], height: 40.h),
 
-          // ── Nom ──
-          _formLabel('Nom du produit'),
+          // ── Name --
+          _formLabel('Nom du produit', required:true),
           SizedBox(height: 12.h),
           TextField(
             controller: _nameCtrl,
@@ -819,6 +936,27 @@ class _ValidatingPhaseState extends State<ValidatingPhase> {
                 backgroundColor: primary,
                 foregroundColor: Colors.white,
                 padding: EdgeInsets.symmetric(vertical: 18.h),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14.r),
+                ),
+              ),
+            ),
+          ),
+
+          SizedBox(height: 12.h),
+
+          // ── Delete ──
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: _submitting ? null : _delete,
+              icon: Icon(Icons.delete_outline, size: 52.sp),
+              label: Text('Supprimer le produit',
+                  style: TextStyle(fontSize: 40.sp, fontWeight: FontWeight.w600)),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.red[700],
+                side: BorderSide(color: Colors.red[300]!),
+                padding: EdgeInsets.symmetric(vertical: 16.h),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14.r),
                 ),
@@ -954,7 +1092,7 @@ class _HeaderButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 8.h),
+        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
         decoration: BoxDecoration(
           color: color.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(20.r),

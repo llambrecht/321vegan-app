@@ -91,7 +91,10 @@ class _ProductReviewPageState extends State<ProductReviewPage> {
     });
   }
 
-  void _restart() => _quit();
+  void _restart() {
+    _quit();
+    _loadProducts();
+  }
 
   @override
   Widget build(BuildContext context) {
