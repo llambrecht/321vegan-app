@@ -81,6 +81,8 @@ class MyHomePageState extends State<MyHomePage>
 
     // Listen for B12 notification taps → navigate to profile tab
     NotificationService.navigateToProfile.addListener(_onB12NotificationTap);
+    // Cold start: value may already be true before this listener was registered
+    WidgetsBinding.instance.addPostFrameCallback((_) => _onB12NotificationTap());
   }
 
   Future<void> _initializeTabController() async {
@@ -148,7 +150,7 @@ class MyHomePageState extends State<MyHomePage>
     if (NotificationService.navigateToProfile.value && mounted) {
       NotificationService.navigateToProfile.value = false;
       setState(() {
-        motionTabBarController.index = 4; // Profile tab
+        motionTabBarController.index = 5; // Profile tab
       });
     }
   }

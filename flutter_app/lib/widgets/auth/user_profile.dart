@@ -16,6 +16,7 @@ import '../vegandex/vegandex_modal.dart';
 import '../theme/theme_selector_modal.dart';
 import '../../pages/app_pages/Profile/b12_reminder_settings_page.dart';
 import '../../pages/app_pages/Profile/subscription_page.dart';
+import '../../pages/app_pages/Profile/product_review_page.dart';
 import '../../services/b12_reminder_service.dart';
 import '../../services/subscription_service.dart';
 
@@ -262,7 +263,8 @@ class _UserProfileState extends State<UserProfile> {
         SizedBox(height: 24.h),
         _buildStatsCards(),
         if ((_user?.nbProductsModified ?? 0) > 0 ||
-            (_user?.nbCheckings ?? 0) > 0) ...[
+            (_user?.nbCheckings ?? 0) > 0 ||
+            (_user?.isContributor ?? false)) ...[
           SizedBox(height: 24.h),
           _buildContributorCards(),
         ],
@@ -793,7 +795,49 @@ class _UserProfileState extends State<UserProfile> {
               ),
             ],
           ),
+          if (_user?.isContributor ?? false) ...[
+            SizedBox(height: 20.h),
+            GestureDetector(
+              onTap: _openProductReviewPage,
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary,
+                  borderRadius: BorderRadius.circular(14.r),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.edit_note_outlined,
+                        size: 64.sp, color: Colors.white),
+                    SizedBox(width: 14.w),
+                    Expanded(
+                      child: Text(
+                        'Valider des produits',
+                        style: TextStyle(
+                          fontSize: 44.sp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    Icon(Icons.arrow_forward_ios,
+                        size: 40.sp, color: Colors.white70),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ],
+      ),
+    );
+  }
+
+  void _openProductReviewPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const ProductReviewPage(),
       ),
     );
   }

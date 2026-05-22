@@ -15,6 +15,7 @@ class User {
   final DateTime? updatedAt;
   final List<ScannedProduct>? scannedProducts;
   final bool subscriptionBypass;
+  final String? role;
 
   User({
     required this.id,
@@ -31,7 +32,10 @@ class User {
     this.updatedAt,
     this.scannedProducts,
     this.subscriptionBypass = false,
+    this.role,
   });
+
+  bool get isContributor => role == 'contributor' || role == 'admin';
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -62,6 +66,7 @@ class User {
           : null,
       subscriptionBypass: json['subscription_bypass'] == true ||
           json['subscription_bypass'] == 1,
+      role: json['role'] as String?,
     );
   }
 
