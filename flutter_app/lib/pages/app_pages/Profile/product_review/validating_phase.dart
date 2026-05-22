@@ -55,7 +55,6 @@ class _ValidatingPhaseState extends State<ValidatingPhase> {
       
   final String _imageBaseUrl = 'https://321vegan-objects.s3.sbg.io.cloud.ovh.net/';
 
-
   @override
   void initState() {
     super.initState();
