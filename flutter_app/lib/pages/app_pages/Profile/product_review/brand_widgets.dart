@@ -82,14 +82,12 @@ class _BrandSelectState extends State<BrandSelect> {
                   children: [
                     Expanded(
                       child: Text(
-                        _selected?.name ?? (widget.initialQuery ?? 'Sélectionnez'),
+                        _selected?.name ?? 'Sélectionnez',
                         style: TextStyle(
                           fontSize: 38.sp,
                           color: _selected != null
                               ? Colors.grey[800]
-                              : (widget.initialQuery != null
-                                  ? Colors.grey[600]
-                                  : Colors.grey[400]),
+                              : Colors.grey[400],
                         ),
                       ),
                     ),

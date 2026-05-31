@@ -48,6 +48,7 @@ class MyHomePageState extends State<MyHomePage>
   bool _hasNewPartners = false;
   late AnimationController _partnersAnimationController;
   String? _currentAvatar;
+  int _profileKey = 0;
 
   @override
   void initState() {
@@ -151,6 +152,7 @@ class MyHomePageState extends State<MyHomePage>
       NotificationService.navigateToProfile.value = false;
       setState(() {
         motionTabBarController.index = 5; // Profile tab
+        _profileKey++; // force ProfilePage to rebuild and re-fetch user info
       });
     }
   }
@@ -717,6 +719,7 @@ class MyHomePageState extends State<MyHomePage>
                   ),
                   MapPage(onLoginSuccess: _onLoginSuccess),
                   ProfilePage(
+                    key: ValueKey(_profileKey),
                     onDateSaved: _onDateSaved,
                     onLoginSuccess: _onLoginSuccess,
                   ),

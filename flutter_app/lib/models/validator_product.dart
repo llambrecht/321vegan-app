@@ -1,13 +1,15 @@
 class ValidatorBrand {
   final int id;
   final String name;
+  final String? background;
 
-  ValidatorBrand({required this.id, required this.name});
+  ValidatorBrand({required this.id, required this.name, this.background});
 
   factory ValidatorBrand.fromJson(Map<String, dynamic> json) {
     return ValidatorBrand(
       id: json['id'] as int,
       name: json['name'] as String,
+      background: json['background'] as String?,
     );
   }
 }
@@ -16,6 +18,7 @@ class ValidatorProduct {
   final int id;
   final String ean;
   final String? name;
+  final String? description;
   final String status;
   final String state;
   final DateTime? createdAt;
@@ -26,6 +29,7 @@ class ValidatorProduct {
     required this.id,
     required this.ean,
     this.name,
+    this.description,
     required this.status,
     required this.state,
     this.createdAt,
@@ -38,6 +42,7 @@ class ValidatorProduct {
       id: json['id'] as int,
       ean: json['ean'] as String,
       name: json['name'] as String?,
+      description: json['description'] as String?,
       status: json['status'] as String? ?? 'VEGAN',
       state: json['state'] as String? ?? 'CREATED',
       createdAt: json['created_at'] != null

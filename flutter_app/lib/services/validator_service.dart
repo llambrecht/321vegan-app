@@ -70,8 +70,7 @@ class ValidatorService {
         'state': state,
         'status': status,
         if (name != null && name.isNotEmpty) 'name': name,
-        if (description != null && description.isNotEmpty)
-          'description': description,
+        if (description != null) 'description': description,
         if (brandId != null) 'brand_id': brandId,
         if (problemDescription != null && problemDescription.isNotEmpty)
           'problem_description': problemDescription,

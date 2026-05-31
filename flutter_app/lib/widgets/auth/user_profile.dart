@@ -365,7 +365,7 @@ class _UserProfileState extends State<UserProfile> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _user?.nickname ?? 'Utilisateur',
+                  _user?.nickname ?? 'Utilisateur·ice',
                   style: TextStyle(
                     fontSize: 56.sp,
                     fontWeight: FontWeight.bold,
@@ -519,73 +519,73 @@ class _UserProfileState extends State<UserProfile> {
 
   Widget _buildSupportButton() {
     return GestureDetector(
-      onTap: _openSubscriptionPage,
-      child: ShineWrapper(
-        borderRadius: 12,
-        child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: SubscriptionService.isSubscribed
-                ? [
-                    Colors.amber.shade600,
-                    Colors.orange.shade600,
-                  ]
-                : [
-                    Colors.pink.shade400,
-                    Colors.deepPurple.shade400,
-                  ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(12.r),
-          boxShadow: [
-            BoxShadow(
-              color: (SubscriptionService.isSubscribed
-                      ? Colors.amber
-                      : Colors.pink)
-                  .withValues(alpha: 0.3),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
-        child: Row(
-          children: [
-            Icon(
-              SubscriptionService.isSubscribed
-                  ? Icons.military_tech
-                  : Icons.favorite,
-              size: 48.sp,
-              color: Colors.white,
-            ),
-            SizedBox(width: 12.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    SubscriptionService.isSubscribed
-                        ? 'Abonnement actif'
-                        : 'Soutenir 321 Vegan',
-                    style: TextStyle(
-                      fontSize: 44.sp,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
+        onTap: _openSubscriptionPage,
+        child: ShineWrapper(
+          borderRadius: 12,
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: SubscriptionService.isSubscribed
+                    ? [
+                        Colors.amber.shade600,
+                        Colors.orange.shade600,
+                      ]
+                    : [
+                        Colors.pink.shade400,
+                        Colors.deepPurple.shade400,
+                      ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
+              borderRadius: BorderRadius.circular(12.r),
+              boxShadow: [
+                BoxShadow(
+                  color: (SubscriptionService.isSubscribed
+                          ? Colors.amber
+                          : Colors.pink)
+                      .withValues(alpha: 0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
-            Icon(
-              Icons.arrow_forward_ios,
-              size: 40.sp,
-              color: Colors.white70,
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+            child: Row(
+              children: [
+                Icon(
+                  SubscriptionService.isSubscribed
+                      ? Icons.military_tech
+                      : Icons.favorite,
+                  size: 48.sp,
+                  color: Colors.white,
+                ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        SubscriptionService.isSubscribed
+                            ? 'Abonnement actif'
+                            : 'Soutenir 321 Vegan',
+                        style: TextStyle(
+                          fontSize: 44.sp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  size: 40.sp,
+                  color: Colors.white70,
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-    ));
+          ),
+        ));
   }
 
   void _openEditProfileModal() {
@@ -602,7 +602,7 @@ class _UserProfileState extends State<UserProfile> {
           ),
         ),
         child: EditProfileModal(
-          currentNickname: _user?.nickname ?? 'Utilisateur',
+          currentNickname: _user?.nickname ?? 'Utilisateur·ice',
           currentAvatar: _selectedAvatar,
           onProfileUpdated: () {
             _loadUserInfo();

@@ -1,9 +1,12 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:vegan_app/models/e_number.dart';
 import 'package:vegan_app/models/validator_product.dart';
+import 'package:vegan_app/services/translation_service.dart';
 import 'package:vegan_app/services/validator_service.dart';
 import 'constants.dart';
 import 'shared_widgets.dart';
@@ -36,6 +39,12 @@ class ValidatingPhase extends StatefulWidget {
 class _ValidatingPhaseState extends State<ValidatingPhase> {
   OffProductData? _offData;
   bool _loadingOff = true;
+  Map<String, ENumberItem> _eNumberLookup = {};
+
+  // Translation
+  String? _translatedIngredients;
+  bool _translating = false;
+  bool _showTranslated = false;
 
   // Form state
   String _selectedState = 'WAITING_PUBLISH';
@@ -61,8 +70,20 @@ class _ValidatingPhaseState extends State<ValidatingPhase> {
     super.initState();
     _selectedStatus = widget.product.status;
     _nameCtrl.text = widget.product.name ?? '';
+    _descCtrl.text = widget.product.description ?? '';
     _selectedBrand = widget.product.brand;
+    _loadENumbers();
     _fetchOff();
+  }
+
+  Future<void> _loadENumbers() async {
+    final raw = await rootBundle.loadString('lib/assets/scanner/e_numbers.json');
+    final decoded = jsonDecode(raw) as Map<String, dynamic>;
+    final items = ENumberItem.fromJsonList(decoded);
+    if (!mounted) return;
+    setState(() {
+      _eNumberLookup = {for (final item in items) item.eNumber.toUpperCase(): item};
+    });
   }
 
   @override
@@ -78,7 +99,7 @@ class _ValidatingPhaseState extends State<ValidatingPhase> {
       _selectedState = 'WAITING_PUBLISH';
       _selectedStatus = widget.product.status;
       _nameCtrl.text = widget.product.name ?? '';
-      _descCtrl.clear();
+      _descCtrl.text = widget.product.description ?? '';
       _selectedBrand = widget.product.brand;
       _offBrandQuery = null;
       _problemCtrl.clear();
@@ -87,13 +108,17 @@ class _ValidatingPhaseState extends State<ValidatingPhase> {
       _hasOldRecipe = false;
       _offData = null;
       _loadingOff = true;
+      _translatedIngredients = null;
+      _translating = false;
+      _showTranslated = false;
     });
     if (_scrollCtrl.hasClients) _scrollCtrl.jumpTo(0);
     _fetchOff();
   }
 
   Future<void> _fetchOff() async {
-    final data = await ValidatorService.fetchOffData(widget.product.ean);
+    final ean = widget.product.ean;
+    final data = await ValidatorService.fetchOffData(ean);
     if (!mounted) return;
 
     ValidatorBrand? matchedBrand;
@@ -102,27 +127,28 @@ class _ValidatingPhaseState extends State<ValidatingPhase> {
     if (_selectedBrand == null && data.brandName != null) {
       final results = await ValidatorService.searchBrands(data.brandName!);
       if (mounted) {
-        final lower = data.brandName!.toLowerCase();
-        final idx = results.indexWhere((b) => b.name.toLowerCase() == lower);
-        if (idx >= 0) {
-          matchedBrand = results[idx];
+        if (results.isNotEmpty) {
+          matchedBrand = results.first;
         } else {
           offBrandQuery = data.brandName;
         }
       }
     }
 
-    if (mounted) {
+    // Guard against stale responses (user moved to next product or already picked a brand)
+    if (mounted && widget.product.ean == ean) {
       setState(() {
         _offData = data;
         _loadingOff = false;
         if (_nameCtrl.text.isEmpty && data.productName != null) {
           _nameCtrl.text = data.productName!;
         }
-        if (matchedBrand != null) {
-          _selectedBrand = matchedBrand;
-        } else if (offBrandQuery != null) {
-          _offBrandQuery = offBrandQuery;
+        if (_selectedBrand == null) {
+          if (matchedBrand != null) {
+            _selectedBrand = matchedBrand;
+          } else if (offBrandQuery != null) {
+            _offBrandQuery = offBrandQuery;
+          }
         }
       });
     }
@@ -144,6 +170,10 @@ class _ValidatingPhaseState extends State<ValidatingPhase> {
     }
     if (_needsProblem && _problemCtrl.text.trim().isEmpty) {
       _showSnack('Veuillez décrire le problème');
+      return;
+    }
+    if (_selectedStatus != 'NOT_FOUND' && _selectedBrand == null) {
+      _showSnack('Veuillez sélectionner une marque');
       return;
     }
 
@@ -511,6 +541,17 @@ class _ValidatingPhaseState extends State<ValidatingPhase> {
     );
   }
 
+  Future<void> _translateIngredients(String text) async {
+    setState(() => _translating = true);
+    final translated = await TranslationService.toFrench(text);
+    if (!mounted) return;
+    setState(() {
+      _translatedIngredients = translated;
+      _showTranslated = translated != null;
+      _translating = false;
+    });
+  }
+
   Widget _buildOffInfo() {
     const offBg = Color(0xFFF0F4FF);
 
@@ -626,6 +667,10 @@ class _ValidatingPhaseState extends State<ValidatingPhase> {
     const red = Color(0xFFC62828);
     const orange = Color(0xFFF57C00);
 
+    final displayText = _showTranslated && _translatedIngredients != null
+        ? _translatedIngredients!
+        : text;
+
     // Build (keyword, color) pairs sorted longest-first so "arômes naturels"
     // matches before "arômes" in the combined regex.
     final patterns = [
@@ -639,10 +684,10 @@ class _ValidatingPhaseState extends State<ValidatingPhase> {
     final spans = <TextSpan>[];
     int lastEnd = 0;
 
-    for (final match in regex.allMatches(text)) {
+    for (final match in regex.allMatches(displayText)) {
       if (match.start > lastEnd) {
         spans.add(TextSpan(
-          text: text.substring(lastEnd, match.start),
+          text: displayText.substring(lastEnd, match.start),
           style: TextStyle(fontSize: 38.sp, color: Colors.grey[800]),
         ));
       }
@@ -667,9 +712,9 @@ class _ValidatingPhaseState extends State<ValidatingPhase> {
       lastEnd = match.end;
     }
 
-    if (lastEnd < text.length) {
+    if (lastEnd < displayText.length) {
       spans.add(TextSpan(
-        text: text.substring(lastEnd),
+        text: displayText.substring(lastEnd),
         style: TextStyle(fontSize: 38.sp, color: Colors.grey[800]),
       ));
     }
@@ -677,9 +722,68 @@ class _ValidatingPhaseState extends State<ValidatingPhase> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Ingrédients',
-            style: TextStyle(
-                fontSize: 36.sp, fontWeight: FontWeight.w600, color: Colors.black)),
+        Row(
+          children: [
+            Text('Ingrédients',
+                style: TextStyle(
+                    fontSize: 36.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black)),
+            const Spacer(),
+            if (_translating)
+              SizedBox(
+                width: 18.w,
+                height: 18.w,
+                child: const CircularProgressIndicator(strokeWidth: 2),
+              )
+            else if (_translatedIngredients != null)
+              GestureDetector(
+                onTap: () => setState(() => _showTranslated = !_showTranslated),
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(20.r),
+                    border: Border.all(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withValues(alpha: 0.3)),
+                  ),
+                  child: Text(
+                    _showTranslated ? 'Afficher l\'original' : 'Afficher la traduction',
+                    style: TextStyle(
+                        fontSize: 36.sp,
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.w600),
+                  ),
+                ),
+              )
+            else
+              GestureDetector(
+                onTap: () => _translateIngredients(text),
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(20.r),
+                    border: Border.all(color: Colors.grey[300]!),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.translate,
+                          size: 28.sp, color: Colors.grey[600]),
+                      SizedBox(width: 4.w),
+                      Text('Traduire',
+                          style: TextStyle(
+                              fontSize: 36.sp, color: Colors.grey[600])),
+                    ],
+                  ),
+                ),
+              ),
+          ],
+        ),
         SizedBox(height: 4.h),
         RichText(
           maxLines: 10,
@@ -690,10 +794,22 @@ class _ValidatingPhaseState extends State<ValidatingPhase> {
     );
   }
 
-  Widget _buildAdditiveChips(List<String> additives) {
-    const red = Color(0xFFC62828);
-    const orange = Color(0xFFF57C00);
+  Color _additiveColor(String eNumber) {
+    final item = _eNumberLookup[eNumber];
+    if (item == null) return Colors.grey[600]!;
+    switch (item.state) {
+      case 'carniste':
+        return const Color(0xFFC62828);
+      case 'Ça dépend':
+        return const Color(0xFFF57C00);
+      case 'vegan':
+        return Colors.green[700]!;
+      default:
+        return Colors.grey[600]!;
+    }
+  }
 
+  Widget _buildAdditiveChips(List<String> additives) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -706,25 +822,107 @@ class _ValidatingPhaseState extends State<ValidatingPhase> {
           runSpacing: 6.h,
           children: additives.map((e) {
             final upper = e.toUpperCase();
-            final color = nonVeganENumbers.contains(upper)
-                ? red
-                : maybeVeganENumbers.contains(upper)
-                    ? orange
-                    : Colors.grey[600]!;
-            return Container(
-              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8.r),
-                border: Border.all(color: color.withValues(alpha: 0.4)),
+            final color = _additiveColor(upper);
+            return GestureDetector(
+              onTap: () => _showAdditiveDialog(upper),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8.r),
+                  border: Border.all(color: color.withValues(alpha: 0.4)),
+                ),
+                child: Text(upper,
+                    style: TextStyle(
+                        fontSize: 32.sp, fontWeight: FontWeight.bold, color: color)),
               ),
-              child: Text(upper,
-                  style: TextStyle(
-                      fontSize: 32.sp, fontWeight: FontWeight.bold, color: color)),
             );
           }).toList(),
         ),
       ],
+    );
+  }
+
+  void _showAdditiveDialog(String eNumber) {
+    final item = _eNumberLookup[eNumber];
+    final stateColor = _additiveColor(eNumber);
+    final stateLabel = item == null
+        ? 'Inconnu'
+        : switch (item.state) {
+            'vegan' => 'Végane',
+            'carniste' => 'Non végane',
+            'Ça dépend' => 'Selon l\'origine',
+            _ => item.state,
+          };
+
+    showDialog(
+      context: context,
+      builder: (ctx) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+        child: Padding(
+          padding: EdgeInsets.all(24.w),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Text(eNumber,
+                      style: TextStyle(
+                          fontSize: 52.sp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey[800])),
+                  const Spacer(),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
+                    decoration: BoxDecoration(
+                      color: stateColor.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(20.r),
+                      border: Border.all(color: stateColor.withValues(alpha: 0.4)),
+                    ),
+                    child: Text(stateLabel,
+                        style: TextStyle(
+                            fontSize: 30.sp,
+                            fontWeight: FontWeight.w600,
+                            color: stateColor)),
+                  ),
+                ],
+              ),
+              if (item != null) ...[
+                SizedBox(height: 10.h),
+                Text(item.name,
+                    style: TextStyle(
+                        fontSize: 38.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey[800])),
+                if (item.alternativeNames.isNotEmpty) ...[
+                  SizedBox(height: 4.h),
+                  Text(item.alternativeNames.join(', '),
+                      style: TextStyle(fontSize: 30.sp, color: Colors.grey[500])),
+                ],
+                if (item.description.isNotEmpty) ...[
+                  SizedBox(height: 12.h),
+                  Text(item.description,
+                      style: TextStyle(fontSize: 32.sp, color: Colors.grey[700])),
+                ],
+              ] else ...[
+                SizedBox(height: 8.h),
+                Text('Aucune information disponible.',
+                    style: TextStyle(fontSize: 32.sp, color: Colors.grey[500])),
+              ],
+              SizedBox(height: 20.h),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  child: Text('Fermer',
+                      style: TextStyle(fontSize: 36.sp)),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -844,6 +1042,47 @@ class _ValidatingPhaseState extends State<ValidatingPhase> {
           SizedBox(height: 8.h),
           Text('Si introuvable, utilisez la marque « Inconnue ».',
               style: TextStyle(fontSize: 32.sp, color: Colors.grey[500])),
+          if (_selectedBrand?.background != null &&
+              _selectedBrand!.background!.isNotEmpty) ...[
+            SizedBox(height: 12.h),
+            Container(
+              padding: EdgeInsets.all(16.w),
+              decoration: BoxDecoration(
+                color: const Color(0xFF1565C0).withValues(alpha: 0.07),
+                borderRadius: BorderRadius.circular(12.r),
+                border: Border.all(
+                    color: const Color(0xFF1565C0).withValues(alpha: 0.3)),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.info_outline,
+                      size: 38.sp, color: const Color(0xFF1565C0)),
+                  SizedBox(width: 10.w),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Réponse générale de ${_selectedBrand!.name}',
+                          style: TextStyle(
+                              fontSize: 34.sp,
+                              fontWeight: FontWeight.w600,
+                              color: const Color(0xFF1565C0)),
+                        ),
+                        SizedBox(height: 4.h),
+                        Text(
+                          _selectedBrand!.background!,
+                          style: TextStyle(
+                              fontSize: 34.sp, color: Colors.grey[700]),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
 
           Divider(color: Colors.grey[100], height: 40.h),
 

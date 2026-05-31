@@ -796,7 +796,7 @@ class _VegandexModalState extends State<VegandexModal> {
                                 ),
                                 SizedBox(height: 16.h),
                                 Text(
-                                  'La fonctionnalité Vegandex nécessite l\'accès à votre position pour ajouter des produits à votre collection. Ces données géographiques nous permettront d\'aider les utilisateurices à trouver ces produits ! Veuillez activer la géolocalisation.',
+                                  'La fonctionnalité Vegandex nécessite l\'accès à votre position pour ajouter des produits à votre collection. Ces données géographiques nous permettront d\'aider les utilisateur·ices à trouver ces produits ! Veuillez activer la géolocalisation.',
                                   style: TextStyle(
                                     fontSize: 48.sp,
                                     color: Colors.grey[600],
