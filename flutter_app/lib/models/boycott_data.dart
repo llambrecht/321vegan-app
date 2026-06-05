@@ -102,7 +102,7 @@ class BoycottData {
     BoycottGroup(
       name: 'Coca-Cola Company',
       reason:
-          'Coca-Cola est le premier pollueur plastique mondial,[1][2] produisant 200 000 bouteilles plastique par minute. L\'entreprise épuise par ailleurs les nappes phréatiques dans des régions déjà frappées par la sécheresse.[3] C\'est aussi un soutien moral et financer d\'Israël.[4]',
+          'Coca-Cola est le premier pollueur plastique mondial,[1][2] produisant 200 000 bouteilles plastique par minute. L\'entreprise épuise par ailleurs les nappes phréatiques dans des régions déjà frappées par la sécheresse.[3] Le groupe Coca-Cola (via la marque Monster) sponsorise des sports cruels pour les animaux tels que le rodéo. C\'est aussi un soutien moral et financer d\'Israël.[4]',
       sources: [
         'https://www.forbes.com/sites/trevornace/2019/10/29/coca-cola-named-the-worlds-most-polluting-brand-in-plastic-waste-audit/',
         'https://www.indiatimes.com/news/india/pepsico-was-the-biggest-plastic-polluter-in-india-in-2022-coca-cola-globally-584817.html',
