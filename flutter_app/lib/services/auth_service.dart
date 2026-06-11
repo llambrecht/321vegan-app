@@ -228,7 +228,7 @@ class AuthService {
           'L\'inscription n\'est actuellement pas disponible. Veuillez contacter un administrateur.');
     } else if (response.statusCode == 409) {
       return AuthResult.error(
-          'Un utilisateur avec cet email ou ce pseudo existe déjà.');
+          'Un utilisateur avec cet email existe déjà.');
     } else {
       try {
         final error = response.data;

@@ -419,6 +419,71 @@ class PreferencesHelper {
     return DateTime.tryParse(stored);
   }
 
+  // Free score reveal methods (weekly quota for non-subscribers)
+  static const String _scoreRevealsWeekKey = 'score_reveals_week';
+  static const String _scoreRevealsBarcodesKey = 'score_reveals_barcodes';
+  static const int freeScoreRevealsPerWeek = 3;
+
+  // Monday of the current week, used to detect when the quota resets
+  static String _currentScoreRevealWeek() {
+    final now = DateTime.now();
+    final monday = DateTime(now.year, now.month, now.day)
+        .subtract(Duration(days: now.weekday - 1));
+    return monday.toIso8601String();
+  }
+
+  static Future<List<String>> _getRevealedBarcodesThisWeek() async {
+    final prefs = await SharedPreferences.getInstance();
+    final week = _currentScoreRevealWeek();
+    if (prefs.getString(_scoreRevealsWeekKey) != week) {
+      await prefs.setString(_scoreRevealsWeekKey, week);
+      await prefs.setStringList(_scoreRevealsBarcodesKey, []);
+      return [];
+    }
+    return prefs.getStringList(_scoreRevealsBarcodesKey) ?? [];
+  }
+
+  /// Uses a free score reveal for [barcode] if available.
+  /// Returns the number of reveals remaining after this one, or null if the
+  /// weekly quota is exhausted. Re-revealing a barcode already seen this week
+  /// is free and doesn't consume quota.
+  static Future<int?> useFreeScoreReveal(String barcode) async {
+    final prefs = await SharedPreferences.getInstance();
+    final revealed = await _getRevealedBarcodesThisWeek();
+    if (revealed.contains(barcode)) {
+      return freeScoreRevealsPerWeek - revealed.length;
+    }
+    if (revealed.length >= freeScoreRevealsPerWeek) return null;
+    revealed.add(barcode);
+    await prefs.setStringList(_scoreRevealsBarcodesKey, revealed);
+    return freeScoreRevealsPerWeek - revealed.length;
+  }
+
+  // Map free trial methods (one-time 6-hour unlock for non-subscribers)
+  static const String _mapFreeTrialStartKey = 'map_free_trial_started_at';
+  static const Duration mapFreeTrialDuration = Duration(hours: 6);
+
+  static Future<bool> hasUsedMapFreeTrial() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_mapFreeTrialStartKey) != null;
+  }
+
+  static Future<void> markMapFreeTrialUsed() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+        _mapFreeTrialStartKey, DateTime.now().toIso8601String());
+  }
+
+  /// When the one-time map trial expires, or null if never started.
+  static Future<DateTime?> getMapFreeTrialEnd() async {
+    final prefs = await SharedPreferences.getInstance();
+    final started = prefs.getString(_mapFreeTrialStartKey);
+    if (started == null) return null;
+    final startedAt = DateTime.tryParse(started);
+    if (startedAt == null) return null;
+    return startedAt.add(mapFreeTrialDuration);
+  }
+
   // B12 popup notification methods
   static const String _b12PopupShownKey = 'b12_popup_shown';
 

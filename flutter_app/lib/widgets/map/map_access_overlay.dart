@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:vegan_app/helpers/preference_helper.dart';
 import 'package:vegan_app/pages/app_pages/Profile/subscription_page.dart';
 import 'package:vegan_app/services/auth_service.dart';
 import 'package:vegan_app/services/subscription_service.dart';
@@ -12,13 +13,38 @@ class MapAccessOverlay extends StatefulWidget {
   final VoidCallback onAccessGranted;
   final VoidCallback? onLoginSuccess;
 
-  const MapAccessOverlay({super.key, required this.onAccessGranted, this.onLoginSuccess});
+  /// Called when the user starts their one-time free trial of the map.
+  final VoidCallback? onFreeTrial;
+
+  const MapAccessOverlay(
+      {super.key,
+      required this.onAccessGranted,
+      this.onLoginSuccess,
+      this.onFreeTrial});
 
   @override
   State<MapAccessOverlay> createState() => _MapAccessOverlayState();
 }
 
 class _MapAccessOverlayState extends State<MapAccessOverlay> {
+  bool _trialAvailable = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTrialAvailability();
+  }
+
+  Future<void> _loadTrialAvailability() async {
+    final used = await PreferencesHelper.hasUsedMapFreeTrial();
+    if (mounted) setState(() => _trialAvailable = !used);
+  }
+
+  Future<void> _startFreeTrial() async {
+    await PreferencesHelper.markMapFreeTrialUsed();
+    widget.onFreeTrial?.call();
+  }
+
   void _showAuthSheet({required bool showRegister}) {
     showModalBottomSheet(
       context: context,
@@ -143,6 +169,31 @@ class _MapAccessOverlayState extends State<MapAccessOverlay> {
                             ),
                           ),
                         ),
+                        if (_trialAvailable) ...[
+                          SizedBox(height: 12.h),
+                          SizedBox(
+                            width: double.infinity,
+                            child: OutlinedButton(
+                              onPressed: _startFreeTrial,
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: primaryColor,
+                                side:
+                                    BorderSide(color: primaryColor, width: 1.5),
+                                padding: EdgeInsets.symmetric(vertical: 20.h),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16.r),
+                                ),
+                              ),
+                              child: Text(
+                                'Tester gratuitement pendant 6h',
+                                style: TextStyle(
+                                  fontSize: 46.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ] else ...[
                         SizedBox(
                           width: double.infinity,
