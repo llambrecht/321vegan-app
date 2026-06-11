@@ -165,6 +165,8 @@ flutter:
     - lib/assets/images/nutri-eco-scores/green-score-d.webp
     - lib/assets/images/nutri-eco-scores/green-score-e.webp
     - lib/assets/images/nutri-eco-scores/green-score-f.webp
+    # Others
+    - lib/assets/affiche-321vegan-a4.png
     - .env
 
   fonts:
