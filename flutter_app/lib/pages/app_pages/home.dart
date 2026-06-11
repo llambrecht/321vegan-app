@@ -14,6 +14,7 @@ import 'package:vegan_app/pages/app_pages/Profile/b12_reminder_settings_page.dar
 import 'package:vegan_app/helpers/time_counter/time_counter.dart';
 import 'package:vegan_app/widgets/homepage/stat_card.dart';
 import 'package:vegan_app/widgets/homepage/draggable_profile_bubble.dart';
+import 'package:vegan_app/widgets/homepage/share_home_dialog.dart';
 import 'package:vegan_app/services/subscription_service.dart';
 import 'package:vegan_app/pages/app_pages/Profile/subscription_page.dart';
 import 'package:confetti/confetti.dart';
@@ -424,10 +425,6 @@ class MyHomePageState extends State<MyHomePage>
 
   @override
   Widget build(BuildContext context) {
-    int animalUnit = _savings['animalUnit'] ?? 0;
-    int co2Unit = _savings['co2Unit'] ?? 0;
-    int waterUnit = _savings['waterUnit'] ?? 0;
-    int forestUnit = _savings['forestUnit'] ?? 0;
     return Stack(
       children: [
         Scaffold(
@@ -551,57 +548,14 @@ class MyHomePageState extends State<MyHomePage>
                             Center(
                               child: TimeCounter(targetDate: targetDate),
                             ),
-                            buildStatCard(
-                              context,
-                              'Animaux épargnés',
-                              animalUnit,
-                              '',
-                              Icons.favorite,
-                              const Color.fromARGB(247, 255, 103, 153),
-                              Colors.pinkAccent,
-                              info:
-                                  "L'industrie de l'élevage cause d'immenses souffrances aux animaux en les considérant comme des objets. Choisir le véganisme, c'est refuser cette exploitation. Ici, on souligne l'effet positif que chacun peut avoir pour un monde plus juste et durable.",
-                              theme: Theme.of(context)
-                                  .extension<SeasonalTheme>(),
-                            ),
-                            buildStatCard(
-                              context,
-                              'CO₂ non émis',
-                              co2Unit,
-                              'KG',
-                              Icons.arrow_downward_sharp,
-                              const Color.fromARGB(255, 255, 133, 133),
-                              Colors.redAccent,
-                              info:
-                                  "L'alimentation végétale a aussi un impact sur l'environnement et permet de réduire considérablement son empreinte carbone. La quantité de CO2 économisée vient du fait que l'élevage est l'une des principales sources d'émission de gaz à effet de serre, de déforestation, de pollution de l'air et de pollution de l'eau.",
-                              theme: Theme.of(context)
-                                  .extension<SeasonalTheme>(),
-                            ),
-                            buildStatCard(
-                              context,
-                              'Forêt préservée',
-                              forestUnit,
-                              'm²',
-                              Icons.forest_sharp,
-                              const Color.fromARGB(127, 105, 240, 175),
-                              const Color.fromARGB(197, 36, 139, 87),
-                              info:
-                                  "L'élevage est l'une des principales causes de déforestation. Il faut en effet énormément de place pour cultiver les céréales (notamment soja et maïs) destinés à nourrir les animaux d'élevage. Cette déforestation a des conséquences désastreuses sur la biodiversité et les communautés locales. Adopter une alimentation végétale c'est réduire la pression sur les forêts et à encourager une agriculture plus durable.",
-                              theme: Theme.of(context)
-                                  .extension<SeasonalTheme>(),
-                            ),
-                            buildStatCard(
-                              context,
-                              'Eau économisée',
-                              waterUnit,
-                              'm³',
-                              Icons.water_drop,
-                              const Color.fromARGB(255, 97, 166, 250),
-                              Colors.blueAccent,
-                              info:
-                                  "En choisissant d'être végétalien, vous aidez à économiser de précieuses ressources en eau. La production de produits animaux nécessite une gigantesque quantité d'eau, notamment pour l'irrigation des cultures pour les animaux d'élevage. Et cela sans parler de la pollution de l'eau due aux déjections qu'ils produisent.",
-                              theme: Theme.of(context)
-                                  .extension<SeasonalTheme>(),
+                            ...homeStats.map(
+                              (stat) => buildStatCard(
+                                context,
+                                stat,
+                                _savings[stat.savingsKey] ?? 0,
+                                theme: Theme.of(context)
+                                    .extension<SeasonalTheme>(),
+                              ),
                             ),
                           ],
                         ),
@@ -693,6 +647,38 @@ class MyHomePageState extends State<MyHomePage>
                                     ),
                                   ),
                                 ],
+                              ),
+                            ),
+                          ),
+                        if (targetDate != null)
+                          Positioned(
+                            top: 160.h,
+                            right: 40.w,
+                            child: GestureDetector(
+                              onTap: () => showShareHomeDialog(
+                                context,
+                                targetDate: targetDate!,
+                                savings: _savings,
+                              ),
+                              child: Container(
+                                padding: EdgeInsets.all(24.w),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color:
+                                          Colors.black.withValues(alpha: 0.15),
+                                      blurRadius: 6,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: Icon(
+                                  Icons.send,
+                                  color: Theme.of(context).colorScheme.primary,
+                                  size: 56.sp,
+                                ),
                               ),
                             ),
                           ),
