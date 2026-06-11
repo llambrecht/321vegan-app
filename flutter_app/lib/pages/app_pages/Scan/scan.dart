@@ -1076,7 +1076,11 @@ class ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
           if (productInfo?['is_vegan'] == 'true' &&
               productInfo?['code'] != null)
             Positioned(
-              top: 0.35.sh,
+              // Non-subscribers get a reserved strip above the badges (free
+              // reveal chip); raise the anchor so the badges stay in place.
+              top: SubscriptionService.isSubscribed
+                  ? 0.35.sh
+                  : 0.35.sh - ProductScoresSection.extraHeaderHeight,
               left: 16,
               right: 16,
               child: ProductScoresSection(

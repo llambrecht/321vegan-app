@@ -9,7 +9,9 @@ import 'package:http_cache_file_store/http_cache_file_store.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:vegan_app/helpers/preference_helper.dart';
 import 'package:vegan_app/models/shops/shop.dart';
+import 'package:vegan_app/pages/app_pages/Profile/subscription_page.dart';
 import 'package:vegan_app/services/api_service.dart';
 import 'package:vegan_app/services/auth_service.dart';
 import 'package:vegan_app/services/subscription_service.dart';
@@ -33,6 +35,9 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   bool _isLoading = true;
   bool _isPicking = false;
   bool _isCentered = false;
+  // One-time 6-hour free trial of the map
+  DateTime? _trialEndsAt;
+  Timer? _trialTimer;
   Set<String> _selectedEans = {};
   LatLng? _initialCenter;
   LatLng? _userLocation;
@@ -52,6 +57,41 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     );
     _initTileCache();
     _initLocation();
+    _loadFreeTrial();
+  }
+
+  Future<void> _loadFreeTrial() async {
+    final endsAt = await PreferencesHelper.getMapFreeTrialEnd();
+    if (mounted && endsAt != null && DateTime.now().isBefore(endsAt)) {
+      setState(() => _trialEndsAt = endsAt);
+      _startTrialTicker();
+    }
+  }
+
+  // Refresh the countdown chip and re-lock the map once the trial expires
+  void _startTrialTicker() {
+    _trialTimer?.cancel();
+    if (_trialEndsAt == null) return;
+    _trialTimer = Timer.periodic(const Duration(seconds: 30), (_) {
+      if (!mounted) return;
+      setState(() {
+        if (!_freeTrialActive) {
+          _trialEndsAt = null;
+          _trialTimer?.cancel();
+        }
+      });
+    });
+  }
+
+  bool get _freeTrialActive =>
+      _trialEndsAt != null && DateTime.now().isBefore(_trialEndsAt!);
+
+  String _formatTrialRemaining() {
+    final remaining = _trialEndsAt!.difference(DateTime.now());
+    final hours = remaining.inHours;
+    final minutes = remaining.inMinutes.remainder(60);
+    if (hours > 0) return '${hours}h${minutes.toString().padLeft(2, '0')}';
+    return '$minutes min';
   }
 
   Future<void> _initTileCache() async {
@@ -72,6 +112,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   @override
   void dispose() {
     _pulseController.dispose();
+    _trialTimer?.cancel();
     super.dispose();
   }
 
@@ -607,10 +648,62 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                 ),
               ),
             ),
-          if (!AuthService.isLoggedIn || !SubscriptionService.isSubscribed)
+          // Trial countdown chip
+          if (_freeTrialActive && !SubscriptionService.isSubscribed)
+            Positioned(
+              top: 50,
+              left: 16,
+              child: GestureDetector(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const SubscriptionPage()),
+                ),
+                child: Container(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 14.w, vertical: 7.h),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20.r),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.15),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.timer_outlined,
+                          size: 42.sp,
+                          color: Theme.of(context).colorScheme.primary),
+                      SizedBox(width: 6.w),
+                      Text(
+                        'Essai gratuit : ${_formatTrialRemaining()}',
+                        style: TextStyle(
+                          fontSize: 38.sp,
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          if ((!AuthService.isLoggedIn || !SubscriptionService.isSubscribed) &&
+              !_freeTrialActive)
             MapAccessOverlay(
               onAccessGranted: () => setState(() {}),
               onLoginSuccess: widget.onLoginSuccess,
+              onFreeTrial: () {
+                setState(() {
+                  _trialEndsAt =
+                      DateTime.now().add(PreferencesHelper.mapFreeTrialDuration);
+                });
+                _startTrialTicker();
+              },
             ),
         ],
       ),

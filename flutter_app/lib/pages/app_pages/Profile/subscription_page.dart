@@ -398,7 +398,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
     return Column(
       children: [
         Text(
-          'Débloquez des thèmes exclusifs !',
+          'Débloquez les fonctionnalités !',
           style: TextStyle(
             fontSize: 60.sp,
             fontWeight: FontWeight.bold,
@@ -421,6 +421,16 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
 
   Widget _buildBenefits(Color primaryColor) {
     final benefits = [
+      (
+        'Nutriscore & Green-score illimités',
+        'Les scores de tous vos produits scannés, sans limite',
+        Icons.qr_code_scanner
+      ),
+      (
+        'Carte des produits en accès anticipé',
+        'Découvrez où trouver les produits vegan près de vous',
+        Icons.map
+      ),
       (
         'Tous les thèmes débloqués',
         'Printemps, Été, Automne, Hiver',

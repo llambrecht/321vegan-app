@@ -49,6 +49,7 @@ class MyHomePageState extends State<MyHomePage>
   late AnimationController _partnersAnimationController;
   String? _currentAvatar;
   int _profileKey = 0;
+  bool _b12NavigationHandled = false;
 
   @override
   void initState() {
@@ -89,6 +90,11 @@ class MyHomePageState extends State<MyHomePage>
   Future<void> _initializeTabController() async {
     final shouldOpenOnScanPage =
         await PreferencesHelper.getOpenOnScanPagePref();
+    // A B12 notification tap (cold start) must win over the scan-page
+    // preference, whether it was already handled or is still pending.
+    if (_b12NavigationHandled || NotificationService.navigateToProfile.value) {
+      return;
+    }
     if (shouldOpenOnScanPage && mounted) {
       // Update to scan tab if preference is set
       setState(() {
@@ -150,6 +156,7 @@ class MyHomePageState extends State<MyHomePage>
   void _onB12NotificationTap() {
     if (NotificationService.navigateToProfile.value && mounted) {
       NotificationService.navigateToProfile.value = false;
+      _b12NavigationHandled = true;
       setState(() {
         motionTabBarController.index = 5; // Profile tab
         _profileKey++; // force ProfilePage to rebuild and re-fetch user info
