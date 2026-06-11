@@ -147,7 +147,7 @@ class _BrandSelectorSheetState extends State<_BrandSelectorSheet> {
   }
 
   Future<void> _search(String query) async {
-    if (query.trim().length < 2) {
+    if (query.trim().isEmpty) {
       setState(() => _results = []);
       return;
     }
@@ -217,7 +217,7 @@ class _BrandSelectorSheetState extends State<_BrandSelectorSheet> {
                 child: _results.isEmpty
                     ? Center(
                         child: Text(
-                          _ctrl.text.length < 2 ? 'Tapez pour rechercher' : 'Aucun résultat',
+                          _ctrl.text.isEmpty ? 'Tapez pour rechercher' : 'Aucun résultat',
                           style: TextStyle(fontSize: 38.sp, color: Colors.grey[400]),
                         ),
                       )
@@ -385,7 +385,7 @@ class _ParentBrandSearchState extends State<_ParentBrandSearch> {
   }
 
   Future<void> _onChanged(String query) async {
-    if (query.length < 2) {
+    if (query.isEmpty) {
       setState(() => _suggestions = []);
       return;
     }

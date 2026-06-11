@@ -127,7 +127,7 @@ class ValidatorService {
     }
   }
 
-  // GET /brands/search?name__lookalike={query}
+  // GET /brands/search/ranked?name={query}
   static Future<List<ValidatorBrand>> searchBrands(String query) async {
     if (query.trim().isEmpty) return [];
     try {
@@ -135,8 +135,8 @@ class ValidatorService {
       final token = AuthService.accessToken;
 
       final response = await dio.get(
-        '/brands/search',
-        queryParameters: {'name__lookalike': query.trim(), 'page_size': 10},
+        '/brands/search/ranked',
+        queryParameters: {'name': query.trim(), 'page_size': 10},
         options: dio_pkg.Options(
           headers: {
             if (token != null) 'Authorization': 'Bearer $token',

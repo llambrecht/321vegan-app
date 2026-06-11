@@ -2,7 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:vegan_app/models/product_category.dart';
 import 'package:vegan_app/models/product_of_interest.dart';
+import 'package:vegan_app/services/api_service.dart';
 import 'package:vegan_app/services/products_of_interest_cache.dart';
 
 class MapFilterSheet extends StatefulWidget {
@@ -24,6 +26,8 @@ class _MapFilterSheetState extends State<MapFilterSheet> {
   String _search = '';
   final TextEditingController _searchController = TextEditingController();
   List<ProductOfInterest> _products = [];
+  List<ProductCategory> _categories = [];
+  ProductCategory? _selectedCategory;
   bool _isLoading = true;
 
   @override
@@ -34,10 +38,14 @@ class _MapFilterSheetState extends State<MapFilterSheet> {
   }
 
   Future<void> _loadProducts() async {
-    final products = await ProductsOfInterestCache.loadProductsOfInterest();
+    final results = await Future.wait([
+      ProductsOfInterestCache.loadProductsOfInterest(),
+      ApiService.getProductCategories(),
+    ]);
     if (mounted) {
       setState(() {
-        _products = products..shuffle();
+        _products = (results[0] as List<ProductOfInterest>)..shuffle();
+        _categories = results[1] as List<ProductCategory>;
         _isLoading = false;
       });
     }
@@ -52,20 +60,21 @@ class _MapFilterSheetState extends State<MapFilterSheet> {
   List<ProductOfInterest> get _sponsored =>
       _products.where((p) => p.type == 'sponsored').toList();
 
-  List<ProductOfInterest> get _regular {
+  bool _matches(ProductOfInterest p) {
+    if (_selectedCategory != null && p.categoryId != _selectedCategory!.id) {
+      return false;
+    }
     final q = _search.toLowerCase();
-    return _products
-        .where((p) => p.type != 'sponsored')
-        .where((p) => q.isEmpty || p.name.toLowerCase().contains(q) || p.brandName.toLowerCase().contains(q))
-        .toList();
+    return q.isEmpty ||
+        p.name.toLowerCase().contains(q) ||
+        p.brandName.toLowerCase().contains(q);
   }
 
-  List<ProductOfInterest> get _sponsoredFiltered {
-    final q = _search.toLowerCase();
-    return _sponsored
-        .where((p) => q.isEmpty || p.name.toLowerCase().contains(q) || p.brandName.toLowerCase().contains(q))
-        .toList();
-  }
+  List<ProductOfInterest> get _regular =>
+      _products.where((p) => p.type != 'sponsored').where(_matches).toList();
+
+  List<ProductOfInterest> get _sponsoredFiltered =>
+      _sponsored.where(_matches).toList();
 
   void _toggle(ProductOfInterest product) {
     setState(() {
@@ -75,6 +84,38 @@ class _MapFilterSheetState extends State<MapFilterSheet> {
         _selected.add(product.ean);
       }
     });
+  }
+
+  Widget _buildCategoryChip({
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    final primaryColor = Theme.of(context).colorScheme.primary;
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+        decoration: BoxDecoration(
+          color: isSelected ? primaryColor : Colors.grey[100],
+          borderRadius: BorderRadius.circular(24.r),
+          border: Border.all(
+            color: isSelected ? primaryColor : Colors.grey[300]!,
+          ),
+        ),
+        child: Center(
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 36.sp,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+              color: isSelected ? Colors.white : Colors.grey[700],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _buildProductCard(ProductOfInterest product, {bool sponsored = false}) {
@@ -253,6 +294,35 @@ class _MapFilterSheetState extends State<MapFilterSheet> {
             ),
           ),
         ),
+        // Category chips — search applies within the selected category
+        if (_categories.isNotEmpty) ...[
+          SizedBox(height: 12.h),
+          SizedBox(
+            height: 110.h,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              itemCount: _categories.length + 1,
+              separatorBuilder: (_, __) => SizedBox(width: 8.w),
+              itemBuilder: (_, i) {
+                if (i == 0) {
+                  return _buildCategoryChip(
+                    label: 'Toutes',
+                    isSelected: _selectedCategory == null,
+                    onTap: () => setState(() => _selectedCategory = null),
+                  );
+                }
+                final category = _categories[i - 1];
+                return _buildCategoryChip(
+                  label: category.name,
+                  isSelected: _selectedCategory == category,
+                  onTap: () => setState(() => _selectedCategory =
+                      _selectedCategory == category ? null : category),
+                );
+              },
+            ),
+          ),
+        ],
         SizedBox(height: 12.h),
         // Product grid
         Expanded(

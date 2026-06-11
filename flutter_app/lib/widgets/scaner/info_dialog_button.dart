@@ -13,6 +13,7 @@ class InfoDialogButton extends StatelessWidget {
   final String commentHint;
   final Color buttonColor;
   final IconData icon;
+  final bool showPreReportNotice;
   final VoidCallback? onScannerStop;
   final VoidCallback? onScannerStart;
 
@@ -25,6 +26,7 @@ class InfoDialogButton extends StatelessWidget {
     required this.commentHint,
     required this.buttonColor,
     this.icon = Icons.report_problem,
+    this.showPreReportNotice = false,
     this.onScannerStop,
     this.onScannerStart,
   });
@@ -57,6 +59,7 @@ class InfoDialogButton extends StatelessWidget {
             commentTitle: commentTitle,
             commentHint: commentHint,
             buttonColor: buttonColor,
+            showPreReportNotice: showPreReportNotice,
             rootContext: rootContext,
           ),
         ).then((_) {
@@ -73,6 +76,7 @@ class _InfoDialogModalContent extends StatefulWidget {
   final String commentTitle;
   final String commentHint;
   final Color buttonColor;
+  final bool showPreReportNotice;
   final BuildContext rootContext;
 
   const _InfoDialogModalContent({
@@ -81,6 +85,7 @@ class _InfoDialogModalContent extends StatefulWidget {
     required this.commentTitle,
     required this.commentHint,
     required this.buttonColor,
+    required this.showPreReportNotice,
     required this.rootContext,
   });
 
@@ -250,6 +255,58 @@ class _InfoDialogModalContentState extends State<_InfoDialogModalContent> {
               ),
               SizedBox(height: 20.h),
 
+              // Pre-report notice (error reports only)
+              if (widget.showPreReportNotice) ...[
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(12.w),
+                  decoration: BoxDecoration(
+                    color: Colors.amber.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Colors.amber.withValues(alpha: 0.5),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.lightbulb_outline,
+                            color: Colors.amber.shade800,
+                            size: 60.sp,
+                          ),
+                          SizedBox(width: 8.w),
+                          const Text(
+                            "Avant de signaler une erreur",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8.h),
+                      const Text(
+                        "• Les mentions « traces de... » ou « peut contenir... » "
+                        "ne rendent pas un produit non vegan : c'est une mention à destination des personnes allergiques. Ça ne rentre pas dans les ingrédients de la recette !"
+                        "\n"
+                        "• Si possible, ajoutez une photo des ingrédients : "
+                        "cela nous aide beaucoup à vérifier votre signalement. Merci !",
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.black87,
+                          height: 1.4,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 16.h),
+              ],
+
               // Comment field (required)
               RichText(
                 text: TextSpan(
@@ -296,7 +353,7 @@ class _InfoDialogModalContentState extends State<_InfoDialogModalContent> {
 
               // Contact field (optional)
               const Text(
-                "Contact (optionnel)",
+                "Comment vous contacter ?",
                 style: TextStyle(
                   color: Colors.black87,
                   fontSize: 16,
@@ -310,7 +367,7 @@ class _InfoDialogModalContentState extends State<_InfoDialogModalContent> {
                 maxLength: 200,
                 decoration: InputDecoration(
                   hintText:
-                      "Email ou @ instagram (au cas où on aurait besoin d'infos)",
+                      "Email ou @ instagram",
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -324,7 +381,7 @@ class _InfoDialogModalContentState extends State<_InfoDialogModalContent> {
 
               // Photo section
               const Text(
-                'Photo des ingrédients (optionnel)',
+                'Photo des ingrédients (si possible)',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -479,6 +536,7 @@ class ReportErrorButton extends StatelessWidget {
       commentTitle: "Décrivez le problème ",
       commentHint: "Ex: Ce produit n'est pas vegan, il contient...",
       buttonColor: Colors.orange,
+      showPreReportNotice: true,
       onScannerStop: onScannerStop,
       onScannerStart: onScannerStart,
     );
