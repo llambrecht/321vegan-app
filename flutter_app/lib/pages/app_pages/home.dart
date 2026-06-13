@@ -675,7 +675,7 @@ class MyHomePageState extends State<MyHomePage>
                                   ],
                                 ),
                                 child: Icon(
-                                  Icons.send,
+                                  Icons.share_outlined,
                                   color: Theme.of(context).colorScheme.primary,
                                   size: 56.sp,
                                 ),
