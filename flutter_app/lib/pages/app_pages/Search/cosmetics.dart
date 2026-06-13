@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vegan_app/helpers/database_helper.dart';
 import 'package:vegan_app/helpers/helper.dart';
+import 'package:vegan_app/widgets/shared/search_empty_state.dart';
 
 class CosmeticsPage extends StatefulWidget {
   const CosmeticsPage({super.key});
@@ -60,25 +61,21 @@ class CosmeticsPageState extends State<CosmeticsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildSearchBar(),
-              const SizedBox(height: 10),
-              filteredCosmetics.isEmpty
-                  ? Padding(
-                      padding: const EdgeInsets.symmetric(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildSearchBar(),
+            const SizedBox(height: 10),
+            Expanded(
+              child: filteredCosmetics.isEmpty
+                  ? const Padding(
+                      padding: EdgeInsets.symmetric(
                           horizontal: 16.0, vertical: 32.0),
-                      child: _buildEmptyState(),
+                      child: SearchEmptyState(),
                     )
-                  : Flexible(
-                      fit: FlexFit.loose,
-                      child: _buildCosmeticList(),
-                    ),
-            ],
-          ),
+                  : _buildCosmeticList(),
+            ),
+          ],
         ),
       ),
     );
@@ -98,40 +95,9 @@ class CosmeticsPageState extends State<CosmeticsPage> {
     );
   }
 
-  Widget _buildEmptyState() {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.info_outline, color: Colors.grey, size: 48),
-          SizedBox(height: 16),
-          Text(
-            'Aucun résultat',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.black54,
-            ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            'La liste des marques est en cours de construction.\nN\'hésitez pas à me contacter pour en ajouter !',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildCosmeticList() {
     return ListView.builder(
       padding: const EdgeInsets.only(bottom: 40),
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
       itemCount: filteredCosmetics.length,
       itemBuilder: (context, index) {
         final cosmetic = filteredCosmetics[index];

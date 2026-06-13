@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vegan_app/helpers/helper.dart';
 import 'package:vegan_app/models/e_number.dart';
+import 'package:vegan_app/widgets/shared/search_empty_state.dart';
 
 class AdditivesPage extends StatefulWidget {
   const AdditivesPage({super.key});
@@ -110,35 +111,15 @@ class AdditivesPageState extends State<AdditivesPage> {
             const SizedBox(height: 10),
             Expanded(
               child: filteredENumbers.isEmpty
-                  ? Padding(
-                      padding: const EdgeInsets.symmetric(
+                  ? const Padding(
+                      padding: EdgeInsets.symmetric(
                           horizontal: 16.0, vertical: 32.0),
-                      child: _buildEmptyState(),
+                      child: SearchEmptyState(),
                     )
                   : _buildENumberList(),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildEmptyState() {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.info_outline, color: Colors.grey, size: 48),
-          SizedBox(height: 16),
-          Text(
-            'Aucun résultat',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.black54,
-            ),
-          ),
-        ],
       ),
     );
   }
