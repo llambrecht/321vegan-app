@@ -15,6 +15,8 @@ import 'package:vegan_app/helpers/time_counter/time_counter.dart';
 import 'package:vegan_app/widgets/homepage/stat_card.dart';
 import 'package:vegan_app/widgets/homepage/draggable_profile_bubble.dart';
 import 'package:vegan_app/widgets/homepage/share_home_dialog.dart';
+import 'package:vegan_app/widgets/homepage/anniversary_dialog.dart';
+import 'package:vegan_app/services/anniversary_service.dart';
 import 'package:vegan_app/services/subscription_service.dart';
 import 'package:vegan_app/pages/app_pages/Profile/subscription_page.dart';
 import 'package:confetti/confetti.dart';
@@ -86,6 +88,11 @@ class MyHomePageState extends State<MyHomePage>
     NotificationService.navigateToProfile.addListener(_onB12NotificationTap);
     // Cold start: value may already be true before this listener was registered
     WidgetsBinding.instance.addPostFrameCallback((_) => _onB12NotificationTap());
+
+    // Listen for vegan anniversary notification taps → show congratulation popup
+    NotificationService.showAnniversary.addListener(_onAnniversaryNotificationTap);
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => _onAnniversaryNotificationTap());
   }
 
   Future<void> _initializeTabController() async {
@@ -165,9 +172,58 @@ class MyHomePageState extends State<MyHomePage>
     }
   }
 
+  void _onAnniversaryNotificationTap() {
+    if (NotificationService.showAnniversary.value && mounted) {
+      NotificationService.showAnniversary.value = false;
+      // Make sure the home tab is visible behind the popup.
+      setState(() {
+        motionTabBarController.index = 1;
+      });
+      _confettiController.play();
+      _presentAnniversaryDialog();
+    }
+  }
+
+  Future<void> _presentAnniversaryDialog() async {
+    // Cold start (notification tapped from a terminated app) can reach here
+    // before _loadData() has populated targetDate/_savings, so load them first.
+    if (targetDate == null) {
+      await loadTargetDate();
+    }
+    if (targetDate == null) return; // No vegan date → nothing to celebrate.
+
+    final savings = computeSavings(targetDate);
+    final years = DateTime.now().difference(targetDate!).inDays ~/ 365;
+    final scanCount = await PreferencesHelper.getTotalScanCount();
+
+    // Backend contribution counters — only for logged-in users, and
+    // best-effort (omitted when offline / the call fails).
+    int? productsSent;
+    int? issuesReported;
+    if (AuthService.isLoggedIn) {
+      final result = await AuthService.getCurrentUser();
+      if (result.isSuccess && result.data != null) {
+        productsSent = result.data!.nbProductsSent;
+        issuesReported = result.data!.nbErrorReports;
+      }
+    }
+
+    if (!mounted) return;
+    showAnniversaryDialog(
+      context,
+      years: years,
+      savings: savings,
+      scanCount: scanCount,
+      productsSent: productsSent,
+      issuesReported: issuesReported,
+    );
+  }
+
   @override
   void dispose() {
     NotificationService.navigateToProfile.removeListener(_onB12NotificationTap);
+    NotificationService.showAnniversary
+        .removeListener(_onAnniversaryNotificationTap);
     WidgetsBinding.instance.removeObserver(this);
     motionTabBarController.dispose();
     _confettiController.dispose();
@@ -191,6 +247,20 @@ class MyHomePageState extends State<MyHomePage>
     _checkAndShowB12Popup();
 
     _checkMembershipPrompt();
+
+    // One-time: existing users with a vegan date who were never asked for
+    // notification permission (e.g. never set up B12) get prompted once, so the
+    // yearly anniversary notification can be scheduled.
+    _ensureAnniversaryScheduled();
+  }
+
+  Future<void> _ensureAnniversaryScheduled() async {
+    if (targetDate == null) return;
+    if (await PreferencesHelper.hasNotificationPermissionBeenAsked()) return;
+    await PreferencesHelper.markNotificationPermissionAsked();
+    // Requests the app-wide notification permission (if not already granted)
+    // and schedules the anniversary notification.
+    await AnniversaryService.scheduleAnniversary(targetDate!);
   }
 
   void _onDateSaved(DateTime date) {
@@ -198,11 +268,17 @@ class MyHomePageState extends State<MyHomePage>
       targetDate = date;
       _savings = computeSavings(targetDate);
     });
+    // Keep the yearly anniversary notification in sync with the chosen date.
+    AnniversaryService.scheduleAnniversary(date);
   }
 
   Future<void> _onLoginSuccess() async {
     // Reload target date from preferences after login
     await loadTargetDate();
+    // The vegan start date may have been synced from the backend → reschedule.
+    if (targetDate != null) {
+      AnniversaryService.scheduleAnniversary(targetDate!);
+    }
     // Reload avatar after login
     await _loadAvatar();
     // Check and show B12 popup if needed after login
@@ -226,7 +302,7 @@ class MyHomePageState extends State<MyHomePage>
           _currentAvatar = avatar;
         });
       }
-    } else {
+    } else if (mounted) {
       setState(() {
         _currentAvatar = null;
       });
@@ -845,6 +921,9 @@ class MyHomePageState extends State<MyHomePage>
       targetDate = now;
       _savings = computeSavings(targetDate);
     });
+
+    // Schedule the yearly anniversary notification for this start date.
+    AnniversaryService.scheduleAnniversary(now);
 
     _confettiController.play();
   }

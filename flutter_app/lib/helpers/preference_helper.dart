@@ -498,4 +498,19 @@ class PreferencesHelper {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool(_b12PopupShownKey) ?? false;
   }
+
+  static const String _notificationPermissionAskedKey =
+      'notification_permission_asked';
+
+  // Mark that we've proactively requested the (app-wide) notification permission
+  static Future<void> markNotificationPermissionAsked() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_notificationPermissionAskedKey, true);
+  }
+
+  // Check if we've already proactively requested notification permission
+  static Future<bool> hasNotificationPermissionBeenAsked() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_notificationPermissionAskedKey) ?? false;
+  }
 }

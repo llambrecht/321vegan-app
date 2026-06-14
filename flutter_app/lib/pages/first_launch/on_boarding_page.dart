@@ -25,6 +25,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
     _loadSelectedDate();
   }
 
+  @override
+  void dispose() {
+    _dateController.dispose();
+    super.dispose();
+  }
+
   Future<void> _loadSelectedDate() async {
     selectedDate = await PreferencesHelper.getSelectedDateFromPrefs();
     if (selectedDate != null) {
@@ -54,8 +60,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
       setState(() {
         selectedDate = picked;
         _dateController.text = DateFormat.yMMMd('fr_FR').format(selectedDate!);
-        PreferencesHelper.addSelectedDateToPrefs(selectedDate);
       });
+      await PreferencesHelper.addSelectedDateToPrefs(selectedDate);
     }
   }
 
@@ -73,7 +79,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         PageViewModel(
           title: "Recherchez les additifs",
           body:
-              "Parmis les centaines d'additifs, vérifiez s'ils sont d'origine animale ou non. \n - Même sans connexion internet ! -",
+              "Parmi les centaines d'additifs, vérifiez s'ils sont d'origine animale ou non. \n - Même sans connexion internet ! -",
           image: Image.asset('lib/assets/intro/additifs.gif'),
           decoration: getPageDecorationWithGif(),
         ),
@@ -146,6 +152,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
               ),
               SizedBox(height: 24.h),
               RegisterForm(
+                showTitle: false,
                 onRegisterSuccess: () => _onIntroEnd(context),
                 onSwitchToLogin: () {
                   showModalBottomSheet(

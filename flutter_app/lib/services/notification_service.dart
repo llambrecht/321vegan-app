@@ -19,6 +19,11 @@ class NotificationService {
   static final ValueNotifier<bool> navigateToProfile =
       ValueNotifier<bool>(false);
 
+  /// Notifier that fires when a vegan anniversary notification is tapped.
+  /// Listeners (e.g. home page) should show the congratulation popup.
+  static final ValueNotifier<bool> showAnniversary =
+      ValueNotifier<bool>(false);
+
   /// Initialize the notification service
   Future<void> initialize() async {
     if (_isInitialized) return;
@@ -102,6 +107,19 @@ class NotificationService {
 
         await androidPlugin.createNotificationChannel(androidChannel);
 
+        const anniversaryChannel = AndroidNotificationChannel(
+          'vegan_anniversary',
+          'Véganniversaire',
+          description:
+              'Notifications pour célébrer votre anniversaire végane',
+          importance: Importance.high,
+          playSound: true,
+          enableVibration: true,
+          showBadge: true,
+        );
+
+        await androidPlugin.createNotificationChannel(anniversaryChannel);
+
         if (kDebugMode) {
           print('Notification channel created for Android');
 
@@ -123,6 +141,8 @@ class NotificationService {
       final payload = launchDetails.notificationResponse!.payload ?? '';
       if (payload.startsWith('b12_reminder')) {
         navigateToProfile.value = true;
+      } else if (payload.startsWith('vegan_anniversary')) {
+        showAnniversary.value = true;
       }
     }
   }
@@ -138,6 +158,9 @@ class NotificationService {
     if (payload.startsWith('b12_reminder')) {
       // Signal listeners to navigate to the profile page
       navigateToProfile.value = true;
+    } else if (payload.startsWith('vegan_anniversary')) {
+      // Signal listeners to show the anniversary congratulation popup
+      showAnniversary.value = true;
     }
   }
 
@@ -221,6 +244,65 @@ class NotificationService {
       android: androidDetails,
       iOS: iosDetails,
     );
+  }
+
+  /// Notification details for vegan anniversary notifications
+  NotificationDetails _getAnniversaryNotificationDetails() {
+    const androidDetails = AndroidNotificationDetails(
+      'vegan_anniversary',
+      'Véganniversaire',
+      channelDescription:
+          'Notifications pour célébrer votre anniversaire végane',
+      importance: Importance.high,
+      priority: Priority.high,
+      icon: 'ic_notification',
+      largeIcon: DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
+      playSound: true,
+      enableVibration: true,
+      channelShowBadge: true,
+      visibility: NotificationVisibility.public,
+      ongoing: false,
+      autoCancel: true,
+    );
+
+    const iosDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+
+    return const NotificationDetails(
+      android: androidDetails,
+      iOS: iosDetails,
+    );
+  }
+
+  /// Schedule a yearly notification that repeats on the same date every year.
+  Future<void> scheduleAnnualNotification({
+    required int id,
+    required String title,
+    required String body,
+    required tz.TZDateTime scheduledDate,
+    String? payload,
+  }) async {
+    final details = _getAnniversaryNotificationDetails();
+
+    await _notifications.zonedSchedule(
+      id,
+      title,
+      body,
+      scheduledDate,
+      details,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.dateAndTime,
+      payload: payload,
+    );
+
+    if (kDebugMode) {
+      print('Scheduled annual notification for: $scheduledDate');
+    }
   }
 
   /// Show an immediate test notification

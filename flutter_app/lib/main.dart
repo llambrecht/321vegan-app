@@ -11,6 +11,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'services/auth_service.dart';
 import 'services/b12_reminder_service.dart';
 import 'services/notification_service.dart';
+import 'services/anniversary_service.dart';
 import 'services/products_of_interest_cache.dart';
 import 'services/subscription_service.dart';
 import 'helpers/theme_helper.dart';
@@ -27,6 +28,10 @@ void main() async {
   await SubscriptionService.init();
   await NotificationService().initialize();
   await _migrateBiweeklyReminderIfNeeded();
+
+  // Keep the yearly vegan anniversary notification scheduled (silent: never
+  // prompts for permission : only reschedules if already granted).
+  await AnniversaryService.rescheduleIfNeeded();
 
   // Pre-load products of interest cache at app startup (when likely to have internet)
   ProductsOfInterestCache.initializeAtStartup();

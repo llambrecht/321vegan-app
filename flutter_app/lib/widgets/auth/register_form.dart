@@ -7,11 +7,13 @@ import '../../helpers/preference_helper.dart';
 class RegisterForm extends StatefulWidget {
   final VoidCallback? onRegisterSuccess;
   final VoidCallback? onSwitchToLogin;
+  final bool showTitle;
 
   const RegisterForm({
     super.key,
     this.onRegisterSuccess,
     this.onSwitchToLogin,
+    this.showTitle = true,
   });
 
   @override
@@ -111,16 +113,18 @@ class _RegisterFormState extends State<RegisterForm> {
         child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            'Créer un compte',
-            style: TextStyle(
-              fontSize: 64.sp,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[800],
+          if (widget.showTitle) ...[
+            Text(
+              'Créer un compte',
+              style: TextStyle(
+                fontSize: 64.sp,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[800],
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 32.h),
+            SizedBox(height: 32.h),
+          ],
 
           // Email field
           TextFormField(
